@@ -61,24 +61,24 @@ export default function HomeNavbar() {
 
 
   return (
-    <nav className={`fixed top-0 left-0  sm:h-full h-[4rem] flex flex-col items-start py-5 px-2 sm:px-5 bg-white z-50 transition-all w-16rem 
+    <nav className={`fixed top-0 left-0  sm:h-full h-[4rem] flex flex-col items-start py-5 px-2 sm:px-5  z-50 transition-all w-16rem bg-[#800101] 
      
     `}
   >
  
 
     <div
-        className="flex items-center max-w-full sm:mt-0"
+        className="flex items-center max-w-full sm:mt-0 "
       >
       {/* Hide Logo on Small Screens */}
-        <img src="/favicon.png" alt="Website Logo" className="w-[2.75rem] h-[2.75rem] hidden lg:block" />
-        <p className="pl-3 font-extrabold hidden sm:block">ARCDO</p>
+        <img src="/pup-logo.png" alt="Website Logo" className="w-[2.75rem] h-[2.75rem] hidden lg:block" />
+        <p className="pl-3 font-extrabold hidden sm:block text-white">ARCDO</p>
 
 
 
         {/* Hamburger Menu for Mobile */}
         <button onClick={toggleMobileMenu} className="lg:hidden -mt-2 p-2 h-3rem">
-          <Menu className="h-6 w-6 to" />
+          <Menu className="text-white hover:text-white h-6 w-6 to" />
         </button>
       </div>
 
@@ -86,18 +86,18 @@ export default function HomeNavbar() {
 
       
       {/* Sidebar Items for Large Screens */}
-      <ul className="hidden lg:flex flex-col space-y-2 mt-5 w-full">
+      <ul className="hidden lg:flex flex-col space-y-2 mt-10 w-full text-white ">
         {menuItems.map((item) => (
           <li key={item.name} className="w-full">
             <NavLink
               to={item.path}
               className={({ isActive }) => `flex items-center px-2 py-3 rounded-2xl relative group ${
-                  isActive ? "bg-gray-300 text-black" : "hover:bg-gray-200"
+                  isActive ? "bg-white text-black" : "hover:bg-white hover:text-black"
                 } transition duration-300`}
             >
-            <div className="bg-gray-300 p-1 rounded-lg mr-3">{item.icon}</div>
+            <div className="bg-white p-1 rounded-lg text-black mr-3">{item.icon}</div>
               
-                <span className="text-sm font-medium hidden sm:inline-block group-hover:block absolute sm:static left-12 px-2 py-1">
+                <span className="text-sm  font-medium hidden sm:inline-block group-hover:block absolute sm:static left-12 px-2 py-1">
                   {item.name}
                 </span>
               
@@ -107,26 +107,26 @@ export default function HomeNavbar() {
       </ul>
 
       {/* Admin Profile in Large Screens */}
-      <div className="hidden lg:flex mt-auto w-full p-4">
+      <div className="hidden lg:flex mt-auto w-full text-white">
       <button
           onClick={toggleDropdown}
           className={`w-full flex items-center space-x-3 px-1 py-2 rounded-lg ${
-            isDropdownOpen ? "bg-red-700" : "hover:bg-red-600"
+            isDropdownOpen ? "bg-white text-black" : "hover:bg-white hover:text-black"
           } transition duration-300`}
         >
-          <div className="w-[40px] h-[40px] rounded-full bg-gray-300 flex items-center justify-center">
+          <div className="w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center">
             <img src="/default-profile.jpg" alt="Profile" className="w-[35px] h-[35px] rounded-full object-cover" />
           </div>
-            <span className="text-sm font-medium text-black hidden sm:block">Admin</span>
+            <span className="text-sm font-medium hidden sm:block">Admin</span>
           
         </button>
 
         {isDropdownOpen && (
           <div
             ref={dropdownRef}
-            className="absolute z-100 bg-bg divide-y divide-gray-100 rounded-lg shadow w-44 bottom-20 mb-2 left-10 ml-3"
+            className="absolute z-100 bg-white divide-y  rounded-lg shadow w-44 bottom-20 left-10 ml-3"
           >
-            <ul className="py-2 text-sm text-white text-md font-medium">
+            <ul className="py-2 text-sm text-black text-md font-medium">
               <li>
                 <button
                   onClick={() => setModalOpen(true)} // Open modal

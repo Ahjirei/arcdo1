@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "react-datepicker/dist/react-datepicker.css"; 
+import { Trash2, FilePenLine } from "lucide-react";
 
 export default function OJTCoordinators() {
   const allCoordinators = [
@@ -10,6 +11,12 @@ export default function OJTCoordinators() {
     { id: "005", name: "Robert White", campus: "South", contact: "robert.white@example.com", office: "Room 104", assignedStudents: 15, status: "Active" },
     // Add more coordinators as needed
   ];
+
+  const [coordinators, setCoordinators] = useState(allCoordinators);
+  const [editingCoordinator, setEditingCoordinator] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+
 
   const itemsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,6 +62,25 @@ export default function OJTCoordinators() {
         return "bg-gray-100 text-gray-600";
     }
   };
+
+  const handleEdit = (coordinator) => {
+    setEditingCoordinator(coordinator);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id) => {
+    setCoordinators(coordinators.filter((coordinator) => coordinator.id !== id));
+  };
+
+  const handleSave = () => {
+    setCoordinators(
+      coordinators.map((coordinator) =>
+        coordinator.id === editingCoordinator.id ? editingCoordinator : coordinator
+      )
+    );
+    setIsModalOpen(false);
+  };
+
 
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
@@ -112,6 +138,8 @@ export default function OJTCoordinators() {
               <th className="px-4 py-2 text-left border-b">Office</th>
               <th className="px-4 py-2 text-left border-b">Assigned Students</th>
               <th className="px-4 py-2 text-left border-b">Status</th>
+              <th className="px-4 py-2 text-left border-b"></th>
+              
             </tr>
           </thead>
           <tbody>
@@ -127,12 +155,71 @@ export default function OJTCoordinators() {
                 <td className="px-4 py-2 border-t">{coordinator.office}</td>
                 <td className="px-4 py-2 border-t">{coordinator.assignedStudents}</td>
                 <td className={`px-4 border-t rounded-full inline-block py-1 mt-1 mb-2 text-center ${getStatusColor(coordinator.status)}`}>
-                  {coordinator.status}
+                  {coordinator.status}</td>
+                <td className="px-6 py-2 border-t">
+                <div className="flex space-x-2">
+                  <button onClick={() => handleEdit(coordinator)} className="text-blue-600 mr-2">
+                  <FilePenLine size={18} />
+                </button>
+                <button onClick={() => handleDelete(coordinator.id)} className="text-red-600">
+                  <Trash2 size={18} />
+                </button>
+                </div>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {isModalOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Edit Coordinator</h2>
+            <input
+              type="text"
+              value={editingCoordinator.name}
+              onChange={(e) => setEditingCoordinator({ ...editingCoordinator, name: e.target.value })}
+              className="w-full p-2 border mb-2"
+              placeholder="Name"
+            />
+            <select
+              value={editingCoordinator.campus}
+              onChange={(e) => setEditingCoordinator({ ...editingCoordinator, campus: e.target.value })}
+              className="w-full p-2 border mb-2"
+            >
+              <option value="Main">Main</option>
+              <option value="West">West</option>
+              <option value="East">East</option>
+              <option value="South">South</option>
+            </select>
+            <input
+              type="text"
+              value={editingCoordinator.contact}
+              onChange={(e) => setEditingCoordinator({ ...editingCoordinator, contact: e.target.value })}
+              className="w-full p-2 border mb-2"
+              placeholder="Contact Email"
+            />
+            <input
+              type="text"
+              value={editingCoordinator.office}
+              onChange={(e) => setEditingCoordinator({ ...editingCoordinator, office: e.target.value })}
+              className="w-full p-2 border mb-2"
+              placeholder="Office"
+            />
+            <input
+              type="number"
+              value={editingCoordinator.assignedStudents}
+              onChange={(e) => setEditingCoordinator({ ...editingCoordinator, assignedStudents: parseInt(e.target.value) })}
+              className="w-full p-2 border mb-2"
+              placeholder="Assigned Students"
+            />
+            <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded mr-2">Save</button>
+            <button onClick={() => setIsModalOpen(false)} className="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
+          </div>
+        </div>
+      )}
+    
+
 
         {/* Mobile View (Cards) */}
         <div className="md:hidden">

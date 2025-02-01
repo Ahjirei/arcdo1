@@ -43,28 +43,28 @@ export default function NavbarTopConfigurationPage() {
   };
 
   return (
-    <nav className="fixed bg-white top-0 flex items-center px-3 sm:px-10 z-50 h-[4rem] w-full ">
+    <nav className="fixed bg-[#800101] top-0 flex items-center px-3 sm:px-10 z-50 h-[4rem] w-full text-white">
       {/* Address Bar */}
       <div
-        className={`flex items-center text-sm font-medium text-gray-700 ${
+        className={`flex items-center text-sm font-medium text-gray-200 ${
           currentPage ? "ml-16 sm:ml-[250px] mr-2 sm:mr-0" : "ml-16 sm:ml-0 mr-2 sm:mr-0"
         }`}
       >
-        <span className="mr-2">{decodeURIComponent(defaultPage)}</span>
+        <span className="mr-2 ">{decodeURIComponent(defaultPage)}</span>
         {currentPage && (
           <>
-            <span className="text-gray-500">/</span>
+            <span className="text-white">/</span>
             <span className="ml-2 font-bold">{decodeURIComponent(currentPage)}</span>
           </>
         )}
       </div>
 
       {/* Right side */}
-      <div className="ml-auto flex items-center">
+      <div className="ml-auto flex items-center text-white">
         {/* Search Bar for Desktop */}
         <div className="hidden lg:flex items-center rounded-2xl border border-gray-300 mr-5">
           <Search
-            className="h-5 w-5 mr-2 text-black ml-2 hover:text-red-800 transition duration-300"
+            className="h-5 w-5 mr-2 ml-2 hover:text-gray-400 transition duration-300"
             onClick={() => setIsSearchOpen(!isSearchOpen)} // Toggle the search visibility
           />
           {isSearchOpen && (
@@ -77,23 +77,23 @@ export default function NavbarTopConfigurationPage() {
         </div>
 
         {/* Icons for Desktop */}
-        <ul className="hidden lg:flex items-center space-x-5">
+        <ul className="hidden lg:flex items-center space-x-5 text-white ">
           <li>
-            <button className="text-md text-black hover:text-red-800 transition duration-300">
+            <button className="text-md hover:text-gray-400 transition duration-300">
               <Sun className="h-5 w-5" />
             </button>
           </li>
           <li>
-            <button className="text-md text-black hover:text-red-800 transition duration-300">
+            <button className="text-md hover:text-gray-400 transition duration-300">
               <RotateCcw className="h-5 w-5" />
             </button>
           </li>
           <li>
             <button
-              className="text-md text-black hover:text-red-800 transition duration-300"
+              className="text-md hover:text-gray-400 transition duration-300"
               onClick={handleAddClick} // Navigate to AddData page when clicked
             >
-              <CirclePlus className="h-5 w-5" />
+              <CirclePlus className="h-5 w-5 " />
             </button>
           </li>
         </ul>
@@ -102,7 +102,7 @@ export default function NavbarTopConfigurationPage() {
         <div className="lg:hidden">
           <button
             onClick={() => setIsSettingsMenuOpen(!isSettingsMenuOpen)}
-            className="text-md text-black hover:text-red-800 transition duration-300"
+            className="text-md text-white hover:text-gray-400 transition duration-300"
           >
             <Settings className="h-6 w-6" />
           </button>
