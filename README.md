@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 To resolve the issue, please provide more details about the problem you are encountering. For example, are you experiencing an error message, or do you need help with a specific markdown syntax? Here is a basic template for a README.md file to get you started:
 
 ```markdown
@@ -34,3 +35,7 @@ Information about the project's license.
 ```
 
 Feel free to modify the template according to your project's requirements.
+=======
+# arcdo
+For Arcdo Dashboard
+>>>>>>> 44f2b2d17021083f129e77071d252a6bb266d4f1
