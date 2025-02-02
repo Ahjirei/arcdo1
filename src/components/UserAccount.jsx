@@ -119,7 +119,8 @@ const UserAccount = () => {
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
       <main className="w-full">
-        <h2 className="text-2xl font-semibold mb-6 mt-20">My Profile</h2>
+      <h2 className="text-2xl font-semibold mb-10 mt-10 ml-5 text-center sm:text-left"> My Profile</h2>
+
         <section className="bg-white p-6 rounded-lg shadow-lg mb-8 flex flex-col sm:flex-row items-center sm:items-start space-x-4 sm:space-x-6">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">

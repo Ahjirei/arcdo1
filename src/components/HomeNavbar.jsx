@@ -71,13 +71,13 @@ export default function HomeNavbar() {
         className="flex items-center max-w-full sm:mt-0 "
       >
       {/* Hide Logo on Small Screens */}
-        <img src="/pup-logo.png" alt="Website Logo" className="w-[2.75rem] h-[2.75rem] hidden lg:block" />
+        <img src="/public/pup-logo.png" alt="Website Logo" className="w-[2.75rem] h-[2.75rem] hidden lg:block" />
         <p className="pl-3 font-extrabold hidden sm:block text-white">ARCDO</p>
 
 
 
         {/* Hamburger Menu for Mobile */}
-        <button onClick={toggleMobileMenu} className="lg:hidden -mt-2 p-2 h-3rem">
+        <button onClick={toggleMobileMenu} className="lg:hidden -mt-2 p-2 h-3rem ">
           <Menu className="text-white hover:text-white h-6 w-6 to" />
         </button>
       </div>

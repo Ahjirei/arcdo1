@@ -43,7 +43,7 @@ export default function NavbarTopConfigurationPage() {
   };
 
   return (
-    <nav className="fixed bg-[#800101] top-0 flex items-center px-3 sm:px-10 z-50 h-[4rem] w-full text-white">
+    <nav className="fixed bg-[#800101] shadow-md top-0 flex items-center px-3 sm:px-10 z-50 h-[4rem] w-full text-white">
       {/* Address Bar */}
       <div
         className={`flex items-center text-sm font-medium text-gray-200 ${
