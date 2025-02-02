@@ -69,7 +69,6 @@ export const register = async (req, res) => {
     } 
 };
 
-
 export const userDetails = async (req, res) => {
     const user_id = req.params.id;
 
@@ -148,7 +147,6 @@ export const updateUserDetails = async (req, res) => {
     }
 };
 
-
 export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -178,7 +176,6 @@ export const login = async (req, res) => {
         res.status(500).json({ error: error.message || 'Error logging in' });
     }
 };
-
 
 export const refresh_token = async (req, res) => {
     const { refresh_token } = req.body;
@@ -261,7 +258,6 @@ export const forgotPassword = async (req, res) => {
         res.status(500).json({ message: 'Error sending reset link. Please try again later.' });
     }
 };
-
 
 export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
