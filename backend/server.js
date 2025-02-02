@@ -8,6 +8,7 @@ import initializeConnection from './server/config/db.js';
 // Import your routes
 import authRoutes from './server/routes/auth.js';
 import userRoutes from './server/routes/user.js';
+import coordinatorRoutes from './server/routes/coordinator.js';
 
 dotenv.config();
 
@@ -45,6 +46,7 @@ const startServer = async () => {
     // Define API Routes
     app.use('/api/auth', authRoutes);
     app.use('/api/users', userRoutes);
+    app.use('/api/coordinator', coordinatorRoutes);
 
     // Test Route
     app.get('/', (req, res) => {

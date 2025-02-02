@@ -1,25 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
 import AddCoordinator from "../ojt_coordinators/AddCoordinator";
 import EditCoordinator from "../ojt_coordinators/EditCoordinator";
 
 export default function OJTCoordinators() {
-  const initialCoordinators = [
-    { id: "001", name: "John Doe", campus: "Main", contact: "john.doe@example.com", college: "Engineering", office: "Room 101", assignedStudents: 25, status: "Active" },
-    { id: "002", name: "Jane Smith", campus: "West", contact: "jane.smith@example.com", college: "Information Technology", office: "Room 201", assignedStudents: 18, status: "On Leave" },
-    { id: "003", name: "Mark Lee", campus: "East", contact: "mark.lee@example.com", college: "Engineering", office: "Room 303", assignedStudents: 30, status: "Retired" },
-    { id: "004", name: "Alice Brown", campus: "Main", contact: "alice.brown@example.com", college: "Engineering", office: "Room 102", assignedStudents: 22, status: "Active" },
-    { id: "005", name: "Robert White", campus: "South", contact: "robert.white@example.com", college: "Engineering", office: "Room 104", assignedStudents: 15, status: "Active" },
-  ];
-
-  // Main state for coordinators data
-  const [coordinators, setCoordinators] = useState(initialCoordinators);
+  const [coordinators, setCoordinators] = useState([]);
   const [editingCoordinator, setEditingCoordinator] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({ campus: "" });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   
   const [newCoordinator, setNewCoordinator] = useState({
     name: '',
@@ -27,30 +23,58 @@ export default function OJTCoordinators() {
     contact: '',
     college: '',
     office: '',
-    assignedStudents: '',
+    assigned_student: '',
     status: 'Active'
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await fetchCoordinators();
+      } catch (error) {
+        console.error("Error fetching coordinators:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  const fetchCoordinators = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/coordinator/getCoordinators"
+      );
+      setCoordinators(response.data);
+    } catch (error) {
+      console.error("Error fetching coordinators:", error);
+    }
+  };
+  
+
+  
   
 
   const handleEdit = (coordinator) => {
     setEditingCoordinator({ ...coordinator });
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
     setOpenDropdown(null);
   };
   
 
-  const handleDelete = (id) => {
-    setCoordinators(coordinators.filter((coordinator) => coordinator.id !== id));
-    setOpenDropdown(null);
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/coordinator/deleteCoordinator/${id}`);
+      fetchCoordinators();
+      setOpenDropdown(null);
+    } catch (error) {
+      console.error("Error deleting coordinator:", error);
+    }
   };
+  
 
-  const handleSave = () => {
-    setCoordinators(coordinators.map(coord => 
-      coord.id === editingCoordinator.id ? editingCoordinator : coord
-    ));
-    setIsModalOpen(false);
-    setEditingCoordinator(null);
-  };
 
   const toggleDropdown = (id) => {
     setOpenDropdown(openDropdown === id ? null : id);
@@ -97,7 +121,7 @@ export default function OJTCoordinators() {
   
 
   return (
-    <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
+    <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-hidden">
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 mt-3 text-center sm:text-left">
         OJT Coordinators
       </h1>
@@ -117,10 +141,11 @@ export default function OJTCoordinators() {
               className="w-full sm:min-w-[120px] px-3 py-2 border rounded-md shadow-sm focus:outline-none"
             >
               <option value="">Campus</option>
-              <option value="Main">Main</option>
-              <option value="West">West</option>
-              <option value="East">East</option>
-              <option value="South">South</option>
+              <option value="Main">PUP Main</option>
+              <option value="Taguig">PUP Taguig</option>
+              <option value="Quezon City">PUP Quezon City</option>
+              <option value="San Juan">PUP San Juan</option>
+              <option value="Paranaque">PUP Paranaque</option>
             </select>
           </div>
           <div className="hidden sm:block h-6 border-r border-gray-300"></div>
@@ -135,7 +160,7 @@ export default function OJTCoordinators() {
           <button
             onClick={() => {
               setEditingCoordinator(null);
-              setIsModalOpen(true);
+              setIsAddModalOpen(true);
             }}
             className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
           >
@@ -147,89 +172,102 @@ export default function OJTCoordinators() {
       </div>
      
       {/* Table Section */}
-      <div className="flex-grow h-full mt-1 overflow-x-auto">
-        <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
-          <thead>
-            <tr className="bg-gray-100 text-center">
-              <th className="px-4 py-2 text-left border-b">ID</th>
-              <th className="px-4 py-2 text-left border-b">NAME</th>
-              <th className="px-4 py-2 text-left border-b">CAMPUS</th>
-              <th className="px-4 py-2 text-left border-b">COLLEGE</th>
-              <th className="px-4 py-2 text-left border-b">EMAIL</th>
-              <th className="px-4 py-2 text-left border-b">OFFICE</th>
-              <th className="px-4 py-2 text-left border-b">ASSIGNED STUDENTS</th>
-              <th className="px-4 py-2 text-left border-b">STATUS</th>
-              <th className="px-4 py-2 text-left border-b"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentCoordinators.map((coordinator, index) => (
-
-              <tr
-                key={coordinator.id}
-                className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
-                <td className="px-4 py-2 border-t">{coordinator.id}</td>
-                <td className="px-4 py-2 border-t">{coordinator.name}</td>
-                <td className="px-4 py-2 border-t">{coordinator.campus}</td>
-                <td className="px-4 py-2 border-t">{coordinator.college}</td>
-                <td className="px-4 py-2 border-t">{coordinator.contact}</td>
-                <td className="px-4 py-2 border-t">{coordinator.office}</td>
-                <td className="px-4 py-2 border-t">{coordinator.assignedStudents}</td>
-                <td className={`px-4 border-t rounded-full inline-block py-1 mt-1 mb-2 text-center ${getStatusColor(coordinator.status)}`}>
-                  {coordinator.status}
-                </td>
-                <td className="px-6 py-2 border-t relative">
-                  <button onClick={() => toggleDropdown(coordinator.id)} className="text-gray-600">
-                    <MoreVertical size={20} />
-                  </button>
-
-                  {openDropdown === coordinator.id && (
-                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                      <button
-                        onClick={() => handleEdit(coordinator)}
-                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                      >
-                        <FilePenLine size={16} className="inline-block mr-2" />
-                        Edit File
-                      </button>
-                      <button
-                        onClick={() => handleDelete(coordinator.id)}
-                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                      >
-                        <Trash2 size={16} className="inline-block mr-2" />
-                        Delete File
-                      </button>
-                    </div>
-                  )}
-                </td>
+      <div className="flex-grow h-full mt-1 overflow-x-auto overflow-y-hidden">
+        {loading ? (
+          <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+            <div className="flex flex-col items-center">
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+              <p className="mt-2 text-lg font-semibold text-gray-700">Loading...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="text-red-500">{error}</div>
+        ) : (
+          <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
+            <thead>
+              <tr className="bg-gray-100 text-center">
+                <th className="px-4 py-2 text-left border-b">NAME</th>
+                <th className="px-4 py-2 text-left border-b">CAMPUS</th>
+                <th className="px-4 py-2 text-left border-b">COLLEGE</th>
+                <th className="px-4 py-2 text-left border-b">EMAIL</th>
+                <th className="px-4 py-2 text-left border-b">OFFICE</th>
+                <th className="px-4 py-2 text-left border-b">ASSIGNED STUDENTS</th>
+                <th className="px-4 py-2 text-left border-b">STATUS</th>
+                <th className="px-4 py-2 text-left border-b"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {currentCoordinators.map((coordinator, index) => (
+
+                <tr
+                  key={coordinator.id}
+                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                >
+                  <td className="px-4 py-2 border-t">{coordinator.name}</td>
+                  <td className="px-4 py-2 border-t">{coordinator.campus}</td>
+                  <td className="px-4 py-2 border-t">{coordinator.college}</td>
+                  <td className="px-4 py-2 border-t">{coordinator.email}</td>
+                  <td className="px-4 py-2 border-t">{coordinator.office}</td>
+                  <td className="px-4 py-2 border-t">{coordinator.assigned_student}</td>
+                  <td className={`px-4 border-t rounded-full inline-block py-1 mt-1 mb-2 text-center ${getStatusColor(coordinator.status)}`}>
+                    {coordinator.status}
+                  </td>
+                  <td className="px-6 py-2 border-t relative">
+                    <button onClick={() => toggleDropdown(coordinator.id)} className="text-gray-600">
+                      <MoreVertical size={20} />
+                    </button>
+
+                    {openDropdown === coordinator.id && (
+                      <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50 bottom-0">
+                        <button
+                          onClick={() => handleEdit(coordinator)}
+                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                        >
+                          <FilePenLine size={16} className="inline-block mr-2" />
+                          Edit File
+                        </button>
+                        <button
+                          onClick={() => handleDelete(coordinator.id)}
+                          className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                        >
+                          <Trash2 size={16} className="inline-block mr-2" />
+                          Delete File
+                        </button>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+        )}
       </div>
 
       <AddCoordinator
-        isOpen={isModalOpen && !editingCoordinator} 
-        onClose={() => setIsModalOpen(false)} 
-        newCoordinator={newCoordinator} 
-        setNewCoordinator={setNewCoordinator} 
-        onSave={() => {
-          setCoordinators([...coordinators, { ...newCoordinator, id: Date.now().toString() }]);
-          setIsModalOpen(false);
-        }} 
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onCoordinatorAdded={() => {
+          fetchCoordinators();
+          setIsAddModalOpen(false);
+        }}
       />
 
       <EditCoordinator 
-        isOpen={isModalOpen && !!editingCoordinator} 
+        isEditModalOpen={isEditModalOpen}
         onClose={() => {
-          setIsModalOpen(false);
+          setIsEditModalOpen(false);
           setEditingCoordinator(null);
         }} 
         editingCoordinator={editingCoordinator} 
-        setEditingCoordinator={setEditingCoordinator} 
-        onSave={handleSave} 
+        setEditingCoordinator={setEditingCoordinator}
+        onCoordinatorEdited={() => {
+          fetchCoordinators();
+          setIsEditModalOpen(false);
+          setEditingCoordinator(null);
+        }}
       />
+
 
 
       {/* mobile view section */}
@@ -280,13 +318,13 @@ export default function OJTCoordinators() {
               <strong>College</strong> {coordinator.college}
             </div>
             <div className="mt-2">
-              <strong>Contact:</strong> {coordinator.contact}
+              <strong>Contact:</strong> {coordinator.email}
             </div>
             <div className="mt-2">
               <strong>Office:</strong> {coordinator.office}
             </div>
             <div className="mt-2">
-              <strong>Assigned Students:</strong> {coordinator.assignedStudents}
+              <strong>Assigned Students:</strong> {coordinator.assigned_student}
             </div>
           </div>
         ))}
