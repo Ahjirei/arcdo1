@@ -14,6 +14,7 @@ const UserAccount = () => {
   });
 
   const fetchUserDetails = async () => {
+    setLoading(true);
     const user_id = localStorage.getItem("user_id");
 
     if (!user_id) {
@@ -43,9 +44,11 @@ const UserAccount = () => {
         college: data.college,
         campus: data.campus,
       });
+
+      setTimeout(() => setLoading(false), 250);
+
     } catch (error) {
       setError(error.message);
-    } finally {
       setLoading(false);
     }
   };
@@ -97,128 +100,125 @@ const UserAccount = () => {
       }
   
       setIsEditing(false);
-      // Fetch the latest data after successful save
       await fetchUserDetails();
     } catch (error) {
       setError(error.message);
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-  if (!userDetails) {
-    return <div>No user details available.</div>;
-  }
-
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
-      <main className="w-full">
-      <h2 className="text-2xl font-semibold mb-10 mt-10 ml-5 text-center sm:text-left"> My Profile</h2>
-
-        <section className="bg-white p-6 rounded-lg shadow-lg mb-8 flex flex-col sm:flex-row items-center sm:items-start space-x-4 sm:space-x-6">
-          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-2xl">{userDetails.name?.[0]?.toUpperCase()}</span>
+      {loading ? (
+        <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+            <p className="mt-2 text-lg font-semibold text-gray-700">Loading...</p>
+          </div>
+        </div>
+      ) : error ? (
+        <div className="text-red-500">{error}</div>
+      ) : (
+        <main className="w-full">
+          <h2 className="text-2xl font-semibold mb-6 mt-20">My Profile</h2>
+          <section className="bg-white p-6 rounded-lg shadow-lg mb-8 flex flex-col sm:flex-row items-center sm:items-start space-x-4 sm:space-x-6">
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-2xl">{userDetails.name?.[0]?.toUpperCase()}</span>
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="border rounded px-2 py-1"
+                    />
+                  ) : (
+                    userDetails.name
+                  )}
+                </h3>
+                <p className="text-gray-500">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      name="position"
+                      value={formData.position}
+                      onChange={handleChange}
+                      className="border rounded px-2 py-1"
+                    />
+                  ) : (
+                    userDetails.position
+                  )}
+                </p>
+              </div>
+              <button
+                onClick={handleEditToggle}
+                className="ml-auto text-blue-500 hover:underline"
+              >
+                {isEditing ? "Cancel" : "Edit"}
+              </button>
             </div>
-            <div>
-              <h3 className="text-xl font-semibold">
+          </section>
+
+          <section className="bg-white p-6 rounded-lg shadow-lg">
+            <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-gray-600">College</p>
                 {isEditing ? (
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="college"
+                    value={formData.college}
                     onChange={handleChange}
                     className="border rounded px-2 py-1"
                   />
                 ) : (
-                  userDetails.name
+                  <p className="text-lg">{userDetails.college}</p>
                 )}
-              </h3>
-              <p className="text-gray-500">
+              </div>
+              <div>
+                <p className="text-gray-600">Campus</p>
                 {isEditing ? (
                   <input
                     type="text"
-                    name="position"
-                    value={formData.position}
+                    name="campus"
+                    value={formData.campus}
                     onChange={handleChange}
                     className="border rounded px-2 py-1"
                   />
                 ) : (
-                  userDetails.position
+                  <p className="text-lg">{userDetails.campus}</p>
                 )}
-              </p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-gray-600">Contact Number</p>
+                {isEditing ? (
+                  <input
+                    type="text"
+                    name="contact_number"
+                    value={formData.contact_number}
+                    onChange={handleChange}
+                    className="border rounded px-2 py-1"
+                  />
+                ) : (
+                  <p className="text-lg">{userDetails.contact_number}</p>
+                )}
+              </div>
             </div>
-            <button
-              onClick={handleEditToggle}
-              className="ml-auto text-blue-500 hover:underline"
-            >
-              {isEditing ? "Cancel" : "Edit"}
-            </button>
-          </div>
-        </section>
-
-        <section className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-gray-600">College</p>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="college"
-                  value={formData.college}
-                  onChange={handleChange}
-                  className="border rounded px-2 py-1"
-                />
-              ) : (
-                <p className="text-lg">{userDetails.college}</p>
-              )}
-            </div>
-            <div>
-              <p className="text-gray-600">Campus</p>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="campus"
-                  value={formData.campus}
-                  onChange={handleChange}
-                  className="border rounded px-2 py-1"
-                />
-              ) : (
-                <p className="text-lg">{userDetails.campus}</p>
-              )}
-            </div>
-            <div className="col-span-2">
-              <p className="text-gray-600">Contact Number</p>
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="contact_number"
-                  value={formData.contact_number}
-                  onChange={handleChange}
-                  className="border rounded px-2 py-1"
-                />
-              ) : (
-                <p className="text-lg">{userDetails.contact_number}</p>
-              )}
-            </div>
-          </div>
-          {isEditing && (
-            <button
-              onClick={handleSave}
-              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-            >
-              Save Changes
-            </button>
-          )}
-        </section>
-      </main>
+            {isEditing && (
+              <button
+                onClick={handleSave}
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Save Changes
+              </button>
+            )}
+          </section>
+        </main>
+      )}
     </div>
   );
 };
