@@ -1,12 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
 
-const EditCoordinator = ({ isOpen, onClose, editingCoordinator, setEditingCoordinator, onSave }) => {
-  if (!isOpen || !editingCoordinator) return null;
+const EditCoordinator = ({ isEditModalOpen, onClose, editingCoordinator, setEditingCoordinator, onCoordinatorEdited }) => {
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  if (!isEditModalOpen || !editingCoordinator) return null;
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const response = await fetch(`http://localhost:3001/api/coordinator/updateCoordinator/${editingCoordinator.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: editingCoordinator.name,
+          campus: editingCoordinator.campus,
+          email: editingCoordinator.email,
+          college: editingCoordinator.college,
+          office: editingCoordinator.office,
+          assigned_student: editingCoordinator.assigned_student,
+          status: editingCoordinator.status
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update coordinator');
+      }
+
+      onCoordinatorEdited();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded-lg w-96">
         <h2 className="text-xl font-semibold mb-4">Edit Coordinator</h2>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+            {error}
+          </div>
+        )}
 
         <div>
             <label className="text-sm font-medium text-gray-700 flex justify-between">
@@ -29,10 +73,12 @@ const EditCoordinator = ({ isOpen, onClose, editingCoordinator, setEditingCoordi
             onChange={(e) => setEditingCoordinator({ ...editingCoordinator, campus: e.target.value })}
             className="w-full p-2 border mb-2"
             >
-            <option value="Main">Main</option>
-            <option value="West">West</option>
-            <option value="East">East</option>
-            <option value="South">South</option>
+              <option value="">Campus</option>
+              <option value="Main">PUP Main</option>
+              <option value="Taguig">PUP Taguig</option>
+              <option value="Quezon City">PUP Quezon City</option>
+              <option value="San Juan">PUP San Juan</option>
+              <option value="Paranaque">PUP Paranaque</option>
             </select>
         </div>
 
@@ -42,8 +88,8 @@ const EditCoordinator = ({ isOpen, onClose, editingCoordinator, setEditingCoordi
             </label>
             <input
             type="text"
-            value={editingCoordinator.contact}
-            onChange={(e) => setEditingCoordinator({ ...editingCoordinator, contact: e.target.value })}
+            value={editingCoordinator.email}
+            onChange={(e) => setEditingCoordinator({ ...editingCoordinator, email: e.target.value })}
             className="w-full p-2 border mb-2"
             />
         </div>
@@ -78,8 +124,8 @@ const EditCoordinator = ({ isOpen, onClose, editingCoordinator, setEditingCoordi
             </label>
             <input
             type="number"
-            value={editingCoordinator.assignedStudents}
-            onChange={(e) => setEditingCoordinator({ ...editingCoordinator, assignedStudents: parseInt(e.target.value) })}
+            value={editingCoordinator.assigned_student}
+            onChange={(e) => setEditingCoordinator({ ...editingCoordinator, assigned_student: parseInt(e.target.value) })}
             className="w-full p-2 border mb-2"
             />
         </div>
@@ -100,11 +146,19 @@ const EditCoordinator = ({ isOpen, onClose, editingCoordinator, setEditingCoordi
         </div>
 
         <div className="flex justify-end mt-4">
-          <button onClick={onClose} className="px-4 py-2 text-gray-700 border rounded-md mr-2">
+          <button 
+            onClick={onClose} 
+            className="px-4 py-2 text-gray-700 border rounded-md mr-2"
+            disabled={isLoading}
+          >
             Cancel
           </button>
-          <button onClick={onSave} className="px-4 py-2 text-white bg-blue-700 rounded-md">
-            Save
+          <button 
+            onClick={handleSave} 
+            className="px-4 py-2 text-white bg-blue-700 rounded-md disabled:bg-blue-300"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>

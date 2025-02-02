@@ -1,6 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
-const AddCoordinator = ({ isOpen, onClose, newCoordinator, setNewCoordinator, onSave }) => {
+const AddCoordinator = ({ isOpen, onClose, onCoordinatorAdded }) => {
+  const [newCoordinator, setNewCoordinator] = useState({
+    name: "",
+    campus: "",
+    email: "",
+    college: "",
+    office: "",
+    assigned_student: "",
+    status: "Active"
+  });
+
+  const [error, setError] = useState("");
+
+  const validateForm = () => {
+    const requiredFields = ['name', 'campus', 'email', 'college', 'office', 'assigned_student'];
+    const missingFields = requiredFields.filter(field => !newCoordinator[field]);
+    
+    if (missingFields.length > 0) {
+      setError(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
+  const handleSave = async () => {
+    if (!validateForm()) return;
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/api/coordinator/addCoordinator",
+        newCoordinator
+      );
+
+      if (response.status === 201) {
+        onCoordinatorAdded(response.data);
+        setNewCoordinator({
+          name: "",
+          campus: "",
+          email: "",
+          college: "",
+          office: "",
+          assigned_student: "",
+          status: "Active"
+        });
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error adding coordinator:", error);
+      setError(error.response?.data?.error || "Failed to add coordinator");
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -8,108 +61,123 @@ const AddCoordinator = ({ isOpen, onClose, newCoordinator, setNewCoordinator, on
       <div className="bg-white p-6 rounded-lg w-96">
         <h2 className="text-xl font-semibold mb-4">Add New Coordinator</h2>
         
-        <div>
-            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                Name
+        {error && (
+          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Name
             </label>
             <input
-            type="text"
-            value={newCoordinator.name}
-            onChange={(e) => setNewCoordinator({ ...newCoordinator, name: e.target.value })}
-            className="w-full p-2 border mb-2"
-            placeholder="Edwin Berico"
+              type="text"
+              value={newCoordinator.name}
+              onChange={(e) => setNewCoordinator({ ...newCoordinator, name: e.target.value })}
+              className="w-full p-2 border rounded"
+              placeholder="Edwin Berico"
             />
-        </div>
+          </div>
 
-        <div>
-            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                Status
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Campus
             </label>
             <select
-            value={newCoordinator.campus}
-            onChange={(e) => setNewCoordinator({ ...newCoordinator, campus: e.target.value })}
-            className="w-full p-2 border mb-2"
+              value={newCoordinator.campus}
+              onChange={(e) => setNewCoordinator({ ...newCoordinator, campus: e.target.value })}
+              className="w-full p-2 border rounded"
             >
-            <option value="">Select Campus</option>
-            <option value="Main">Main</option>
-            <option value="West">West</option>
-            <option value="East">East</option>
-            <option value="South">South</option>
+              <option value="">Select Campus</option>
+              <option value="Main">PUP Main</option>
+              <option value="Taguig">PUP Taguig</option>
+              <option value="Quezon City">PUP Quezon City</option>
+              <option value="San Juan">PUP San Juan</option>
+              <option value="Paranaque">PUP Paranaque</option>
             </select>
-        </div>
+          </div>
 
-        <div>
-            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                Email
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Email
             </label>
             <input
-            type="text"
-            value={newCoordinator.contact}
-            onChange={(e) => setNewCoordinator({ ...newCoordinator, contact: e.target.value })}
-            className="w-full p-2 border mb-2"
-            placeholder="edwinberico@pup.edu.ph"
+              type="email"
+              value={newCoordinator.email}
+              onChange={(e) => setNewCoordinator({ ...newCoordinator, email: e.target.value })}
+              className="w-full p-2 border rounded"
+              placeholder="edwinberico@pup.edu.ph"
             />
-        </div>
+          </div>
 
-        <div>
-            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                College
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              College
             </label>
             <input
-            type="text"
-            value={newCoordinator.college}
-            onChange={(e) => setNewCoordinator({ ...newCoordinator, college: e.target.value })}
-            className="w-full p-2 border mb-2"
-            placeholder="College"
+              type="text"
+              value={newCoordinator.college}
+              onChange={(e) => setNewCoordinator({ ...newCoordinator, college: e.target.value })}
+              className="w-full p-2 border rounded"
+              placeholder="College"
             />
-        </div>
+          </div>
 
-        <div>
-            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                Office
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Office
             </label>
             <input
-            type="text"
-            value={newCoordinator.office}
-            onChange={(e) => setNewCoordinator({ ...newCoordinator, office: e.target.value })}
-            className="w-full p-2 border mb-2"
-            placeholder="Room 100"
+              type="text"
+              value={newCoordinator.office}
+              onChange={(e) => setNewCoordinator({ ...newCoordinator, office: e.target.value })}
+              className="w-full p-2 border rounded"
+              placeholder="Room 100"
             />
-        </div>
+          </div>
 
-        <div>
-            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                Assigned Students
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Assigned Students
             </label>
             <input
-            type="number"
-            value={newCoordinator.assignedStudents}
-            onChange={(e) => setNewCoordinator({ ...newCoordinator, assignedStudents: e.target.value })}
-            className="w-full p-2 border mb-2"
-            placeholder="355"
+              type="number"
+              value={newCoordinator.assigned_student}
+              onChange={(e) => setNewCoordinator({ ...newCoordinator, assigned_student: e.target.value })}
+              className="w-full p-2 border rounded"
+              placeholder="355"
             />
-        </div>
+          </div>
 
-        <div>
-            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                Status
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Status
             </label>
             <select
-            value={newCoordinator.status}
-            onChange={(e) => setNewCoordinator({ ...newCoordinator, status: e.target.value })}
-            className="w-full p-2 border mb-2"
+              value={newCoordinator.status}
+              onChange={(e) => setNewCoordinator({ ...newCoordinator, status: e.target.value })}
+              className="w-full p-2 border rounded"
             >
-            <option value="Active">Active</option>
-            <option value="On Leave">On Leave</option>
-            <option value="Retired">Retired</option>
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Retired">Retired</option>
             </select>
+          </div>
         </div>
 
-        <div className="flex justify-end mt-4">
-          <button onClick={onClose} className="px-4 py-2 text-gray-700 border rounded-md mr-2">
+        <div className="flex justify-end mt-6 space-x-2">
+          <button 
+            onClick={onClose} 
+            className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50"
+          >
             Cancel
           </button>
-          <button onClick={onSave} className="px-4 py-2 text-white bg-blue-700 rounded-md">
+          <button 
+            onClick={handleSave} 
+            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+          >
             Save
           </button>
         </div>

@@ -194,11 +194,11 @@ export default function SignUp() {
                                 required
                             >
                                 <option value="">Select</option>
-                                <option value="MAIN">PUP Main</option>
-                                <option value="TAGUIG">PUP Taguig</option>
-                                <option value="QUEZON CITY">PUP Quezon City</option>
-                                <option value="SAN JUAN">PUP San Juan</option>
-                                <option value="PARANAQUE ">PUP Paranaque</option>
+                                <option value="Main">PUP Main</option>
+                                <option value="Taguig">PUP Taguig</option>
+                                <option value="Quezon City">PUP Quezon City</option>
+                                <option value="San Juan">PUP San Juan</option>
+                                <option value="Paranaque">PUP Paranaque</option>
                             </select>
                         </div>
                         <div>
