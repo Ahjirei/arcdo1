@@ -13,6 +13,11 @@ export default function Signin() {
         navigate("/signUp"); 
     };
 
+    const handleForgotPassClick = () => {
+        navigate("/forgotPassword"); 
+    };
+
+
     useEffect(() => {
         const savedEmail = localStorage.getItem('savedEmail');
         if (savedEmail) {
@@ -137,8 +142,8 @@ export default function Signin() {
                                     Remember me
                                 </label>
                             </div>
-                            <a href="#" className="text-sm font-medium text-gray-700 flex justify-between" >
-                                Forgot Password?
+                            <a href="#" className="text-sm font-medium text-gray-700 flex justify-between"  onClick={handleForgotPassClick}>
+                                Forgot Password? 
                             </a>
                         </div>
                         <button
@@ -149,7 +154,7 @@ export default function Signin() {
                         </button>
                         <div className="text-sm font-medium text-gray-700 dark:text-gray-700">
                             Don't have an account?{' '}
-                            <a href="#" className="text-dark-pastel-orange font-semibold hover:underline dark:text-dark-pastel-orange" onClick={handleCreateAccountClick}>
+                            <a href="#" className="text-red-500 font-semibold hover:underline dark:text-red-700" onClick={handleCreateAccountClick}>
                                 Sign Up
                             </a>
                         </div>

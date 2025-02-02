@@ -9,6 +9,8 @@ import UserPage from './pages/UserPage';
 import OverviewPage from './pages/OverviewPage';
 import AdminProfile from './components/AdminProfile';
 import SignUp from './components/auth/SignUp';
+import ForgotPassword from './components/auth/ForgotPassword';
+import ResetPassword from './components/auth/ResetPasswordCard';
 import AddDataPage from './pages/AddDataPage';
 
 
@@ -27,6 +29,8 @@ function App() {
             <Route path="/login" element={<LandingPage />} />
             <Route path="/adminprofile" element={<AdminProfile />} />
             <Route path="/signUp" element={<SignUp />} />
+            <Route path="/forgotPassword" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/add" element={<AddDataPage />} />
           </Routes>
         

@@ -19,6 +19,7 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "fontawesome-free": "^1.0.4",
+    "heroicons": "^2.2.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.453.0",
     "mo": "^1.7.3",
