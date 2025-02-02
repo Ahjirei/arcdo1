@@ -20,9 +20,9 @@ export default function HomeNavbar() {
     { name: "Overview", icon: <ChartPie className="h-5 w-5" />, path: "/overview" },
     { name: "HTEs", icon: <NotebookTabs className="h-5 w-5" />, path: "/hte" },
     { name: "MOAs", icon: <FolderClosed className="h-5 w-5" />, path: "/moas" },
-    { name: "OJT Coordinators", icon: <Contact className="h-5 w-5" />, path: "/OJT coordinators" },
-    { name: "Industry Partners", icon: <Handshake className="h-5 w-5" />, path: "/Industry partners" },
-    { name: "Account", icon: <User className="h-5 w-5" />, path: "/user_account" },
+    { name: "OJT Coordinators", icon: <Contact className="h-5 w-5" />, path: "/OJT-coordinators" },
+    { name: "Industry Partners", icon: <Handshake className="h-5 w-5" />, path: "/industry-partners" },
+    { name: "Account", icon: <User className="h-5 w-5" />, path: "/user-account" },
   ];
 
   const toggleDropdown = () => {

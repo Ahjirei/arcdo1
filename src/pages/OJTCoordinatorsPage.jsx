@@ -1,6 +1,6 @@
 import React from 'react'
 import Navbar from '../components/Navbar'
-import OJTCoordinators from '../components/OJTCoordinators'
+import OJTCoordinators from '../components/ojt_coordinators/OJTCoordinators'
 import HomeNavbar from '../components/HomeNavbar'
 
 export default function OJTCoordinatorsPage() {
