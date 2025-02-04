@@ -1,5 +1,5 @@
 import HomeNavbar from "../components/HomeNavbar"
-import HTEDashboard from "../components/HTEDashboard"
+import HTEDashboard from "../components/hte/HTEDashboard"
 import Navbar from "../components/Navbar"
 
 export default function HTEDashboardPage() {

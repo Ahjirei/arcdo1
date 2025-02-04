@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const AddCoordinator = ({ isOpen, onClose, onCoordinatorAdded }) => {
+const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
   const [newCoordinator, setNewCoordinator] = useState({
     name: "",
     campus: "",
@@ -57,8 +57,8 @@ const AddCoordinator = ({ isOpen, onClose, onCoordinatorAdded }) => {
   if (!isOpen) return null;
 
   return (
-<div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 sm:top-0 top-16">
-<div className="bg-white p-6 rounded-lg w-96">
+    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg w-96">
         <h2 className="text-xl font-semibold mb-4">Add New Coordinator</h2>
         
         {error && (
@@ -186,4 +186,4 @@ const AddCoordinator = ({ isOpen, onClose, onCoordinatorAdded }) => {
   );
 };
 
-export default AddCoordinator;
+export default AddHTE;

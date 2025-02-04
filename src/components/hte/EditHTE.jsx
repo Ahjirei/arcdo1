@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const EditCoordinator = ({ isEditModalOpen, onClose, editingCoordinator, setEditingCoordinator, onCoordinatorEdited }) => {
+const EditHTE = ({ isEditModalOpen, onClose, editingCoordinator, setEditingCoordinator, onCoordinatorEdited }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -40,7 +40,6 @@ const EditCoordinator = ({ isEditModalOpen, onClose, editingCoordinator, setEdit
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
@@ -167,4 +166,4 @@ const EditCoordinator = ({ isEditModalOpen, onClose, editingCoordinator, setEdit
   );
 };
 
-export default EditCoordinator;
+export default EditHTE;

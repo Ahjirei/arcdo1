@@ -1,6 +1,12 @@
 import React, { useState } from "react";
+import axios from "axios";
 import DatePicker from "react-datepicker"; 
 import "react-datepicker/dist/react-datepicker.css"; 
+import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
+import AddHTE from "../hte/AddHTE";
+import EditHTE from "../hte/EditHTE";
+
+
 
 export default function HTEDashboard() {
   const allData = [
@@ -14,6 +20,8 @@ export default function HTEDashboard() {
     { id: 8, company: "Company H", address: "Address 8", date: "2025-01-01", business: "Finance", validity: "Rejected" },
   ];
 
+const [hte, sethte] = useState([allData ]);
+  const [openDropdown, setOpenDropdown] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     date: "",
@@ -21,7 +29,7 @@ export default function HTEDashboard() {
     validity: "",
   });
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 6;
   const totalPages = Math.ceil(allData.length / itemsPerPage);
 
   const filteredData = allData.filter((item) => {
@@ -66,6 +74,17 @@ export default function HTEDashboard() {
       default:
         return "bg-gray-100 text-gray-600";
     }
+  };
+
+  const handleEdit = (hte) => {
+    setEditinghte({...hte});
+    setIsModalOpen(true);
+    setOpenDropdown(null);
+  };
+
+  const handleDelete = (id) => {
+    sethtes(htes.filter((hte) => hte.id !== id));
+    setOpenDropdown(null);
   };
 
   return (
@@ -132,8 +151,20 @@ export default function HTEDashboard() {
           Reset Filters
         </button>
 
+        <button
+            onClick={() => {
+              setEditinghte(null);
+              setIsAddModalOpen(true);
+            }}
+            className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+          >
+            <PlusCircle size={20} className="mr-2" />
+            Add hte
+          </button>
+
+        </div>
       </div>
-    </div>
+    
 
 
     <div className="flex-grow h-full mt-1 overflow-x-auto">
@@ -141,13 +172,23 @@ export default function HTEDashboard() {
       <div className="overflow-x-auto">
         <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
           <thead>
-            <tr className="bg-gray-100 text-center">
-              <th className="px-4 py-2 text-left border-b">ID</th>
-              <th className="px-4 py-2 text-left border-b">COMPANY</th>
-              <th className="px-4 py-2 text-left border-b">ADDRESS</th>
-              <th className="px-4 py-2 text-left border-b">DATE</th>
-              <th className="px-4 py-2 text-left border-b">NATURE OF BUSINESS</th>
-              <th className="px-4 py-2 text-left border-b">MOA VALIDITY</th>
+            <tr className="bg-gray-100">
+              <th className="px-4 py-2 text-center border-b">ID</th>
+              <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
+              <th className="px-2 py-2 text-center border-b">YEAR SUBMITTED</th>
+              <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
+              <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
+              <th className="px-4 py-2 text-center border-b">NATURE OF BUSINESS</th>
+              <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
+              <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
+              <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
+              <th className="px-2 py-2 text-center border-b">YEAR INCLUDED</th>
+              <th className="px-4 py-2 text-center border-b">POSITION</th>
+              <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
+              <th className="px-4 py-2 text-center border-b">OFFICE ADDRESS</th>
+              <th className="px-2 py-2 text-center border-b">REMARKS</th>
+              <th className="px-1 py-2 text-center border-b"></th>
+              
             </tr>
           </thead>
           <tbody>
@@ -163,28 +204,88 @@ export default function HTEDashboard() {
                   <span className="md:hidden font-semibold">Company: </span> {item.company}
                 </td>
                 
-                {/* Address */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Address: </span> {item.address}
-                </td>
                 
                 {/* Date */}
                 <td className="px-4 py-2 border-t block md:table-cell">
                   <span className="md:hidden font-semibold">Date: </span> {item.date}
                 </td>
-                
+
+                {/* Date */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Date: </span> {item.date}
+                </td>
+
+                {/* Date */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Date: </span> {item.date}
+                </td>
+
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
                   <span className="md:hidden font-semibold">Business: </span> {item.business}
                 </td>
                 
                 {/* MOA Validity */}
-                <td className="px-4 border-t py-1 block md:table-cell">
+                <td className="px-4 border-t py-1 border-r block md:table-cell">
                   <span className="md:hidden font-semibold">MOA Validity: </span> 
                   <span className={`rounded-full px-2 py-1 ${getValidityColor(item.validity)}`}>
                     {item.validity}
                   </span>
                 </td>
+                {/* Nature of Business */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                </td>
+                {/* Nature of Business */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                </td>
+                {/* Nature of Business */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                </td>
+                {/* Nature of Business */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                </td>
+                {/* Nature of Business */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                </td>
+                {/* Nature of Business */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                </td>
+                {/* Nature of Business */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                </td>
+
+                <td className="px-6 py-2 border-t relative">
+                  <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
+                    <MoreVertical size={20} />
+                  </button>
+
+                  {openDropdown === item.id && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        <FilePenLine size={16} className="inline-block mr-2" />
+                        Edit File
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                      >
+                        <Trash2 size={16} className="inline-block mr-2" />
+                        Delete File
+                      </button>
+                    </div>
+                  )}
+                </td>
+
               </tr>
             ))}
           </tbody>
@@ -203,9 +304,6 @@ export default function HTEDashboard() {
               </div>
               <div className="mt-2">
                 <strong>ID:</strong> {item.id}
-              </div>
-              <div className="mt-2">
-                <strong>Address:</strong> {item.address}
               </div>
               <div className="mt-2">
                 <strong>Date:</strong> {item.date}
@@ -237,7 +335,7 @@ export default function HTEDashboard() {
           >
             →
           </button>
-        </div>
+        
 
         {/* Showing Results Info */}
         <span className="text-gray-500 text-sm mt-2 md:mt-0">
@@ -245,6 +343,7 @@ export default function HTEDashboard() {
         </span>
       </div>
     </div>
+  </div>
   
 
     
