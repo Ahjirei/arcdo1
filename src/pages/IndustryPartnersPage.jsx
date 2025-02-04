@@ -1,4 +1,4 @@
-import IndustryPartners from "../components/IndustryPartners"
+import IndustryPartners from "../components/industry_partners/IndustryPartners"
 import Navbar from "../components/Navbar"
 import HomeNavbar from "../components/HomeNavbar"
 

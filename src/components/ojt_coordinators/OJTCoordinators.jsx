@@ -96,7 +96,7 @@ export default function OJTCoordinators() {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 5;
   const filteredCoordinators = coordinators.filter((coordinator) => {
     return filters.campus
       ? coordinator.campus.toLowerCase() === filters.campus.toLowerCase()

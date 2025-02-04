@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker"; 
 import "react-datepicker/dist/react-datepicker.css"; 
+import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
+
 
 export default function HTEDashboard() {
   const allData = [
@@ -14,15 +16,11 @@ export default function HTEDashboard() {
     { id: "00008", company: "James Brown", address: "456 Cedar Rd.", date: "2022-03-23", business: "Healthcare", validity: "Processing" },
     { id: "00009", company: "Alice Johnson", address: "789 Pine St.", date: "2022-12-10", business: "Finance", validity: "Completed" },
     { id: "00010", company: "Robert Smith", address: "321 Birch Rd.", date: "2023-01-18", business: "Logistics", validity: "On Hold" },
-    { id: "00011", company: "David Wilson", address: "654 Oak Ave.", date: "2023-02-25", business: "Marketing", validity: "Processing" },
-    { id: "00012", company: "Laura Martinez", address: "567 Willow Dr.", date: "2023-03-14", business: "Technology", validity: "Completed" },
-    { id: "00013", company: "Sophia Davis", address: "101 Maple Ln.", date: "2023-04-30", business: "Education", validity: "Rejected" },
-    { id: "00014", company: "Chris Brown", address: "404 Elm St.", date: "2023-05-12", business: "Healthcare", validity: "Processing" },
-    { id: "00015", company: "Emily Clark", address: "202 Pine Ave.", date: "2023-06-20", business: "Finance", validity: "Completed" },
-    { id: "00016", company: "Daniel White", address: "300 Cedar Blvd.", date: "2023-07-07", business: "Logistics", validity: "On Hold" },
-  ];
+    ];
 
-  const itemsPerPage = 8;
+const [industrypartner, setindstrypartner] = useState([allData ]);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     date: "",
@@ -83,6 +81,17 @@ export default function HTEDashboard() {
     }
   };
 
+  const handleEdit = (industrypartner) => {
+    setEditinghte({...industrypartner});
+    setIsModalOpen(true);
+    setOpenDropdown(null);
+  };
+
+  const handleDelete = (id) => {
+    sethtes(industrypartner.filter((industrypartner) => industrypartner.id !== id));
+    setOpenDropdown(null);
+  };
+
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 mt-3 text-center sm:text-left">Industry Partners</h1>
@@ -140,29 +149,53 @@ export default function HTEDashboard() {
             <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
             {/* Reset Filters Button */}
-            <button onClick={resetFilters} className="px-4 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex items-center w-full md:w-auto">
+            <button onClick={resetFilters} className="px-2 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex items-center w-full md:w-auto">
               <i className="fas fa-undo mr-2 text-red-700"></i>
               Reset Filters
             </button>
+
+            <button
+            onClick={() => {
+              setEditinghte(null);
+              setIsAddModalOpen(true);
+            }}
+            className="w-full sm:w-auto px-1 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+          >
+            <PlusCircle size={20} className="mr-2" />
+            Add Industry Partner
+          </button>
 
           </div>
         </div>
 
 
       {/* Table Section */}
-<div className="flex-grow h-full mt-1 overflow-x-auto">
-  {/* Responsive Wrapper for Table */}
-  <div className="overflow-x-auto">
-    <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
-      <thead>
-        <tr className="bg-gray-100 text-center">
-          <th className="px-4 py-2 text-left border-b">ID</th>
-          <th className="px-4 py-2 text-left border-b">COMPANY</th>
-          <th className="px-4 py-2 text-left border-b">ADDRESS</th>
-          <th className="px-4 py-2 text-left border-b">DATE</th>
-          <th className="px-4 py-2 text-left border-b">NATURE OF BUSINESS</th>
-          <th className="px-4 py-2 text-left border-b">MOA VALIDITY</th>
-        </tr>
+      <div className="flex-grow h-full mt-1 overflow-x-auto">
+      {/* Responsive Wrapper for Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
+          <thead>
+          <tr className="bg-gray-100">
+              <th className="px-4 py-2 text-center border-b">ID</th>
+              <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
+              <th className="px-4 py-2 text-center border-b">COURSE</th>
+              <th className="px-4 py-2 text-center border-b">COLLEGE</th>
+              <th className="px-4 py-2 text-center border-b">CAMPUS</th>
+              <th className="px-2 py-2 text-center border-b">YEAR SUBMITTED</th>
+              <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
+              <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
+              <th className="px-4 py-2 text-center border-b">NATURE OF BUSINESS</th>
+              <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
+              <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
+              <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
+              <th className="px-2 py-2 text-center border-b">YEAR INCLUDED</th>
+              <th className="px-4 py-2 text-center border-b">POSITION</th>
+              <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
+              <th className="px-4 py-2 text-center border-b">OFFICE ADDRESS</th>
+              <th className="px-2 py-2 text-center border-b">REMARKS</th>
+              <th className="px-1 py-2 text-center border-b"></th>
+              
+            </tr>
       </thead>
       <tbody>
         {currentData.map((item, index) => (
@@ -198,7 +231,33 @@ export default function HTEDashboard() {
               <span className={`rounded-full px-2 py-1 ${getValidityColor(item.validity)}`}>
                 {item.validity}
               </span>
+
             </td>
+
+            <td className="px-6 py-2 border-t relative">
+                  <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
+                    <MoreVertical size={20} />
+                  </button>
+
+                  {openDropdown === item.id && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        <FilePenLine size={16} className="inline-block mr-2" />
+                        Edit File
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                      >
+                        <Trash2 size={16} className="inline-block mr-2" />
+                        Delete File
+                      </button>
+                    </div>
+                  )}
+                </td>
           </tr>
         ))}
       </tbody>

@@ -1,4 +1,4 @@
-import Moas from "../components/Moas"
+import Moas from "../components/moa/Moas"
 import Navbar from "../components/Navbar"
 import HomeNavbar from "../components/HomeNavbar"
 

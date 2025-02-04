@@ -29,7 +29,7 @@ const [hte, sethte] = useState([allData ]);
     validity: "",
   });
 
-  const itemsPerPage = 6;
+  const itemsPerPage = 5;
   const totalPages = Math.ceil(allData.length / itemsPerPage);
 
   const filteredData = allData.filter((item) => {
@@ -175,6 +175,9 @@ const [hte, sethte] = useState([allData ]);
             <tr className="bg-gray-100">
               <th className="px-4 py-2 text-center border-b">ID</th>
               <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
+              <th className="px-4 py-2 text-center border-b">COURSE</th>
+              <th className="px-4 py-2 text-center border-b">COLLEGE</th>
+              <th className="px-4 py-2 text-center border-b">CAMPUS</th>
               <th className="px-2 py-2 text-center border-b">YEAR SUBMITTED</th>
               <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
               <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
@@ -199,6 +202,21 @@ const [hte, sethte] = useState([allData ]);
                   <span className="md:hidden font-semibold">ID: </span> {item.id}
                 </td>
                 
+                {/* Company */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Company: </span> {item.company}
+                </td>
+
+                {/* Company */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Company: </span> {item.company}
+                </td>
+
+                {/* Company */}
+                <td className="px-4 py-2 border-t block md:table-cell">
+                  <span className="md:hidden font-semibold">Company: </span> {item.company}
+                </td>
+
                 {/* Company */}
                 <td className="px-4 py-2 border-t block md:table-cell">
                   <span className="md:hidden font-semibold">Company: </span> {item.company}
