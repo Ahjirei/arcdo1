@@ -18,7 +18,7 @@ export default function HTEDashboard() {
     { id: "00010", company: "Robert Smith", address: "321 Birch Rd.", date: "2023-01-18", business: "Logistics", validity: "On Hold" },
     ];
 
-const [industrypartner, setindstrypartner] = useState([allData ]);
+const [industrypartner, setindstrypartner] = useState([allData]);
   const [openDropdown, setOpenDropdown] = useState(null);
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,10 +30,10 @@ const [industrypartner, setindstrypartner] = useState([allData ]);
 
   const totalPages = Math.ceil(allData.length / itemsPerPage);
 
-  // Apply filters
-  const filteredData = allData.filter((item) => {
+   // Apply filters
+   const filteredData = allData.filter((item) => {
     const matchesDate = filters.date
-      ? item.date.startsWith(filters.date) // Compare YYYY-MM
+      ? item.date.startsWith(filters.date) // Compare YYYY
       : true;
     const matchesBusiness = filters.business
       ? item.business.toLowerCase().includes(filters.business.toLowerCase())
@@ -44,6 +44,7 @@ const [industrypartner, setindstrypartner] = useState([allData ]);
 
     return matchesDate && matchesBusiness && matchesValidity;
   });
+  
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -107,21 +108,22 @@ const [industrypartner, setindstrypartner] = useState([allData ]);
             {/* Divider */}
             <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
-            {/* Date Filter */}
+             {/* Year Filter */}
             <DatePicker
               selected={filters.date ? new Date(filters.date) : null}
-              onChange={(date) => setFilters({ ...filters, date: date ? date.toISOString().split('T')[0] : "" })}
-              dateFormat="yyyy-MM"
-              showMonthYearPicker
+              onChange={(date) => setFilters({ ...filters, date: date ? date.getFullYear().toString() : "" })}
+              dateFormat="yyyy"
+              showYearPicker
               className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
-              placeholderText="Select Date"
+              placeholderText="Select Year"
               customInput={
                 <button className="flex items-center w-full md:w-auto px-3 py-2 border rounded-md">
-                  {filters.date ? new Date(filters.date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long' }) : 'Select Date'}
+                  {filters.date ? filters.date : 'Select Year'}
                   <i className="ml-2 fas fa-chevron-down"></i>
                 </button>
               }
             />
+    
 
             {/* Business Filter */}
             <input

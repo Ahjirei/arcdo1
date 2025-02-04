@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import DatePicker from "react-datepicker"; 
 import "react-datepicker/dist/react-datepicker.css"; 
+import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
+
 
 export default function HTEDashboard() {
   const allData = [
@@ -22,7 +24,9 @@ export default function HTEDashboard() {
     { id: "00016", company: "Daniel White", address: "300 Cedar Blvd.", date: "2023-07-07", business: "Logistics", validity: "On Hold" },
   ];
 
-  const itemsPerPage = 8;
+  const [moa, setmoa] = useState([allData ]);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     date: "",
@@ -35,7 +39,7 @@ export default function HTEDashboard() {
   // Apply filters
   const filteredData = allData.filter((item) => {
     const matchesDate = filters.date
-      ? item.date.startsWith(filters.date) // Compare YYYY-MM
+      ? item.date.startsWith(filters.date) // Compare YYYY
       : true;
     const matchesBusiness = filters.business
       ? item.business.toLowerCase().includes(filters.business.toLowerCase())
@@ -98,17 +102,17 @@ export default function HTEDashboard() {
             {/* Divider */}
             <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
-            {/* Date Filter */}
-            <DatePicker
+             {/* Year Filter */}
+         <DatePicker
               selected={filters.date ? new Date(filters.date) : null}
-              onChange={(date) => setFilters({ ...filters, date: date ? date.toISOString().split('T')[0] : "" })}
-              dateFormat="yyyy-MM"
-              showMonthYearPicker
+              onChange={(date) => setFilters({ ...filters, date: date ? date.getFullYear().toString() : "" })}
+              dateFormat="yyyy"
+              showYearPicker
               className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
-              placeholderText="Select Date"
+              placeholderText="Select Year"
               customInput={
                 <button className="flex items-center w-full md:w-auto px-3 py-2 border rounded-md">
-                  {filters.date ? new Date(filters.date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long' }) : 'Select Date'}
+                  {filters.date ? filters.date : 'Select Year'}
                   <i className="ml-2 fas fa-chevron-down"></i>
                 </button>
               }
@@ -145,6 +149,17 @@ export default function HTEDashboard() {
               Reset Filters
             </button>
 
+            <button
+            onClick={() => {
+              setEditinghte(null);
+              setIsAddModalOpen(true);
+            }}
+            className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+          >
+            <PlusCircle size={20} className="mr-2" />
+            Add Moa
+          </button>
+
           </div>
         </div>
 
@@ -162,6 +177,7 @@ export default function HTEDashboard() {
                 <th className="px-4 py-2 text-left border-b">DATE</th>
                 <th className="px-4 py-2 text-left border-b">NATURE OF BUSINESS</th>
                 <th className="px-4 py-2 text-left border-b">MOA VALIDITY</th>
+                <th className="px-1 py-2 text-center border-b"></th>
               </tr>
             </thead>
             <tbody>
@@ -199,6 +215,30 @@ export default function HTEDashboard() {
                       {item.validity}
                     </span>
                   </td>
+                  <td className="px-6 py-2 border-t relative">
+                  <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
+                    <MoreVertical size={20} />
+                  </button>
+
+                  {openDropdown === item.id && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                      <button
+                        onClick={() => handleEdit(item)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        <FilePenLine size={16} className="inline-block mr-2" />
+                        Edit File
+                      </button>
+                      <button
+                        onClick={() => handleDelete(item.id)}
+                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                      >
+                        <Trash2 size={16} className="inline-block mr-2" />
+                        Delete File
+                      </button>
+                    </div>
+                  )}
+                </td>
                 </tr>
               ))}
             </tbody>
@@ -250,7 +290,7 @@ export default function HTEDashboard() {
             >
               →
             </button>
-          </div>
+          
 
           {/* Showing Results Info */}
           <span className="text-gray-500 text-sm mt-2 md:mt-0">
@@ -258,6 +298,7 @@ export default function HTEDashboard() {
           </span>
         </div>
       </div>
+    </div>
 
 
     

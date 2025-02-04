@@ -32,10 +32,17 @@ const [hte, sethte] = useState([allData ]);
   const itemsPerPage = 5;
   const totalPages = Math.ceil(allData.length / itemsPerPage);
 
+  // Apply filters
   const filteredData = allData.filter((item) => {
-    const matchesDate = filters.date ? item.date.startsWith(filters.date) : true;
-    const matchesBusiness = filters.business ? item.business.toLowerCase().includes(filters.business.toLowerCase()) : true;
-    const matchesValidity = filters.validity ? item.validity === filters.validity : true;
+    const matchesDate = filters.date
+      ? item.date.startsWith(filters.date) // Compare YYYY
+      : true;
+    const matchesBusiness = filters.business
+      ? item.business.toLowerCase().includes(filters.business.toLowerCase())
+      : true;
+    const matchesValidity = filters.validity
+      ? item.validity === filters.validity
+      : true;
 
     return matchesDate && matchesBusiness && matchesValidity;
   });
@@ -104,21 +111,21 @@ const [hte, sethte] = useState([allData ]);
         {/* Divider */}
         <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
-        {/* Date Filter */}
-        <DatePicker
-          selected={filters.date ? new Date(filters.date) : null}
-          onChange={(date) => setFilters({ ...filters, date: date ? date.toISOString().split('T')[0] : "" })}
-          dateFormat="yyyy-MM"
-          showMonthYearPicker
-          className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
-          placeholderText="Select Date"
-          customInput={
-            <button className="flex items-center w-full md:w-auto px-3 py-2 border rounded-md">
-              {filters.date ? new Date(filters.date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long' }) : 'Select Date'}
-              <i className="ml-2 fas fa-chevron-down"></i>
-            </button>
-          }
-        />
+         {/* Year Filter */}
+         <DatePicker
+              selected={filters.date ? new Date(filters.date) : null}
+              onChange={(date) => setFilters({ ...filters, date: date ? date.getFullYear().toString() : "" })}
+              dateFormat="yyyy"
+              showYearPicker
+              className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
+              placeholderText="Select Year"
+              customInput={
+                <button className="flex items-center w-full md:w-auto px-3 py-2 border rounded-md">
+                  {filters.date ? filters.date : 'Select Year'}
+                  <i className="ml-2 fas fa-chevron-down"></i>
+                </button>
+              }
+            />
 
         {/* Business Filter */}
         <input
@@ -314,12 +321,13 @@ const [hte, sethte] = useState([allData ]);
         <div className="md:hidden">
           {currentData.map((item, index) => (
             <div key={item.id} className={`border border-gray-200 p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-              <div className="flex justify-between">
+              <div className="flex justify-between items-center">
                 <div className="font-bold">{item.company}</div>
                 <div className={`px-4 rounded-full py-1 ${getValidityColor(item.validity)}`}>
                   {item.validity}
                 </div>
               </div>
+              
               <div className="mt-2">
                 <strong>ID:</strong> {item.id}
               </div>
