@@ -171,7 +171,11 @@ const AdminProfile = ({ isOpen, onClose }) => {
                             <td className="px-4 py-2 border-t">{user.name}</td>
                             <td className="px-4 py-2 border-t">{user.email}</td>
                             <td className="px-4 py-2 border-t">{user.role}</td>
-                            <td className="px-4 py-2 border-t w-64">{formatDate(user.lastLogin)}</td>
+                            <td className="px-4 py-2 border-t w-64">{formatDate(user.lastLogin)}
+                          <span
+                            className={`w-2.5 h-2.5 rounded-full ${getLoginStatus(user.lastLogin) === "green" ? "bg-green-500" : getLoginStatus(user.lastLogin) === "red" ? "bg-red-500" : "bg-gray-400"}`}
+                          ></span></td>
+                          
                             {userRole === "Main Admin" && (
                               <td className="px-4 py-2 border-t">
                                 <button
