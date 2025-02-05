@@ -20,35 +20,38 @@ export default function HTEDashboard() {
     { id: 8, company: "Company H", address: "Address 8", date: "2025-01-01", business: "Finance", validity: "Rejected" },
   ];
 
-const [hte, sethte] = useState([allData ]);
+  const [hte, sethte] = useState([allData ]);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingHTE, setEditingHTE] = useState(null);
   const [filters, setFilters] = useState({
     date: "",
     business: "",
     validity: "",
   });
 
-  const itemsPerPage = 5;
-  const totalPages = Math.ceil(allData.length / itemsPerPage);
+  const htesPerPage = 5;
+  const totalPages = Math.ceil(allData.length / htesPerPage);
 
   // Apply filters
-  const filteredData = allData.filter((item) => {
+  const filteredData = allData.filter((hte) => {
     const matchesDate = filters.date
-      ? item.date.startsWith(filters.date) // Compare YYYY
+      ? hte.date.startsWith(filters.date) // Compare YYYY
       : true;
     const matchesBusiness = filters.business
-      ? item.business.toLowerCase().includes(filters.business.toLowerCase())
+      ? hte.business.toLowerCase().includes(filters.business.toLowerCase())
       : true;
     const matchesValidity = filters.validity
-      ? item.validity === filters.validity
+      ? hte.validity === filters.validity
       : true;
 
     return matchesDate && matchesBusiness && matchesValidity;
   });
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * htesPerPage;
+  const endIndex = startIndex + htesPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
 
   const handleNext = () => {
@@ -84,15 +87,20 @@ const [hte, sethte] = useState([allData ]);
   };
 
   const handleEdit = (hte) => {
-    setEditinghte({...hte});
-    setIsModalOpen(true);
+    setEditingHTE(hte); 
+    setIsEditModalOpen(true);
     setOpenDropdown(null);
   };
 
   const handleDelete = (id) => {
-    sethtes(htes.filter((hte) => hte.id !== id));
+    sethte(hte.filter((hte) => hte.id !== id));
     setOpenDropdown(null);
   };
+
+  const toggleDropdown = (id) => {
+    setOpenDropdown((prev) => (prev === id ? null : id));
+  };
+  
 
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
@@ -100,10 +108,10 @@ const [hte, sethte] = useState([allData ]);
         Host Training Establishments
       </h1>
       <div className="mb-3">
-      <div className="flex flex-wrap items-center gap-2 md:gap-4 bg-gray-50 border border-gray-200 rounded-lg p-3 w-full md:w-fit">
+      <div className="flex flex-wrap htes-center gap-2 md:gap-4 bg-gray-50 border border-gray-200 rounded-lg p-3 w-full md:w-fit">
         
         {/* Filter Icon */}
-        <div className="flex items-center">
+        <div className="flex htes-center">
           <i className="fas fa-filter text-black mr-2"></i>
           <span className="text-sm text-black">Filter by</span>
         </div>
@@ -120,7 +128,7 @@ const [hte, sethte] = useState([allData ]);
               className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
               placeholderText="Select Year"
               customInput={
-                <button className="flex items-center w-full md:w-auto px-3 py-2 border rounded-md">
+                <button className="flex htes-center w-full md:w-auto px-3 py-2 border rounded-md">
                   {filters.date ? filters.date : 'Select Year'}
                   <i className="ml-2 fas fa-chevron-down"></i>
                 </button>
@@ -153,17 +161,17 @@ const [hte, sethte] = useState([allData ]);
         <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
         {/* Reset Filters Button */}
-        <button onClick={resetFilters} className="px-4 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex items-center w-full md:w-auto">
+        <button onClick={resetFilters} className="px-4 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex htes-center w-full md:w-auto">
           <i className="fas fa-undo mr-2 text-red-700"></i>
           Reset Filters
         </button>
 
         <button
             onClick={() => {
-              setEditinghte(null);
+              setEditingHTE(null);
               setIsAddModalOpen(true);
             }}
-            className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+            className="w-[80%] sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex htes-center justify-center"
           >
             <PlusCircle size={20} className="mr-2" />
             Add hte
@@ -202,108 +210,106 @@ const [hte, sethte] = useState([allData ]);
             </tr>
           </thead>
           <tbody>
-            {currentData.map((item, index) => (
-              <tr key={item.id} className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+            {currentData.map((hte, index) => (
+              <tr key={hte.id} className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                 {/* ID */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">ID: </span> {item.id}
+                  <span className="md:hidden font-semibold">ID: </span> {hte.id}
                 </td>
                 
                 {/* Company */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {item.company}
+                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
                 </td>
 
                 {/* Company */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {item.company}
+                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
                 </td>
 
                 {/* Company */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {item.company}
+                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
                 </td>
 
                 {/* Company */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {item.company}
+                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
                 </td>
                 
                 
                 {/* Date */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Date: </span> {item.date}
+                  <span className="md:hidden font-semibold">Date: </span> {hte.date}
                 </td>
 
                 {/* Date */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Date: </span> {item.date}
+                  <span className="md:hidden font-semibold">Date: </span> {hte.date}
                 </td>
 
                 {/* Date */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Date: </span> {item.date}
+                  <span className="md:hidden font-semibold">Date: </span> {hte.date}
                 </td>
 
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
                 
                 {/* MOA Validity */}
                 <td className="px-4 border-t py-1 border-r block md:table-cell">
                   <span className="md:hidden font-semibold">MOA Validity: </span> 
-                  <span className={`rounded-full px-2 py-1 ${getValidityColor(item.validity)}`}>
-                    {item.validity}
+                  <span className={`rounded-full px-2 py-1 ${getValidityColor(hte.validity)}`}>
+                    {hte.validity}
                   </span>
                 </td>
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
                 {/* Nature of Business */}
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {item.business}
+                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
                 </td>
-                
 
-              {/* Ellipses Action */}
                 <td className="px-6 py-2 border-t relative">
-                  <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
+                  <button onClick={() => toggleDropdown(hte.id)} className="text-gray-600">
                     <MoreVertical size={20} />
                   </button>
 
-                  {openDropdown === item.id && (
+                  {openDropdown === hte.id && (
                     <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
                       <button
-                        onClick={() => handleEdit(item)}
+                        onClick={() => handleEdit(hte)}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       >
                         <FilePenLine size={16} className="inline-block mr-2" />
                         Edit File
                       </button>
                       <button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(hte.id)}
                         className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                       >
                         <Trash2 size={16} className="inline-block mr-2" />
@@ -321,23 +327,23 @@ const [hte, sethte] = useState([allData ]);
 
        {/* Mobile View (Cards) */}
         <div className="md:hidden">
-          {currentData.map((item, index) => (
-            <div key={item.id} className={`border border-gray-200 p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-              <div className="flex justify-between items-center">
-                <div className="font-bold">{item.company}</div>
-                <div className={`px-4 rounded-full py-1 ${getValidityColor(item.validity)}`}>
-                  {item.validity}
+          {currentData.map((hte, index) => (
+            <div key={hte.id} className={`border border-gray-200 p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+              <div className="flex justify-between htes-center">
+                <div className="font-bold">{hte.company}</div>
+                <div className={`px-4 rounded-full py-1 ${getValidityColor(hte.validity)}`}>
+                  {hte.validity}
                 </div>
               </div>
               
               <div className="mt-2">
-                <strong>ID:</strong> {item.id}
+                <strong>ID:</strong> {hte.id}
               </div>
               <div className="mt-2">
-                <strong>Date:</strong> {item.date}
+                <strong>Date:</strong> {hte.date}
               </div>
               <div className="mt-2">
-                <strong>Nature of Business:</strong> {item.business}
+                <strong>Nature of Business:</strong> {hte.business}
               </div>
             </div>
           ))}
@@ -346,7 +352,7 @@ const [hte, sethte] = useState([allData ]);
 
 
       {/* Pagination Controls */}
-      <div className="flex flex-col md:flex-row justify-between items-center mt-3">
+      <div className="flex flex-col md:flex-row justify-between htes-center mt-3">
         <div className="flex space-x-2">
           <button 
             onClick={handlePrevious} 
@@ -364,6 +370,20 @@ const [hte, sethte] = useState([allData ]);
             →
           </button>
         
+
+          <AddHTE
+            isOpen={isAddModalOpen}
+            onClose={() => setIsAddModalOpen(false)}
+          />
+
+          <EditHTE
+            isOpen={isEditModalOpen}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              setEditingHTE(null);
+            }}
+            hteData={editingHTE}
+          />
 
         {/* Showing Results Info */}
         <span className="text-gray-500 text-sm mt-2 md:mt-0">

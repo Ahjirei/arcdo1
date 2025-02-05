@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "react-datepicker/dist/react-datepicker.css";
 import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
@@ -15,22 +15,6 @@ export default function OJTCoordinators() {
   const [filters, setFilters] = useState({ campus: "" });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const dropdownRef = useRef(null);
-
-   // Close dropdown when clicking outside
-   useEffect(() => {
-    function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpenDropdown(null);
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
 
   
   const [newCoordinator, setNewCoordinator] = useState({
@@ -96,7 +80,7 @@ export default function OJTCoordinators() {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
   const filteredCoordinators = coordinators.filter((coordinator) => {
     return filters.campus
       ? coordinator.campus.toLowerCase() === filters.campus.toLowerCase()
@@ -124,17 +108,17 @@ export default function OJTCoordinators() {
   const getStatusColor = (status) => {
     switch (status) {
       case "Active":
-        return "bg-green-100 text-green-600 ";
+        return "bg-green-100 text-green-600";
       case "On Leave":
-        return "bg-yellow-100 text-yellow-600 px-0.5";
+        return "bg-yellow-100 text-yellow-600";
       case "Retired":
         return "bg-red-100 text-red-600";
       default:
         return "bg-gray-100 text-gray-600";
     }
   };
-  
 
+  
 
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-hidden">
@@ -161,7 +145,7 @@ export default function OJTCoordinators() {
               <option value="Taguig">PUP Taguig</option>
               <option value="Quezon City">PUP Quezon City</option>
               <option value="San Juan">PUP San Juan</option>
-              <option value="Paranaque">PUP Parañaque</option>
+              <option value="Paranaque">PUP Paranaque</option>
             </select>
           </div>
           <div className="hidden sm:block h-6 border-r border-gray-300"></div>
@@ -199,17 +183,17 @@ export default function OJTCoordinators() {
         ) : error ? (
           <div className="text-red-500">{error}</div>
         ) : (
-          <table className="min-w-full h-auto border-collapse mt-3 hidden md:table text-center">
+          <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
             <thead>
-              <tr className="bg-gray-100 ">
-                <th className="px-4 py-2 text-center border-b">NAME</th>
-                <th className="px-4 py-2 text-center border-b">CAMPUS</th>
-                <th className="px-4 py-2 text-center border-b">COLLEGE</th>
-                <th className="px-4 py-2 text-center border-b">EMAIL</th>
-                <th className="px-4 py-2 text-center border-b">OFFICE</th>
-                <th className="px-4 py-2 text-center border-b">ASSIGNED STUDENTS</th>
-                <th className="px-4 py-2 text-center ">STATUS</th>
-                <th className="px-4 py-2 text-center"></th>
+              <tr className="bg-gray-100 text-center">
+                <th className="px-4 py-2 text-left border-b">NAME</th>
+                <th className="px-4 py-2 text-left border-b">CAMPUS</th>
+                <th className="px-4 py-2 text-left border-b">COLLEGE</th>
+                <th className="px-4 py-2 text-left border-b">EMAIL</th>
+                <th className="px-4 py-2 text-left border-b">OFFICE</th>
+                <th className="px-4 py-2 text-left border-b">ASSIGNED STUDENTS</th>
+                <th className="px-4 py-2 text-left border-b">STATUS</th>
+                <th className="px-4 py-2 text-left border-b"></th>
               </tr>
             </thead>
             <tbody>
@@ -225,13 +209,10 @@ export default function OJTCoordinators() {
                   <td className="px-4 py-2 border-t">{coordinator.email}</td>
                   <td className="px-4 py-2 border-t">{coordinator.office}</td>
                   <td className="px-4 py-2 border-t">{coordinator.assigned_student}</td>
-                  <td className=' px-2 py-2 border-t text-center block md:table-cell'>
-                    <span className={`rounded-full py-2 px-2 ${getStatusColor(coordinator.status)}`}>
-                    {coordinator.status}</span>
+                  <td className={`px-4 border-t rounded-full inline-block py-1 mt-1 mb-2 text-center ${getStatusColor(coordinator.status)}`}>
+                    {coordinator.status}
                   </td>
-
-                  {/* Ellipses Action */}
-                  <td className="px-6 py-2 border-t relative" ref={dropdownRef}>
+                  <td className="px-6 py-2 border-t relative">
                     <button onClick={() => toggleDropdown(coordinator.id)} className="text-gray-600">
                       <MoreVertical size={20} />
                     </button>
