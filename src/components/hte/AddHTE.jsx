@@ -1,13 +1,23 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
-  const [newCoordinator, setNewCoordinator] = useState({
-    name: "",
+const AddHTE = ({ isOpen, onClose }) => {
+  const [newHTE, setNewHTE] = useState({
+    company_name: "",
+    year_submitted: "",
+    business_type: "",
+    moa_status: "Processing",
+    contact_person: "",
+    contact_number: "",
+    remarks: "",
+    year_included: "",
+    position_department: "",
+    course: "",
     campus: "",
-    email: "",
     college: "",
-    office: "",
+    email_address: "",
+    office_address: "",
+    with_moa_date_notarized: "",
+    expiry_date: "",
     assigned_student: "",
     status: "Active"
   });
@@ -15,8 +25,12 @@ const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
   const [error, setError] = useState("");
 
   const validateForm = () => {
-    const requiredFields = ['name', 'campus', 'email', 'college', 'office', 'assigned_student'];
-    const missingFields = requiredFields.filter(field => !newCoordinator[field]);
+    const requiredFields = [
+      'company_name', 'year_submitted', 'business_type', 'moa_status', 'contact_person', 'contact_number', 
+      'remarks', 'year_included', 'position_department', 'course', 'campus', 'college', 'email_address', 
+      'office_address', 'assigned_student'
+    ];
+    const missingFields = requiredFields.filter(field => !newHTE[field]);
     
     if (missingFields.length > 0) {
       setError(`Please fill in all required fields: ${missingFields.join(', ')}`);
@@ -26,40 +40,12 @@ const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
     return true;
   };
 
-  const handleSave = async () => {
-    if (!validateForm()) return;
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/coordinator/addCoordinator",
-        newCoordinator
-      );
-
-      if (response.status === 201) {
-        onCoordinatorAdded(response.data);
-        setNewCoordinator({
-          name: "",
-          campus: "",
-          email: "",
-          college: "",
-          office: "",
-          assigned_student: "",
-          status: "Active"
-        });
-        onClose();
-      }
-    } catch (error) {
-      console.error("Error adding coordinator:", error);
-      setError(error.response?.data?.error || "Failed to add coordinator");
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg w-96">
-        <h2 className="text-xl font-semibold mb-4">Add New Coordinator</h2>
+      <div className="bg-white ml-10 p-6 rounded-lg w-8/12 h-[80%] overflow-auto">
+        <h2 className="text-xl font-semibold mb-4 items-center">Add New HTE</h2>
         
         {error && (
           <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
@@ -70,14 +56,139 @@ const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium text-gray-700">
-              Name
+              Company Name
             </label>
             <input
               type="text"
-              value={newCoordinator.name}
-              onChange={(e) => setNewCoordinator({ ...newCoordinator, name: e.target.value })}
-              className="w-full p-2 border rounded"
-              placeholder="Edwin Berico"
+              value={newHTE.company_name}
+              onChange={(e) => setNewHTE({ ...newHTE, company_name: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Company Name"
+            />
+          </div>
+
+          <div className="flex flex-row gap-10 items-center justify-items-stretch">
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Year Submitted
+              </label>
+              <input
+                type="text"
+                value={newHTE.year_submitted}
+                onChange={(e) => setNewHTE({ ...newHTE, year_submitted: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Year Submitted"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Business Type
+              </label>
+              <input
+                type="text"
+                value={newHTE.business_type}
+                onChange={(e) => setNewHTE({ ...newHTE, business_type: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Business Type"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                MOA Status
+              </label>
+              <select
+                value={newHTE.moa_status}
+                onChange={(e) => setNewHTE({ ...newHTE, moa_status: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+              >
+                <option value="Processing">Processing</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Rejected">Rejected</option>
+                <option value="Completed">Completed</option>
+                <option value="For Renewal">For Renewal</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex flex-row gap-10 items-center justify-items-stretch">
+            <div className="w-full">
+              <label className="text-sm font-medium text-gray-700">
+                Contact Person
+              </label>
+              <input
+                type="text"
+                value={newHTE.contact_person}
+                onChange={(e) => setNewHTE({ ...newHTE, contact_person: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Contact Person"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">
+                Contact Number
+              </label>
+              <input
+                type="text"
+                value={newHTE.contact_number}
+                onChange={(e) => setNewHTE({ ...newHTE, contact_number: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Contact Number"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-row gap-10 items-center justify-items-stretch">
+            <div className="w-[50%]">
+              <label className="text-sm font-medium text-gray-700">
+                Position/Department
+              </label>
+              <input
+                type="text"
+                value={newHTE.position_department}
+                onChange={(e) => setNewHTE({ ...newHTE, position_department: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Position or Department"
+              />
+            </div>
+
+            <div className="w-[50%]">
+              <label className="text-sm font-medium text-gray-700">
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={newHTE.email_address}
+                onChange={(e) => setNewHTE({ ...newHTE, email_address: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="email@domain.com"
+              />
+          </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Remarks
+            </label>
+            <textarea
+              value={newHTE.remarks}
+              onChange={(e) => setNewHTE({ ...newHTE, remarks: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Remarks"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Course
+            </label>
+            <input
+              type="text"
+              value={newHTE.course}
+              onChange={(e) => setNewHTE({ ...newHTE, course: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Course"
             />
           </div>
 
@@ -86,9 +197,9 @@ const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
               Campus
             </label>
             <select
-              value={newCoordinator.campus}
-              onChange={(e) => setNewCoordinator({ ...newCoordinator, campus: e.target.value })}
-              className="w-full p-2 border rounded"
+              value={newHTE.campus}
+              onChange={(e) => setNewHTE({ ...newHTE, campus: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
             >
               <option value="">Select Campus</option>
               <option value="Main">PUP Main</option>
@@ -101,70 +212,70 @@ const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
 
           <div>
             <label className="text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              value={newCoordinator.email}
-              onChange={(e) => setNewCoordinator({ ...newCoordinator, email: e.target.value })}
-              className="w-full p-2 border rounded"
-              placeholder="edwinberico@pup.edu.ph"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
               College
             </label>
             <input
               type="text"
-              value={newCoordinator.college}
-              onChange={(e) => setNewCoordinator({ ...newCoordinator, college: e.target.value })}
-              className="w-full p-2 border rounded"
+              value={newHTE.college}
+              onChange={(e) => setNewHTE({ ...newHTE, college: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
               placeholder="College"
             />
           </div>
 
           <div>
             <label className="text-sm font-medium text-gray-700">
-              Office
+              Office Address
             </label>
             <input
               type="text"
-              value={newCoordinator.office}
-              onChange={(e) => setNewCoordinator({ ...newCoordinator, office: e.target.value })}
-              className="w-full p-2 border rounded"
-              placeholder="Room 100"
+              value={newHTE.office_address}
+              onChange={(e) => setNewHTE({ ...newHTE, office_address: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Office Address"
             />
           </div>
 
+        <div className="flex flex-row gap-10 items-center justify-items-stretch">
           <div>
             <label className="text-sm font-medium text-gray-700">
-              Assigned Students
+              Year Included
             </label>
             <input
-              type="number"
-              value={newCoordinator.assigned_student}
-              onChange={(e) => setNewCoordinator({ ...newCoordinator, assigned_student: e.target.value })}
-              className="w-full p-2 border rounded"
-              placeholder="355"
+              type="text"
+              value={newHTE.year_included}
+              onChange={(e) => setNewHTE({ ...newHTE, year_included: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Year Included"
             />
           </div>
 
           <div>
             <label className="text-sm font-medium text-gray-700">
-              Status
+              MOA Date Notarized
             </label>
-            <select
-              value={newCoordinator.status}
-              onChange={(e) => setNewCoordinator({ ...newCoordinator, status: e.target.value })}
-              className="w-full p-2 border rounded"
-            >
-              <option value="Active">Active</option>
-              <option value="On Leave">On Leave</option>
-              <option value="Retired">Retired</option>
-            </select>
+            <input
+              type="date"
+              value={newHTE.with_moa_date_notarized}
+              onChange={(e) => setNewHTE({ ...newHTE, with_moa_date_notarized: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+            />
           </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">
+              Expiry Date
+            </label>
+            <input
+              type="date"
+              value={newHTE.expiry_date}
+              onChange={(e) => setNewHTE({ ...newHTE, expiry_date: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+            />
+          </div>
+        </div>
+
+
         </div>
 
         <div className="flex justify-end mt-6 space-x-2">
@@ -175,7 +286,11 @@ const AddHTE = ({ isOpen, onClose, onCoordinatorAdded }) => {
             Cancel
           </button>
           <button 
-            onClick={handleSave} 
+            onClick={() => {
+              if (validateForm()) {
+
+              }
+            }}
             className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
           >
             Save
