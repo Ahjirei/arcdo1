@@ -229,6 +229,8 @@ export default function OJTCoordinators() {
                     <span className={`rounded-full py-2 px-2 ${getStatusColor(coordinator.status)}`}>
                     {coordinator.status}</span>
                   </td>
+
+                  {/* Ellipses Action */}
                   <td className="px-6 py-2 border-t relative" ref={dropdownRef}>
                     <button onClick={() => toggleDropdown(coordinator.id)} className="text-gray-600">
                       <MoreVertical size={20} />

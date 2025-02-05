@@ -285,7 +285,9 @@ const [hte, sethte] = useState([allData ]);
                 <td className="px-4 py-2 border-t block md:table-cell">
                   <span className="md:hidden font-semibold">Business: </span> {item.business}
                 </td>
+                
 
+              {/* Ellipses Action */}
                 <td className="px-6 py-2 border-t relative">
                   <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
                     <MoreVertical size={20} />

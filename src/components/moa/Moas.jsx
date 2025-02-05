@@ -174,9 +174,17 @@ export default function HTEDashboard() {
                 <th className="px-4 py-2 text-left border-b">ID</th>
                 <th className="px-4 py-2 text-left border-b">COMPANY</th>
                 <th className="px-4 py-2 text-left border-b">ADDRESS</th>
-                <th className="px-4 py-2 text-left border-b">DATE</th>
+                <th className="px-2 py-2 text-center border-b">YEAR MOA STARTED</th>
+                <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
+                <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
+                <th className="px-4 py-2 text-left border-b">MOA TYPE</th>
+                <th className="px-4 py-2 text-left border-b">DRAFT MOA SENT</th>
                 <th className="px-4 py-2 text-left border-b">NATURE OF BUSINESS</th>
-                <th className="px-4 py-2 text-left border-b">MOA VALIDITY</th>
+                <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
+                <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
+                <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
+                <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
+                <th className="px-2 py-2 text-center border-b">REMARKS</th>
                 <th className="px-1 py-2 text-center border-b"></th>
               </tr>
             </thead>
@@ -215,6 +223,9 @@ export default function HTEDashboard() {
                       {item.validity}
                     </span>
                   </td>
+
+
+                  {/* Ellipses Action */}
                   <td className="px-6 py-2 border-t relative">
                   <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
                     <MoreVertical size={20} />

@@ -180,6 +180,8 @@ const [industrypartner, setindstrypartner] = useState([allData]);
           <tr className="bg-gray-100">
               <th className="px-4 py-2 text-center border-b">ID</th>
               <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
+              <th className="px-4 py-2 text-center border-b">TELEPONE NUMBER</th>
+              <th className="px-4 py-2 text-center border-b">FAX NUMBER</th>
               <th className="px-4 py-2 text-center border-b">COURSE</th>
               <th className="px-4 py-2 text-center border-b">COLLEGE</th>
               <th className="px-4 py-2 text-center border-b">CAMPUS</th>
@@ -236,6 +238,8 @@ const [industrypartner, setindstrypartner] = useState([allData]);
 
             </td>
 
+
+            {/* Ellipses Action */}
             <td className="px-6 py-2 border-t relative">
                   <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
                     <MoreVertical size={20} />
