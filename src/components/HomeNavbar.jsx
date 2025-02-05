@@ -13,6 +13,14 @@ export default function HomeNavbar() {
   const navigate = useNavigate();
 
   const handleSignOutClick = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("user_id");
+
+    // Force re-render
+    window.dispatchEvent(new Event("storage"));
+
+    // Redirect to login page
     navigate("/login");
   };
 

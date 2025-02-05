@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import LandingPage from './pages/LandingPage';
 import HTEDashboardPage from './pages/HTEDashboardPage';
@@ -15,27 +15,40 @@ import ResetPassword from './components/auth/ResetPasswordCard';
 import AddDataPage from './pages/AddDataPage';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    !!localStorage.getItem("token")
+  );
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setIsAuthenticated(!!localStorage.getItem("token"));
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
   return (
     <Router>
       <Routes>
+        {/* Prevents authenticated users from accessing login/signup */}
+        <Route path="/" element={isAuthenticated ? <Navigate to="/overview" /> : <LandingPage />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/overview" /> : <LandingPage />} />
+        <Route path="/signUp" element={isAuthenticated ? <Navigate to="/overview" /> : <SignUp />} />
+        <Route path="/forgotPassword" element={isAuthenticated ? <Navigate to="/overview" /> : <ForgotPassword />} />
+        <Route path="/reset-password" element={isAuthenticated ? <Navigate to="/overview" /> : <ResetPassword />} />
 
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LandingPage />} />
-        <Route path="/signUp" element={<SignUp />} />
-        <Route path="/forgotPassword" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        
-        {/* Protected routes */}
-        <Route path="/hte" element={<ProtectedRoute><HTEDashboardPage /></ProtectedRoute>} />
-        <Route path="/moas" element={<ProtectedRoute><MoasPage /></ProtectedRoute>} />
-        <Route path="/OJT-coordinators" element={<ProtectedRoute><OJTCoordinatorsPage /></ProtectedRoute>} />
-        <Route path="/industry-partners" element={<ProtectedRoute><IndustryPartnersPage /></ProtectedRoute>} />
-        <Route path="/user-account" element={<ProtectedRoute><UserPage /></ProtectedRoute>} />
-        <Route path="/overview" element={<ProtectedRoute><OverviewPage /></ProtectedRoute>} />
-        <Route path="/adminprofile" element={<ProtectedRoute><AdminProfile /></ProtectedRoute>} />
-        <Route path="/add" element={<AddDataPage />} />
-
-
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/hte" element={<HTEDashboardPage />} />
+          <Route path="/moas" element={<MoasPage />} />
+          <Route path="/OJT-coordinators" element={<OJTCoordinatorsPage />} />
+          <Route path="/industry-partners" element={<IndustryPartnersPage />} />
+          <Route path="/user-account" element={<UserPage />} />
+          <Route path="/overview" element={<OverviewPage />} />
+          <Route path="/adminprofile" element={<AdminProfile />} />
+          <Route path="/add" element={<AddDataPage />} />
+        </Route>
       </Routes>
     </Router>
   );
