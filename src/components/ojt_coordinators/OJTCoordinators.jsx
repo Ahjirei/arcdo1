@@ -315,7 +315,7 @@ export default function OJTCoordinators() {
               <strong>Campus:</strong> {coordinator.campus}
             </div>
             <div className="mt-2">
-              <strong>College</strong> {coordinator.college}
+              <strong>College:</strong> {coordinator.college}
             </div>
             <div className="mt-2">
               <strong>Contact:</strong> {coordinator.email}

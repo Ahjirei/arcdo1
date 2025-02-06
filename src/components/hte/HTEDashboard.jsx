@@ -108,18 +108,19 @@ export default function HTEDashboard() {
         Host Training Establishments
       </h1>
       <div className="mb-3">
-      <div className="flex flex-wrap htes-center gap-2 md:gap-4 bg-gray-50 border border-gray-200 rounded-lg p-3 w-full md:w-fit">
+      <div className="flex flex-wrap items-center gap-2 md:gap-4 bg-gray-50 border border-gray-200 rounded-lg p-3 w-full md:w-fit">
         
         {/* Filter Icon */}
-        <div className="flex htes-center">
+        <div className="flex items-center">
           <i className="fas fa-filter text-black mr-2"></i>
           <span className="text-sm text-black">Filter by</span>
         </div>
 
         {/* Divider */}
-        <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
+        <div className="hidden md:block h-10 border-r border-gray-300 mx-2"></div>
 
          {/* Year Filter */}
+         <div className="md:ml-0 ml-auto"> 
          <DatePicker
               selected={filters.date ? new Date(filters.date) : null}
               onChange={(date) => setFilters({ ...filters, date: date ? date.getFullYear().toString() : "" })}
@@ -128,12 +129,13 @@ export default function HTEDashboard() {
               className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
               placeholderText="Select Year"
               customInput={
-                <button className="flex htes-center w-full md:w-auto px-3 py-2 border rounded-md">
+                <button className="flex htes-center w-full md:w-auto px-3 py-2 border rounded-md justify-end sm:justify-start">
                   {filters.date ? filters.date : 'Select Year'}
                   <i className="ml-2 fas fa-chevron-down"></i>
                 </button>
               }
             />
+            </div>
 
         {/* Business Filter */}
         <input
@@ -158,10 +160,11 @@ export default function HTEDashboard() {
         </select>
 
         {/* Divider (Visible only on larger screens) */}
-        <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
+        <div className="hidden md:block h-10 border-r border-gray-300 mx-2"></div>
 
         {/* Reset Filters Button */}
-        <button onClick={resetFilters} className="px-4 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex htes-center w-full md:w-auto">
+        <button onClick={resetFilters} 
+        className="w-full sm:w-auto px-4 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center">
           <i className="fas fa-undo mr-2 text-red-700"></i>
           Reset Filters
         </button>
@@ -171,10 +174,10 @@ export default function HTEDashboard() {
               setEditingHTE(null);
               setIsAddModalOpen(true);
             }}
-            className="w-[80%] sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex htes-center justify-center"
+            className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
           >
             <PlusCircle size={20} className="mr-2" />
-            Add hte
+            Add HTE
           </button>
 
         </div>
@@ -329,12 +332,42 @@ export default function HTEDashboard() {
         <div className="md:hidden">
           {currentData.map((hte, index) => (
             <div key={hte.id} className={`border border-gray-200 p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-              <div className="flex justify-between htes-center">
+              <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-3 flex-1">
                 <div className="font-bold">{hte.company}</div>
-                <div className={`px-4 rounded-full py-1 ${getValidityColor(hte.validity)}`}>
+                <div className={`px-3 rounded-full py-1 text-sm ${getValidityColor(hte.validity)}`}>
                   {hte.validity}
                 </div>
               </div>
+              
+              <div className="relative ml-4">
+                <button 
+                  onClick={() => toggleDropdown(hte.id)} 
+                  className="p-1 hover:bg-gray-100 rounded-full"
+                >
+                  <MoreVertical size={20} />
+                </button>
+                {openDropdown === hte.id && (
+                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                    <button
+                      onClick={() => handleEdit(hte)}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                    >
+                      <FilePenLine size={16} className="inline-block mr-2" />
+                      Edit File
+                    </button>
+                    <button
+                      onClick={() => handleDelete(hte.id)}
+                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                    >
+                      <Trash2 size={16} className="inline-block mr-2" />
+                      Delete File
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
               
               <div className="mt-2">
                 <strong>ID:</strong> {hte.id}
@@ -345,6 +378,54 @@ export default function HTEDashboard() {
               <div className="mt-2">
                 <strong>Nature of Business:</strong> {hte.business}
               </div>
+              <div className="mt-2">
+                <strong>Course:</strong> {hte.course}
+              </div>
+              <div className="mt-2">
+                <strong>College:</strong> {hte.college}
+              </div>
+              <div className="mt-2">
+                <strong>Campus:</strong> {hte.campus}
+              </div>
+              <hr className="my-2" />
+              <div className="mt-2 text-center">
+                <strong>MOA</strong> 
+              </div> <hr className="my-2" />
+              <div className="mt-2">
+                <strong>Year Included:</strong> {hte.yearIncluded}
+              </div>
+              <div className="mt-2">
+                <strong>Year Submitted:</strong> {hte.yearSubmitted}
+              </div>
+              <div className="mt-2">
+                <strong>Moa Notorized:</strong> {hte.moaNotorized}
+              </div>
+              <div className="mt-2">
+                <strong>Expiry Date:</strong> {hte.expiryDate}
+              </div>
+              <hr className="my-2" />
+              <div className="mt-2 text-center">
+                <strong>Contact Person</strong> 
+              </div> <hr className="my-2" />
+              <div className="mt-2">
+                <strong>Name:</strong> {hte.contactPerson}
+              </div>
+              <div className="mt-2">
+                <strong>Contact Number:</strong> {hte.number}
+              </div>
+              <div className="mt-2">
+                <strong>Email Address:</strong> {hte.email}
+              </div>
+              <div className="mt-2">
+                <strong>Position:</strong> {hte.position}
+              </div>
+              <div className="mt-2">
+                <strong>Office Address:</strong> {hte.officeAddress}
+              </div>
+              <div className="mt-2">
+                <strong>Remarks:</strong> {hte.remarks}
+              </div>
+              
             </div>
           ))}
         </div>
@@ -352,7 +433,7 @@ export default function HTEDashboard() {
 
 
       {/* Pagination Controls */}
-      <div className="flex flex-col md:flex-row justify-between htes-center mt-3">
+      <div className="flex flex-col md:flex-row justify-between items-center mt-3">
         <div className="flex space-x-2">
           <button 
             onClick={handlePrevious} 

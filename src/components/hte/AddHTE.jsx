@@ -43,21 +43,17 @@ const AddHTE = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white ml-10 p-6 rounded-lg w-8/12 h-[80%] overflow-auto">
-        <h2 className="text-xl font-semibold mb-4 items-center">Add New HTE</h2>
-        
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-5 sm:mt-0 mt-20">
+      <div className="bg-white p-6 rounded-lg w-full  sm:w-10/12 md:w-8/12 lg:w-6/12 max-h-[85vh] overflow-auto">
+        <h2 className="text-xl font-semibold mb-4 text-center">Add New HTE</h2>
+  
         {error && (
-          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
+          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
         )}
-
+  
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Company Name
-            </label>
+            <label className="text-sm font-medium text-gray-700">Company Name</label>
             <input
               type="text"
               value={newHTE.company_name}
@@ -66,12 +62,10 @@ const AddHTE = ({ isOpen, onClose }) => {
               placeholder="Company Name"
             />
           </div>
-
-          <div className="flex flex-row gap-10 items-center justify-items-stretch">
+  
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">
-                Year Submitted
-              </label>
+              <label className="text-sm font-medium text-gray-700">Year Submitted</label>
               <input
                 type="text"
                 value={newHTE.year_submitted}
@@ -80,11 +74,9 @@ const AddHTE = ({ isOpen, onClose }) => {
                 placeholder="Year Submitted"
               />
             </div>
-
+  
             <div>
-              <label className="text-sm font-medium text-gray-700">
-                Business Type
-              </label>
+              <label className="text-sm font-medium text-gray-700">Business Type</label>
               <input
                 type="text"
                 value={newHTE.business_type}
@@ -93,10 +85,9 @@ const AddHTE = ({ isOpen, onClose }) => {
                 placeholder="Business Type"
               />
             </div>
+  
             <div>
-              <label className="text-sm font-medium text-gray-700">
-                MOA Status
-              </label>
+              <label className="text-sm font-medium text-gray-700">MOA Status</label>
               <select
                 value={newHTE.moa_status}
                 onChange={(e) => setNewHTE({ ...newHTE, moa_status: e.target.value })}
@@ -110,12 +101,10 @@ const AddHTE = ({ isOpen, onClose }) => {
               </select>
             </div>
           </div>
-
-          <div className="flex flex-row gap-10 items-center justify-items-stretch">
-            <div className="w-full">
-              <label className="text-sm font-medium text-gray-700">
-                Contact Person
-              </label>
+  
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Contact Person</label>
               <input
                 type="text"
                 value={newHTE.contact_person}
@@ -124,11 +113,9 @@ const AddHTE = ({ isOpen, onClose }) => {
                 placeholder="Contact Person"
               />
             </div>
-
+  
             <div>
-              <label className="text-sm font-medium text-gray-700">
-                Contact Number
-              </label>
+              <label className="text-sm font-medium text-gray-700">Contact Number</label>
               <input
                 type="text"
                 value={newHTE.contact_number}
@@ -138,12 +125,10 @@ const AddHTE = ({ isOpen, onClose }) => {
               />
             </div>
           </div>
-
-          <div className="flex flex-row gap-10 items-center justify-items-stretch">
-            <div className="w-[50%]">
-              <label className="text-sm font-medium text-gray-700">
-                Position/Department
-              </label>
+  
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Position/Department</label>
               <input
                 type="text"
                 value={newHTE.position_department}
@@ -152,11 +137,9 @@ const AddHTE = ({ isOpen, onClose }) => {
                 placeholder="Position or Department"
               />
             </div>
-
-            <div className="w-[50%]">
-              <label className="text-sm font-medium text-gray-700">
-                Email Address
-              </label>
+  
+            <div>
+              <label className="text-sm font-medium text-gray-700">Email Address</label>
               <input
                 type="email"
                 value={newHTE.email_address}
@@ -164,69 +147,12 @@ const AddHTE = ({ isOpen, onClose }) => {
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="email@domain.com"
               />
-          </div>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Remarks
-            </label>
-            <textarea
-              value={newHTE.remarks}
-              onChange={(e) => setNewHTE({ ...newHTE, remarks: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-              placeholder="Remarks"
-            />
+            </div>
           </div>
 
+         
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Course
-            </label>
-            <input
-              type="text"
-              value={newHTE.course}
-              onChange={(e) => setNewHTE({ ...newHTE, course: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-              placeholder="Course"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Campus
-            </label>
-            <select
-              value={newHTE.campus}
-              onChange={(e) => setNewHTE({ ...newHTE, campus: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-            >
-              <option value="">Select Campus</option>
-              <option value="Main">PUP Main</option>
-              <option value="Taguig">PUP Taguig</option>
-              <option value="Quezon City">PUP Quezon City</option>
-              <option value="San Juan">PUP San Juan</option>
-              <option value="Paranaque">PUP Paranaque</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              College
-            </label>
-            <input
-              type="text"
-              value={newHTE.college}
-              onChange={(e) => setNewHTE({ ...newHTE, college: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-              placeholder="College"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Office Address
-            </label>
+            <label className="text-sm font-medium text-gray-700">Office Address</label>
             <input
               type="text"
               value={newHTE.office_address}
@@ -235,70 +161,98 @@ const AddHTE = ({ isOpen, onClose }) => {
               placeholder="Office Address"
             />
           </div>
-
-        <div className="flex flex-row gap-10 items-center justify-items-stretch">
+  
           <div>
-            <label className="text-sm font-medium text-gray-700">
-              Year Included
-            </label>
-            <input
-              type="text"
-              value={newHTE.year_included}
-              onChange={(e) => setNewHTE({ ...newHTE, year_included: e.target.value })}
+            <label className="text-sm font-medium text-gray-700">Remarks</label>
+            <textarea
+              value={newHTE.remarks}
+              onChange={(e) => setNewHTE({ ...newHTE, remarks: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
-              placeholder="Year Included"
+              placeholder="Remarks"
             />
           </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              MOA Date Notarized
-            </label>
-            <input
-              type="date"
-              value={newHTE.with_moa_date_notarized}
-              onChange={(e) => setNewHTE({ ...newHTE, with_moa_date_notarized: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-            />
+  
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Course</label>
+              <input
+                type="text"
+                value={newHTE.course}
+                onChange={(e) => setNewHTE({ ...newHTE, course: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Course"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">College</label>
+              <input
+                type="text"
+                value={newHTE.course}
+                onChange={(e) => setNewHTE({ ...newHTE, course: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Course"
+              />
+            </div>
+  
+            <div>
+              <label className="text-sm font-medium text-gray-700">Campus</label>
+              <select
+                value={newHTE.campus}
+                onChange={(e) => setNewHTE({ ...newHTE, campus: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+              >
+                <option value="">Select Campus</option>
+                <option value="Main">PUP Main</option>
+                <option value="Taguig">PUP Taguig</option>
+                <option value="Quezon City">PUP Quezon City</option>
+                <option value="San Juan">PUP San Juan</option>
+                <option value="Paranaque">PUP Paranaque</option>
+              </select>
+            </div>
           </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Expiry Date
-            </label>
-            <input
-              type="date"
-              value={newHTE.expiry_date}
-              onChange={(e) => setNewHTE({ ...newHTE, expiry_date: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-            />
+  
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Year Included</label>
+              <input
+                type="text"
+                value={newHTE.year_included}
+                onChange={(e) => setNewHTE({ ...newHTE, year_included: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Year Included"
+              />
+            </div>
+  
+            <div>
+              <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
+              <input
+                type="date"
+                value={newHTE.with_moa_date_notarized}
+                onChange={(e) => setNewHTE({ ...newHTE, with_moa_date_notarized: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+              />
+            </div>
+  
+            <div>
+              <label className="text-sm font-medium text-gray-700">Expiry Date</label>
+              <input
+                type="date"
+                value={newHTE.expiry_date}
+                onChange={(e) => setNewHTE({ ...newHTE, expiry_date: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+              />
+            </div>
           </div>
         </div>
-
-
-        </div>
-
+  
         <div className="flex justify-end mt-6 space-x-2">
-          <button 
-            onClick={onClose} 
-            className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button 
-            onClick={() => {
-              if (validateForm()) {
-
-              }
-            }}
-            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-          >
-            Save
-          </button>
+          <button onClick={onClose} className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50">Cancel</button>
+          <button className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">Save</button>
         </div>
       </div>
     </div>
   );
+  
 };
 
 export default AddHTE;

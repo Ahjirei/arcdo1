@@ -43,9 +43,9 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white ml-10 p-6 rounded-lg w-8/12 h-[80%] overflow-auto">
-        <h2 className="text-xl font-semibold mb-4 items-center">Edit HTE</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-5 sm:mt-0 mt-20">
+      <div className="bg-white p-6 rounded-lg w-full  sm:w-10/12 md:w-8/12 lg:w-6/12 max-h-[85vh] overflow-auto">
+      <h2 className="text-xl font-semibold mb-4 items-center">Edit HTE</h2>
         
         {error && (
           <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
@@ -65,7 +65,7 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             />
           </div>
 
-          <div className="flex flex-row gap-10 items-center justify-items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-700">Year Submitted</label>
               <input
@@ -103,7 +103,7 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             </div>
           </div>
 
-          <div className="flex flex-row gap-10 items-center justify-items-stretch">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="w-full">
               <label className="text-sm font-medium text-gray-700">Contact Person</label>
               <input
@@ -128,6 +128,17 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
           </div>
 
           <div>
+            <label className="text-sm font-medium text-gray-700">Office Address</label>
+            <input
+              type="text"
+              value={hte.office_address}
+              onChange={(e) => setHTE({ ...hte, office_address: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Office Address"
+            />
+          </div>
+
+          <div>
             <label className="text-sm font-medium text-gray-700">Remarks</label>
             <textarea
               value={hte.remarks}
@@ -138,6 +149,7 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
           </div>
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div>
             <label className="text-sm font-medium text-gray-700">
               Course
@@ -181,22 +193,12 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
               placeholder="College"
             />
           </div>
+        </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Office Address
-            </label>
-            <input
-              type="text"
-              value={hte.office_address}
-              onChange={(e) => setHTE({ ...hte, office_address: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-              placeholder="Office Address"
-            />
-          </div>
 
-        <div className="flex flex-row gap-10 items-center justify-items-stretch">
-          <div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
             <label className="text-sm font-medium text-gray-700">
               Year Included
             </label>
