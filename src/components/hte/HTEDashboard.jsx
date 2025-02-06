@@ -117,7 +117,7 @@ export default function HTEDashboard() {
         </div>
 
         {/* Divider */}
-        <div className="hidden md:block h-10 border-r border-gray-300 mx-2"></div>
+        <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
          {/* Year Filter */}
          <div className="md:ml-0 ml-auto"> 
@@ -160,7 +160,7 @@ export default function HTEDashboard() {
         </select>
 
         {/* Divider (Visible only on larger screens) */}
-        <div className="hidden md:block h-10 border-r border-gray-300 mx-2"></div>
+        <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
         {/* Reset Filters Button */}
         <button onClick={resetFilters} 
@@ -371,9 +371,6 @@ export default function HTEDashboard() {
               
               <div className="mt-2">
                 <strong>ID:</strong> {hte.id}
-              </div>
-              <div className="mt-2">
-                <strong>Date:</strong> {hte.date}
               </div>
               <div className="mt-2">
                 <strong>Nature of Business:</strong> {hte.business}

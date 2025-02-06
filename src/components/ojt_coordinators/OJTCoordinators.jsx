@@ -331,7 +331,8 @@ export default function OJTCoordinators() {
       </div>
 
       {/* Pagination Section */}
-      <div className="flex justify-start items-center mt-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mt-3">
+        <div className="flex space-x-2">
         <button
           onClick={handlePrevious}
           disabled={currentPage === 1}
@@ -351,6 +352,7 @@ export default function OJTCoordinators() {
           <b>{filteredCoordinators.length}</b>
         </span>
       </div>
+    </div>
     </div>
 
   );

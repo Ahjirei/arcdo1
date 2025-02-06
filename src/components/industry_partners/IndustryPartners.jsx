@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import DatePicker from "react-datepicker"; 
 import "react-datepicker/dist/react-datepicker.css"; 
 import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
+import AddIndustryPartner from "../industry_partners/AddIndustryPartner";
+import EditIndustryPartner from "../industry_partners/EditIndustryPartner";
 
 
-export default function HTEDashboard() {
+export default function industrypartnerDashboard() {
   const allData = [
     { id: "00001", company: "Christine Brooks", address: "089 Kutch Green Apt. 448", date: "2019-09-04", business: "Electric", validity: "Completed" },
     { id: "00002", company: "Rosie Pearson", address: "979 Immanuel Ferry Suite 526", date: "2019-05-28", business: "Book", validity: "Processing" },
@@ -18,9 +20,11 @@ export default function HTEDashboard() {
     { id: "00010", company: "Robert Smith", address: "321 Birch Rd.", date: "2023-01-18", business: "Logistics", validity: "On Hold" },
     ];
 
-const [industrypartner, setindstrypartner] = useState([allData]);
+  const [industrypartner, setindstrypartner] = useState([allData]);
   const [openDropdown, setOpenDropdown] = useState(null);
-  const itemsPerPage = 5;
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingIndustryPratner, seteditingIndustryPratner] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     date: "",
@@ -28,26 +32,27 @@ const [industrypartner, setindstrypartner] = useState([allData]);
     validity: "",
   });
 
-  const totalPages = Math.ceil(allData.length / itemsPerPage);
+  const industrypartnersPerPage = 5;
+  const totalPages = Math.ceil(allData.length / industrypartnersPerPage);
 
    // Apply filters
-   const filteredData = allData.filter((item) => {
+   const filteredData = allData.filter((industrypartner) => {
     const matchesDate = filters.date
-      ? item.date.startsWith(filters.date) // Compare YYYY
+      ? industrypartner.date.startsWith(filters.date) // Compare YYYY
       : true;
     const matchesBusiness = filters.business
-      ? item.business.toLowerCase().includes(filters.business.toLowerCase())
+      ? industrypartner.business.toLowerCase().includes(filters.business.toLowerCase())
       : true;
     const matchesValidity = filters.validity
-      ? item.validity === filters.validity
+      ? industrypartner.validity === filters.validity
       : true;
 
     return matchesDate && matchesBusiness && matchesValidity;
   });
   
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * industrypartnersPerPage;
+  const endIndex = startIndex + industrypartnersPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
 
   const handleNext = () => {
@@ -83,14 +88,18 @@ const [industrypartner, setindstrypartner] = useState([allData]);
   };
 
   const handleEdit = (industrypartner) => {
-    setEditinghte({...industrypartner});
-    setIsModalOpen(true);
+    seteditingIndustryPratner(industrypartner); 
+    setIsEditModalOpen(true);
     setOpenDropdown(null);
   };
 
   const handleDelete = (id) => {
-    sethtes(industrypartner.filter((industrypartner) => industrypartner.id !== id));
+    setindstrypartner(industrypartner.filter((industrypartner) => industrypartner.id !== id));
     setOpenDropdown(null);
+  };
+
+  const toggleDropdown = (id) => {
+    setOpenDropdown((prev) => (prev === id ? null : id));
   };
 
   return (
@@ -109,6 +118,7 @@ const [industrypartner, setindstrypartner] = useState([allData]);
             <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
              {/* Year Filter */}
+             <div className="md:ml-0 ml-auto"> 
             <DatePicker
               selected={filters.date ? new Date(filters.date) : null}
               onChange={(date) => setFilters({ ...filters, date: date ? date.getFullYear().toString() : "" })}
@@ -123,6 +133,7 @@ const [industrypartner, setindstrypartner] = useState([allData]);
                 </button>
               }
             />
+            </div>
     
 
             {/* Business Filter */}
@@ -151,17 +162,18 @@ const [industrypartner, setindstrypartner] = useState([allData]);
             <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
 
             {/* Reset Filters Button */}
-            <button onClick={resetFilters} className="px-2 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex items-center w-full md:w-auto">
+            <button onClick={resetFilters} 
+              className="w-full sm:w-auto px-2 py-2 text-red-700 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center">
               <i className="fas fa-undo mr-2 text-red-700"></i>
               Reset Filters
             </button>
 
             <button
             onClick={() => {
-              setEditinghte(null);
+              seteditingIndustryPratner(null);
               setIsAddModalOpen(true);
             }}
-            className="w-full sm:w-auto px-1 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+            className="w-full sm:w-auto px-2 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
           >
             <PlusCircle size={20} className="mr-2" />
             Add Industry Partner
@@ -202,38 +214,38 @@ const [industrypartner, setindstrypartner] = useState([allData]);
             </tr>
       </thead>
       <tbody>
-        {currentData.map((item, index) => (
-          <tr key={item.id} className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+        {currentData.map((industrypartner, index) => (
+          <tr key={industrypartner.id} className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             {/* ID */}
             <td className="px-4 py-2 border-t block md:table-cell">
-              <span className="md:hidden font-semibold">ID: </span> {item.id}
+              <span className="md:hidden font-semibold">ID: </span> {industrypartner.id}
             </td>
             
             {/* Company */}
             <td className="px-4 py-2 border-t block md:table-cell">
-              <span className="md:hidden font-semibold">Company: </span> {item.company}
+              <span className="md:hidden font-semibold">Company: </span> {industrypartner.company}
             </td>
             
             {/* Address */}
             <td className="px-4 py-2 border-t block md:table-cell">
-              <span className="md:hidden font-semibold">Address: </span> {item.address}
+              <span className="md:hidden font-semibold">Address: </span> {industrypartner.address}
             </td>
             
             {/* Date */}
             <td className="px-4 py-2 border-t block md:table-cell">
-              <span className="md:hidden font-semibold">Date: </span> {item.date}
+              <span className="md:hidden font-semibold">Date: </span> {industrypartner.date}
             </td>
             
             {/* Nature of Business */}
             <td className="px-4 py-2 border-t block md:table-cell">
-              <span className="md:hidden font-semibold">Business: </span> {item.business}
+              <span className="md:hidden font-semibold">Business: </span> {industrypartner.business}
             </td>
             
             {/* MOA Validity */}
             <td className="px-4 border-t py-1 block md:table-cell">
               <span className="md:hidden font-semibold">MOA Validity: </span> 
-              <span className={`rounded-full px-2 py-1 ${getValidityColor(item.validity)}`}>
-                {item.validity}
+              <span className={`rounded-full px-2 py-1 ${getValidityColor(industrypartner.validity)}`}>
+                {industrypartner.validity}
               </span>
 
             </td>
@@ -241,21 +253,21 @@ const [industrypartner, setindstrypartner] = useState([allData]);
 
             {/* Ellipses Action */}
             <td className="px-6 py-2 border-t relative">
-                  <button onClick={() => toggleDropdown(item.id)} className="text-gray-600">
+                  <button onClick={() => toggleDropdown(industrypartner.id)} className="text-gray-600">
                     <MoreVertical size={20} />
                   </button>
 
-                  {openDropdown === item.id && (
+                  {openDropdown === industrypartner.id && (
                     <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
                       <button
-                        onClick={() => handleEdit(item)}
+                        onClick={() => handleEdit(industrypartner)}
                         className="block w-full text-left px-4 py-2 hover:bg-gray-100"
                       >
                         <FilePenLine size={16} className="inline-block mr-2" />
                         Edit File
                       </button>
                       <button
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => handleDelete(industrypartner.id)}
                         className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                       >
                         <Trash2 size={16} className="inline-block mr-2" />
@@ -272,26 +284,103 @@ const [industrypartner, setindstrypartner] = useState([allData]);
 
   {/* Mobile View (Cards) */}
   <div className="md:hidden">
-    {currentData.map((item, index) => (
-      <div key={item.id} className={`border border-gray-200 p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-        <div className="flex justify-between">
-          <div className="font-bold">{item.company}</div>
-          <div className={`px-4 rounded-full py-1 ${getValidityColor(item.validity)}`}>
-            {item.validity}
+    {currentData.map((industrypartner, index) => (
+      <div key={industrypartner.id} className={`border border-gray-200 p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+       <div className="flex justify-between items-center">
+       <div className="flex items-center space-x-3 flex-1">
+          <div className="font-bold">{industrypartner.company}</div>
+          <div className={`px-4 rounded-full py-1 ${getValidityColor(industrypartner.validity)}`}>
+            {industrypartner.validity}
           </div>
         </div>
-        <div className="mt-2">
-          <strong>ID:</strong> {item.id}
+
+        <div className="relative ml-4">
+          <button 
+            onClick={() => toggleDropdown(industrypartner.id)} 
+            className="p-1 hover:bg-gray-100 rounded-full"
+            >
+              <MoreVertical size={20} />
+          </button>
+           {openDropdown === industrypartner.id && (
+              <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                <button
+                  onClick={() => handleEdit(industrypartner)}
+                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                  >
+                  <FilePenLine size={16} className="inline-block mr-2" />
+                    Edit File
+                    </button>
+                <button
+                    onClick={() => handleDelete(industrypartner.id)}
+                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                  >
+                  <Trash2 size={16} className="inline-block mr-2" />
+                      Delete File
+                      </button>
+              </div>
+          )}
+        </div>
         </div>
         <div className="mt-2">
-          <strong>Address:</strong> {item.address}
-        </div>
-        <div className="mt-2">
-          <strong>Date:</strong> {item.date}
-        </div>
-        <div className="mt-2">
-          <strong>Nature of Business:</strong> {item.business}
-        </div>
+                <strong>ID:</strong> {industrypartner.id}
+              </div>
+              <div className="mt-2">
+                <strong>Telephone Number:</strong> {industrypartner.telephoneNumber}
+              </div>
+              <div className="mt-2">
+                <strong>Fax Number:</strong> {industrypartner.faxNumber}
+              </div>
+              <div className="mt-2">
+                <strong>Nature of Business:</strong> {industrypartner.business}
+              </div>
+              <div className="mt-2">
+                <strong>Course:</strong> {industrypartner.course}
+              </div>
+              <div className="mt-2">
+                <strong>College:</strong> {industrypartner.college}
+              </div>
+              <div className="mt-2">
+                <strong>Campus:</strong> {industrypartner.campus}
+              </div>
+              <hr className="my-2" />
+              <div className="mt-2 text-center">
+                <strong>MOA</strong> 
+              </div> <hr className="my-2" />
+              <div className="mt-2">
+                <strong>Year Included:</strong> {industrypartner.yearIncluded}
+              </div>
+              <div className="mt-2">
+                <strong>Year Submitted:</strong> {industrypartner.yearSubmitted}
+              </div>
+              <div className="mt-2">
+                <strong>Moa Notorized:</strong> {industrypartner.moaNotorized}
+              </div>
+              <div className="mt-2">
+                <strong>Expiry Date:</strong> {industrypartner.expiryDate}
+              </div>
+              <hr className="my-2" />
+              <div className="mt-2 text-center">
+                <strong>Contact Person</strong> 
+              </div> <hr className="my-2" />
+              <div className="mt-2">
+                <strong>Name:</strong> {industrypartner.contactPerson}
+              </div>
+              <div className="mt-2">
+                <strong>Contact Number:</strong> {industrypartner.number}
+              </div>
+              <div className="mt-2">
+                <strong>Email Address:</strong> {industrypartner.email}
+              </div>
+              <div className="mt-2">
+                <strong>Position:</strong> {industrypartner.position}
+              </div>
+              <div className="mt-2">
+                <strong>Office Address:</strong> {industrypartner.officeAddress}
+              </div>
+              <div className="mt-2">
+                <strong>Remarks:</strong> {industrypartner.remarks}
+              </div>
+
       </div>
     ))}
   </div>
@@ -299,7 +388,7 @@ const [industrypartner, setindstrypartner] = useState([allData]);
 
 {/* Pagination Controls */}
 <div className="flex flex-col md:flex-row justify-between items-center mt-3">
-  <div className="flex space-x-2">
+        <div className="flex space-x-2">
     <button 
       onClick={handlePrevious} 
       disabled={currentPage === 1} 
@@ -315,15 +404,42 @@ const [industrypartner, setindstrypartner] = useState([allData]);
     >
       →
     </button>
-  </div>
+
+     <AddIndustryPartner
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+          />
+
+          <EditIndustryPartner
+            isOpen={isEditModalOpen}
+            onClose={() => {
+              setIsEditModalOpen(false);
+              seteditingIndustryPratner(null);
+            }}
+            industrypartnerData={editingIndustryPratner}
+          /> <AddIndustryPartner
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+        />
+
+        <EditIndustryPartner
+          isOpen={isEditModalOpen}
+          onClose={() => {
+            setIsEditModalOpen(false);
+            seteditingIndustryPratner(null);
+          }}
+          industrypartnerData={editingIndustryPratner}
+        />
+  
 
   {/* Showing Results Info */}
   <span className="text-gray-500 text-sm mt-2 md:mt-0">
     Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredData.length)}</b> of <b>{filteredData.length}</b>
   </span>
+  </div>
 </div>
 
-        </div>
+</div>
     
       );
     }
