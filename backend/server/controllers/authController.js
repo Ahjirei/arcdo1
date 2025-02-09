@@ -22,7 +22,7 @@ function validateEmail(email) {
 
 export const register = async (req, res) => {
     try {
-        const { email, password, name, contact_number, position, campus, college} = req.body;
+        const { email, password, name, contact_number, position, campus, college, role = 'User'} = req.body;
         
         // Input validation
         if (!email || !password || !name || !contact_number || !position || !campus || !college) {
@@ -165,17 +165,18 @@ export const login = async (req, res) => {
             return res.status(401).send('Invalid email or password');
         }
 
-        const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '24h' });
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, secretKey, { expiresIn: '24h' });
         const refresh_token = jwt.sign({ id: user.id, email: user.email }, refreshSecretKey);
 
-        const updateSql = 'UPDATE users SET refresh_token = ? WHERE id = ?';
+        const updateSql = 'UPDATE users SET refresh_token = ?, last_login = NOW() WHERE id = ?';
         await connection.query(updateSql, [refresh_token, user.id]);
 
-        res.json({ token, refresh_token, id: user.id });
+        res.json({ token, refresh_token, id: user.id, role: user.role });
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error logging in' });
     }
 };
+
 
 export const refresh_token = async (req, res) => {
     const { refresh_token } = req.body;

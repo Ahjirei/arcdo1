@@ -6,9 +6,8 @@ import HTEDashboardPage from './pages/HTEDashboardPage';
 import MoasPage from './pages/MoasPage';
 import OJTCoordinatorsPage from './pages/OJTCoordinatorsPage';
 import IndustryPartnersPage from './pages/IndustryPartnersPage';
-import UserPage from './pages/UserPage';
 import OverviewPage from './pages/OverviewPage';
-import AdminProfile from './components/AdminProfile';
+import AdminProfile from './components/account/AdminProfile';
 import SignUp from './components/auth/SignUp';
 import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPasswordCard';
@@ -44,7 +43,6 @@ function App() {
           <Route path="/moas" element={<MoasPage />} />
           <Route path="/OJT-coordinators" element={<OJTCoordinatorsPage />} />
           <Route path="/industry-partners" element={<IndustryPartnersPage />} />
-          <Route path="/user-account" element={<UserPage />} />
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/adminprofile" element={<AdminProfile />} />
           <Route path="/add" element={<AddDataPage />} />
