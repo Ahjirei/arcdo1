@@ -14,13 +14,40 @@ import ResetPassword from './components/auth/ResetPasswordCard';
 import AddDataPage from './pages/AddDataPage';
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(
-    !!localStorage.getItem("token")
-  );
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
+    const verifyToken = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setIsAuthenticated(false);
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3001/api/auth/verify-token", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          localStorage.removeItem("user_id");
+        }
+      } catch (error) {
+        console.error("Token verification failed:", error);
+        setIsAuthenticated(false);
+      }
+    };
+
+    verifyToken();
+
     const handleStorageChange = () => {
-      setIsAuthenticated(!!localStorage.getItem("token"));
+      verifyToken();
     };
 
     window.addEventListener("storage", handleStorageChange);

@@ -13,15 +13,22 @@ export default function HomeNavbar() {
   const navigate = useNavigate();
 
   const handleSignOutClick = () => {
+    // Clear all auth-related items from localStorage
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_id");
+    localStorage.removeItem("role");
 
-    // Force re-render
+    // Force re-render of other components listening to storage events
     window.dispatchEvent(new Event("storage"));
 
-    // Redirect to login page
-    navigate("/login");
+    // Navigate to login and reset state
+    setIsDropdownOpen(false);
+    setModalOpen(false);
+    setIsMobileMenuOpen(false);
+    
+    // Use replace to prevent going back to protected routes
+    navigate("/login", { replace: true });
   };
 
   const menuItems = [
@@ -65,6 +72,13 @@ export default function HomeNavbar() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login", { replace: true });
+    }
+  }, [navigate]);
 
 
   return (

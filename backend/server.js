@@ -12,6 +12,7 @@ import coordinatorRoutes from './server/routes/coordinator.js';
 import moaRoutes from './server/routes/moa.js'
 import hteRoutes from './server/routes/hte.js'
 import ipRoutes from './server/routes/ip.js'
+import adminRoutes from './server/routes/admin.js'
 
 dotenv.config();
 
@@ -53,6 +54,7 @@ const startServer = async () => {
     app.use('/api/moa', moaRoutes);
     app.use('/api/hte', hteRoutes);
     app.use('/api/ip', ipRoutes);
+    app.use('/api/admin', adminRoutes);
 
     // Test Route
     app.get('/', (req, res) => {
