@@ -50,7 +50,8 @@ export default function Signin() {
             if (data.refresh_token) {
                 // Save the token and user ID in local storage
                 localStorage.setItem('token', data.refresh_token);
-                localStorage.setItem('user_id', data.id);  // Save user ID
+                localStorage.setItem('user_id', data.id); 
+                localStorage.setItem('role', data.role); 
 
                 console.log("userId: ", data.id)
     
