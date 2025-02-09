@@ -86,7 +86,8 @@ export default function SignUp() {
 
 
     return (
-        <div className="fixed inset-0 font-montserrat overflow-hidden h-screen bg-gradient-to-br from-pink-700 to-purple-900 flex justify-center items-center px-4">
+        <div className="fixed inset-0 font-montserrat overflow-hidden h-screen bg-cover flex justify-center items-center px-4"
+        style={{ backgroundImage: "url('/public/bg.png')" }}>
             <div className="relative p-8 w-full max-w-md h-[90vh] overflow-y-auto bg-white rounded-lg shadow-md sm:max-w-sm md:max-w-md">
                 <h2 className="text-2xl font-semibold text-center mb-4">Create New Account</h2>
                 <p className="text-center text-gray-600 mb-6">Please provide your details</p>
@@ -101,7 +102,7 @@ export default function SignUp() {
                                 name="email"
                                 value={formData.email}
                                 onChange={handleInputChange}
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 placeholder="name@gmail.com"
                                 required
                             />
@@ -117,7 +118,7 @@ export default function SignUp() {
                                     id="password"
                                     value={formData.password}
                                     onChange={handleInputChange}
-                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                     placeholder="••••••••"
                                     required
                                 />
@@ -146,7 +147,7 @@ export default function SignUp() {
                                 name="name"
                                 value={formData.name}
                                 onChange={handleInputChange}
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 placeholder="Sandara Park"
                                 required
                             />
@@ -161,7 +162,7 @@ export default function SignUp() {
                                 id="contact_number"
                                 value={formData.contact_number}
                                 onChange={handleInputChange}
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 placeholder="123-456-7890"
                                 required
                             />
@@ -176,7 +177,7 @@ export default function SignUp() {
                                 id="position"
                                 value={formData.position}
                                 onChange={handleInputChange}
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 placeholder="Secretary"
                                 required
                             />
@@ -190,7 +191,7 @@ export default function SignUp() {
                                 id="campus"
                                 value={formData.campus}
                                 onChange={handleInputChange}
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 required
                             >
                                 <option value="">Select</option>
@@ -211,14 +212,14 @@ export default function SignUp() {
                                 id="college"
                                 value={formData.college}
                                 onChange={handleInputChange}
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 placeholder="College of Engineering"
                                 required
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-purple-700 text-white py-2 rounded-md hover:bg-purple-500 transition"
+                            className="w-full bg-[#800101] text-white py-2 rounded-md hover:bg-red-600 transition"
                         >
                             Sign Up
                         </button>

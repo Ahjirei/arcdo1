@@ -65,7 +65,8 @@ export default function ResetPassword() {
     };
 
     return (
-        <div className="h-screen bg-gradient-to-br from-purple-900 to-pink-700 flex justify-center items-center px-4">
+        <div className="h-screen bg-cover flex justify-center items-center px-4"
+        style={{ backgroundImage: "url('/public/bg.png')" }}>
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-xs sm:max-w-sm md:max-w-md">
                 <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
                     <h3 className="text-2xl font-semibold text-center">
@@ -85,7 +86,7 @@ export default function ResetPassword() {
                                     id="newPassword"
                                     value={newPassword}
                                     onChange={(e) => setNewPassword(e.target.value)}
-                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                     placeholder="Enter your new password"
                                     required
                                 />
@@ -109,7 +110,7 @@ export default function ResetPassword() {
                                     id="confirmPassword"
                                     value={confirmPassword}
                                     onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                     placeholder="Confirm your new password"
                                     required
                                 />
@@ -133,8 +134,8 @@ export default function ResetPassword() {
                             type="submit"
                             disabled={isSaving || isSubmitted} // Disable button on success
                             className={`w-full py-2 rounded-md text-white transition 
-                                ${isSaving || isSubmitted ? 'bg-gray-400' : 'bg-purple-700 hover:bg-purple-500'}
-                                focus:outline-none focus:ring-4 focus:ring-purple-300`}
+                                ${isSaving || isSubmitted ? 'bg-gray-400' : 'bg-[#800101] hover:bg-red-600'}
+                                focus:outline-none focus:ring-4 focus:ring-red-400`}
                         >
                             {isSubmitted ? 'Password Reset Successful' : isSaving ? 'Saving...' : 'Reset Password'}
                         </button>

@@ -44,7 +44,8 @@ export default function ForgotPassword() {
     };
 
     return (
-        <div className="h-screen bg-gradient-to-br from-purple-900 to-pink-700 flex justify-center items-center px-4">
+        <div className="h-screen bg-cover flex justify-center items-center px-4"
+        style={{ backgroundImage: "url('/public/bg.png')" }}>
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-xs sm:max-w-sm md:max-w-md">
                 <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-700">
                     <h3 className="text-2xl font-semibold text-center mb-4">
@@ -63,7 +64,7 @@ export default function ForgotPassword() {
                                 id="email"
                                 value={email}
                                 onChange={handleEmailChange}
-                                className="mt-1 p-2 w-full border-black rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border-black rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 placeholder="name@example.com"
                                 required
                             />
@@ -79,8 +80,8 @@ export default function ForgotPassword() {
                             type="submit"
                             disabled={isLoading || isSubmitted} 
                             className={`w-full px-4 py-2 rounded-lg font-medium text-white transition duration-300 
-                                ${isLoading || isSubmitted ? 'bg-gray-400' : 'bg-purple-700 hover:bg-purple-500'}
-                                focus:outline-none focus:ring-4 focus:ring-purple-300`}
+                                ${isLoading || isSubmitted ? 'bg-gray-400' : 'bg-[#800101] hover:bg-red-600'}
+                                focus:outline-none focus:ring-4 focus:ring-red-400`}
                         >
                             {isSubmitted ? 'Check your Email' : isLoading ? 'Sending Verification...' : 'Send Verification'}
                         </button>

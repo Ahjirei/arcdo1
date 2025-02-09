@@ -273,7 +273,7 @@ export default function OJTCoordinators() {
       {/* mobile view section */}
       <div className="md:hidden">
         {currentCoordinators.map((coordinator, index) => (
-          <div key={coordinator.id} className={`border border-gray-200 p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+          <div key={coordinator.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
                 <div className="font-bold">{coordinator.name}</div>

@@ -262,11 +262,12 @@ const Overview = () => {
       // Define Gradient Backgrounds
       const gradientClass = card.title === "Host Training Establishments (HTEs)" || card.title === "On-the-Job Training Coordinators" 
         ? "bg-gradient-to-b from-[#31111D] to-[#9A3259]"  // HTE and OJT Coordinators
-        : "bg-gradient-to-b from-[#BC407A] to-[#530061]";  // MOAs and Industry Partners
+        : "bg-gradient-to-b from-[#DAA521] via-[#E3B419] via-[#EDC211] via-[#F6D108] to-[#FFDF00]";  // MOAs and Industry Partners
+        
         
       const gradientClass2 = card.title === "Host Training Establishments (HTEs)" || card.title === "On-the-Job Training Coordinators" 
         ? "bg-gradient-to-b from-[#9A3259] to-[#31111D]"  // HTE and OJT Coordinators
-        : "bg-gradient-to-b from-[#530061] to-[#BC407A]";  // MOAs and Industry Partners
+        : "bg-gradient-to-b from-[#FFDF00] via-[#F6D108] via-[#EDC211] via-[#E3B419] to-[#DAA521]";  // MOAs and Industry Partners
 
         const transformScale = clickedCard === index 
     ? (window.innerWidth < 768 

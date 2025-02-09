@@ -78,9 +78,10 @@ export default function Signin() {
     };
 
     return (
-        <div className="h-screen bg-gradient-to-br from-purple-900 to-pink-700 flex justify-center items-center px-4">
+        <div className="h-screen bg-cover flex justify-center items-center px-4"
+        style={{ backgroundImage: "url('/public/bg.png')" }}>
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-xs sm:max-w-sm md:max-w-md">
-                <h2 className="text-2xl font-semibold text-center mb-4">Login to Account</h2>
+                <h2 className="text-2xl font-semibold text-center mb-4">Login to <b>ARCDO Dashboard</b></h2>
                 <p className="text-center text-gray-600 mb-6">Please enter your email and password to continue</p>
                 <div className="p-4">
                     {error && (
@@ -97,7 +98,7 @@ export default function Signin() {
                             <input
                                 type="email"
                                 name="email"
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 placeholder="name@gmail.com"
                                 required
                                 value={email} 
@@ -113,7 +114,7 @@ export default function Signin() {
                                     type={passwordVisible ? 'text' : 'password'}
                                     name="password"
                                     placeholder="••••••••"
-                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
+                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                     required
                                 />
                                 <button
@@ -143,13 +144,13 @@ export default function Signin() {
                                     Remember me
                                 </label>
                             </div>
-                            <a href="#" className="text-sm font-medium text-gray-700 flex justify-between"  onClick={handleForgotPassClick}>
+                            <a href="#" className="text-sm font-medium text-gray-700 flex justify-between hover:underline dark:text-gray-700"  onClick={handleForgotPassClick}>
                                 Forgot Password? 
                             </a>
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-purple-700 text-white py-2 rounded-md hover:bg-purple-500 transition"   
+                            className="w-full bg-[#800101] text-white py-2 rounded-md hover:bg-red-600 transition"   
                         >
                             Sign In
                         </button>

@@ -279,7 +279,7 @@ export default function Moas() {
   {/* Mobile View (Cards) */}
   <div className="md:hidden">
     {currentData.map((Moa, index) => (
-      <div key={Moa.id} className={`border border-gray-200 p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+      <div key={Moa.id} className={`border border-black p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
        <div className="flex justify-between items-center">
        <div className="flex items-center space-x-3 flex-1">
           <div className="font-bold">{Moa.company}</div>
