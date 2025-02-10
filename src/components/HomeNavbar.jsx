@@ -188,6 +188,13 @@ export default function HomeNavbar() {
             ))}
           </ul>
           
+          <button
+            onClick={() => setModalOpen(true)}
+            className="flex items-center px-4 py-2 text-black hover:bg-gray-200 rounded-lg w-full"
+          >
+            <User className="h-5 w-5 mr-2" /> Admin Profile
+          </button>
+
           <hr className="my-3" />
           <button
             onClick={handleSignOutClick}

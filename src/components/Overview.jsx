@@ -409,7 +409,7 @@ const Overview = () => {
 
 
       {/* Nature of Businesses and MOA STATUS */}
-<div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+<div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4 mb-6 mt-5">
   {/* Bar Chart: Nature of Businesses */}
   <div className="bg-white shadow rounded-lg p-2 flex flex-col min-h-[40px]">
     <h3 className="text-lg font-medium text-gray-800 p-5">

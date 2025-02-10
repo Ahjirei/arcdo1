@@ -82,11 +82,6 @@ export default function NavbarTopConfigurationPage() {
         <ul className="hidden lg:flex items-center space-x-5 text-white">
           <li>
             <button className="text-md hover:text-gray-400 transition duration-300">
-              <Sun className="h-5 w-5" />
-            </button>
-          </li>
-          <li>
-            <button className="text-md hover:text-gray-400 transition duration-300">
               <RotateCcw className="h-5 w-5" />
             </button>
           </li>
@@ -140,23 +135,8 @@ export default function NavbarTopConfigurationPage() {
               <ul className="space-y-3">
                 <li>
                   <button className="flex items-center text-black hover:text-red-800 transition duration-300">
-                    <Sun className="h-5 w-5 mr-2" />
-                    <span>Light Mode</span>
-                  </button>
-                </li>
-                <li>
-                  <button className="flex items-center text-black hover:text-red-800 transition duration-300">
                     <RotateCcw className="h-5 w-5 mr-2" />
-                    <span>Reset</span>
-                  </button>
-                </li>
-                <li>
-                  <button
-                    className="flex items-center text-black hover:text-red-800 transition duration-300"
-                    onClick={handleAddClick}
-                  >
-                    <FileText className="h-5 w-5 mr-2" />
-                    <span>Add Item</span>
+                    <span>Refresh</span>
                   </button>
                 </li>
                 {/* Search icon inside settings */}
