@@ -24,7 +24,6 @@ export const register = async (req, res) => {
     try {
         const { email, password, name, contact_number, position, campus, college, role = 'User'} = req.body;
         
-        // Input validation
         if (!email || !password || !name || !contact_number || !position || !campus || !college) {
             return res.status(400).json({ error: 'All fields are required.' });
         }
@@ -39,28 +38,47 @@ export const register = async (req, res) => {
 
         const connection = await initializeConnection();
 
-        // Check if the email already exists
         const [existingUser] = await connection.query("SELECT id FROM users WHERE email = ?", [email]);
         if (existingUser.length > 0) {
             return res.status(400).json({ error: 'Email already registered.' });
         }
 
-        // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
         
-        // Insert user into users table
         const [userResult] = await connection.query(
-            "INSERT INTO users (email, password, is_verified, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())",
+            "INSERT INTO users (email, password, created_at, updated_at) VALUES (?, ?, NOW(), NOW())",
             [email, hashedPassword, 0]
         );
 
         const userId = userResult.insertId;
 
-        // Insert additional user info
         await connection.query(
             "INSERT INTO user_account (user_id, name, contact_number, position, campus, college) VALUES (?, ?, ?, ?, ?, ?)",
             [userId, name, contact_number, position, campus, college]
         );
+
+        // Notify Super Admins about the new registration
+        const adminSql = "SELECT email FROM users WHERE role = 'Super Admin'";
+        const [adminResults] = await connection.query(adminSql);
+        
+        if (adminResults.length > 0) {
+            const adminEmails = adminResults.map(admin => admin.email);
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: adminEmails.join(','),
+                subject: 'New User Registration',
+                text: `A new user has registered IN ARCDO Dashboard with email: ${email}.
+                       Add them as an admin` 
+            };
+            
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                } else {
+                    console.log('Email sent:', info.response);
+                }
+            });
+        }
         
         res.status(201).json({ message: 'Registration successful. Please verify your account.', user_id: userId });
     } catch (error) {
@@ -68,6 +86,7 @@ export const register = async (req, res) => {
         res.status(500).json({ error: `An error occurred during registration: ${error.message}` });
     } 
 };
+
 
 export const userDetails = async (req, res) => {
     const user_id = req.params.id;
@@ -159,7 +178,6 @@ export const login = async (req, res) => {
         }
 
         const user = results[0];
-
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
             return res.status(401).send('Invalid email or password');
@@ -171,11 +189,34 @@ export const login = async (req, res) => {
         const updateSql = 'UPDATE users SET refresh_token = ?, last_login = NOW() WHERE id = ?';
         await connection.query(updateSql, [refresh_token, user.id]);
 
+        // Notify Super Admins about the login event
+        const adminSql = "SELECT email FROM users WHERE role = 'Super Admin'";
+        const [adminResults] = await connection.query(adminSql);
+        
+        if (adminResults.length > 0) {
+            const adminEmails = adminResults.map(admin => admin.email);
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: adminEmails.join(','),
+                subject: 'Security Alert: User Logged In',
+                text: `User with email ${user.email} has logged into the ARCDO Dashboard.`
+            };
+            
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.error('Error sending email:', error);
+                } else {
+                    console.log('Email sent:', info.response);
+                }
+            });
+        }
+
         res.json({ token, refresh_token, id: user.id, role: user.role });
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error logging in' });
     }
 };
+
 
 
 export const refresh_token = async (req, res) => {
