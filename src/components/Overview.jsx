@@ -13,6 +13,7 @@ const Overview = () => {
   const [clickedBarIndex, setClickedBarIndex] = useState(null);
   const [selectedYear, setSelectedYear] = useState("2020");
   
+  
 
   
 
@@ -47,24 +48,24 @@ const Overview = () => {
     ],
     tableData: {
       HTEs: [
-        { DOC: "00001", COMPANY: "Christine Brooks", ADDRESS: "089 Kutch Green Apt. 448", DATE: "14 Feb 2019", business: "Electric", STATUS: "Completed" },
-        { DOC: "00002", COMPANY: "Rosie Pearson", ADDRESS: "979 Immanuel Ferry Suite 526", DATE: "14 Feb 2019", business: "Book", STATUS: "Processing" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00001", COMPANY: "Christine Brooks", ADDRESS: "089 Kutch Green Apt. 448", DATE: "14 Feb 2019", business: "Electric", STATUS: "Completed" },
+        { ID: "00002", COMPANY: "Rosie Pearson", ADDRESS: "979 Immanuel Ferry Suite 526", DATE: "14 Feb 2019", business: "Book", STATUS: "Processing" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
       ],
       "INDUSTRY PARTNERS": [
-        { DOC: "00004", COMPANY: "Tech Innovators", ADDRESS: "45 Silicon Valley", DATE: "10 Mar 2020", business: "Software", STATUS: "Active" },
-        { DOC: "00005", COMPANY: "Green Solutions", ADDRESS: "123 Eco Park", DATE: "20 Jan 2021", business: "Renewables", STATUS: "Inactive" },
+        { ID: "00004", COMPANY: "Tech Innovators", ADDRESS: "45 Silicon Valley", DATE: "10 Mar 2020", business: "Software", STATUS: "Active" },
+        { ID: "00005", COMPANY: "Green Solutions", ADDRESS: "123 Eco Park", DATE: "20 Jan 2021", business: "Renewables", STATUS: "Inactive" },
       ],
       "OJT COORDINATORS": [
-        { DOC: "00006", COMPANY: "Alice Johnson", ADDRESS: "789 Training Ave", DATE: "05 May 2021", business: "OJT Management", STATUS: "Active" },
-        { DOC: "00007", COMPANY: "Mark Smith", ADDRESS: "567 Coordinator Lane", DATE: "15 Jul 2021", business: "OJT Oversight", STATUS: "Inactive" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
-        { DOC: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00006", NAME: "Alice Johnson", CAMPUS: "789 Training Ave", COLLEGE: "05 May 2021", EMAIL: "OJT Management", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "Active" },
+        { ID: "00007", NAME: "Mark Smith", CAMPUS: "567 Coordinator Lane", COLLEGE: "15 Jul 2021", EMAIL: "OJT Oversight", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30",STATUS: "On Leave" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30",STATUS: "Retired" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "Retired" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "Active" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "On Leave" },
 
       ],
     },
@@ -404,10 +405,6 @@ const Overview = () => {
 
 
 
-
-
-
-
       {/* Nature of Businesses and MOA STATUS */}
 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4 mb-6 mt-5">
   {/* Bar Chart: Nature of Businesses */}
@@ -467,46 +464,89 @@ const Overview = () => {
           </select>
         </div>
 
-        {/* Table */}
-        <div className="flex-1 overflow-auto max-h-60 -mt-5 ">
-          <table className="w-full table-auto text-center ">
-            <thead className="sticky top-0 bg-white shadow">
-              <tr  className="border-b border-gray-200">
-                <th className="py-2 px-4">DOC #</th>
-                <th className="py-2 px-4">COMPANY</th>
-                <th className="py-2 px-4">ADDRESS</th>
-                <th className="py-2 px-4">DATE</th>
-                <th className="py-2 px-4">NATURE OF BUSINESS</th>
-                <th className="py-2 px-4">STATUS</th>
+      {/* Table */}
+      <div className="flex-1 overflow-auto max-h-60 -mt-5 ">
+        <table className="w-full table-auto text-center ">
+          <thead className="sticky top-0 bg-white shadow">
+            <tr className="border-b border-gray-200">
+              {activeTab === "OJT COORDINATORS" ? (
+                <>
+                  <th className="px-4 py-2 text-left border-b">NAME</th>
+                  <th className="px-4 py-2 text-left border-b">CAMPUS</th>
+                  <th className="px-4 py-2 text-left border-b">COLLEGE</th>
+                  <th className="px-4 py-2 text-left border-b">EMAIL</th>
+                  <th className="px-4 py-2 text-left border-b">OFFICE</th>
+                  <th className="px-4 py-2 text-left border-b">ASSIGNED STUDENTS</th>
+                  <th className="px-4 py-2 text-left border-b">STATUS</th>
+                  <th className="px-4 py-2 text-left border-b"></th>
+                </>
+              ) : (
+                <>
+                  <th className="py-2 px-4">ID #</th>
+                  <th className="py-2 px-4">COMPANY</th>
+                  <th className="py-2 px-4">ADDRESS</th>
+                  <th className="py-2 px-4">DATE</th>
+                  <th className="py-2 px-4">NATURE OF BUSINESS</th>
+                  <th className="py-2 px-4">STATUS</th>
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {data.tableData[activeTab].map((row, index) => (
+              <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 text-left">
+                {activeTab === "OJT COORDINATORS" ? (
+                  <>
+                    <td className="py-2 px-4">{row.NAME}</td>
+                    <td className="py-2 px-4">{row.CAMPUS}</td>
+                    <td className="py-2 px-4">{row.COLLEGE}</td>
+                    <td className="py-2 px-4">{row.EMAIL}</td>
+                    <td className="py-2 px-4">{row.OFFICE}</td>
+                    <td className="py-2 px-4">{row.ASSIGNED_STUDENTS}</td>
+                    <td
+                      className={`py-2 px-4 text-center rounded-full font-normal ${
+                        row.STATUS === "Active"
+                          ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "On Leave"
+                          ? "text-yellow-600 bg-yellow-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Retired"
+                          ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
+                          : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
+                      }`}
+                    >
+                      {row.STATUS}
+                    </td>
+                    <td className="py-2 px-4"></td>
+                  </>
+                ) : (
+                  <>
+                    <td className="py-2 px-4">{row.ID}</td>
+                    <td className="py-2 px-4">{row.COMPANY}</td>
+                    <td className="py-2 px-4">{row.ADDRESS}</td>
+                    <td className="py-2 px-4">{row.DATE}</td>
+                    <td className="py-2 px-4">{row.business}</td>
+                    <td
+                      className={`py-2 px-4 text-center rounded-full font-normal ${
+                        row.STATUS === "Completed"
+                          ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Processing"
+                          ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Rejected"
+                          ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Active"
+                          ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                          : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
+                      }`}
+                    >
+                      {row.STATUS}
+                    </td>
+                  </>
+                )}
               </tr>
-            </thead>
-            <tbody>
-              {data.tableData[activeTab].map((row, index) => (
-                <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 text-center">
-                  <td className="py-2 px-4">{row.DOC}</td>
-                  <td className="py-2 px-4">{row.COMPANY}</td>
-                  <td className="py-2 px-4">{row.ADDRESS}</td>
-                  <td className="py-2 px-4">{row.DATE}</td>
-                  <td className="py-2 px-4">{row.business}</td>
-                  <td
-                    className={`py-2 px-4 text-center rounded-full font-normal ${
-                      row.STATUS === "Completed"
-                        ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
-                        : row.STATUS === "Processing"
-                        ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
-                        : row.STATUS === "Rejected"
-                        ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
-                        : row.STATUS === "Active"
-                        ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
-                        : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
-                    }`}
-                  >
-                    {row.STATUS}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+
         </div>
       </div>
     </div>
