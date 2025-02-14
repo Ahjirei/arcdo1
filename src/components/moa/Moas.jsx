@@ -43,10 +43,10 @@ export default function Moas() {
   // For the "date" filter, we compare the year of the 'moaStarted' field.
   const filteredMoas = moas.filter((moa) => {
     const matchesDate = filters.date
-      ? new Date(moa.moaStarted).getFullYear().toString() === filters.date
+      ? new Date(moa.year_moa_started).getFullYear().toString() === filters.date
       : true;
     const matchesBusiness = filters.business
-      ? moa.business.toLowerCase().includes(filters.business.toLowerCase())
+      ? moa.business_type?.toLowerCase().includes(filters.business.toLowerCase())
       : true;
     const matchesValidity = filters.validity ? moa.validity === filters.validity : true;
 
@@ -290,7 +290,7 @@ export default function Moas() {
           <div key={moa.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
-                <div className="font-bold">{moa.company}</div>
+                <div className="font-bold">{moa.company_name}</div>
                 <div className={`px-4 rounded-full py-1 ${getValidityColor(moa.validity)}`}>
                   {moa.validity}
                 </div>

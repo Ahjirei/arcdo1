@@ -10,3 +10,8 @@ router.put('/updateMoa/:id', updateMoa);
 router.delete('/deleteMoa/:id', deleteMoa);
 
 export default router;
+
+
+
+
+
