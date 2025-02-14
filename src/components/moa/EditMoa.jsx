@@ -100,8 +100,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">Validity</label>
               <select
-                value={moa.validity || ""}
-                onChange={(e) => setMoa({ ...moa, validity: e.target.value })}
+                value={moa.moa_status || ""}
+                onChange={(e) => setMoa({ ...moa, moa_status: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="Processing">Processing</option>

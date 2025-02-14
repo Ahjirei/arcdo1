@@ -15,7 +15,7 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
     expiration_date: "",
     type_of_moa: "",
     moa_draft_sent: "",
-    validity: "Processing"
+    moa_status: "Processing"
   });
 
   const [error, setError] = useState("");
@@ -120,8 +120,8 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">Validity</label>
               <select
-                value={newMoa.validity}
-                onChange={(e) => setNewMoa({ ...newMoa, validity: e.target.value })}
+                value={newMoa.moa_status}
+                onChange={(e) => setNewMoa({ ...newMoa, moa_status: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="Processing">Processing</option>
