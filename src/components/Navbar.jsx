@@ -7,6 +7,10 @@ import {
   FileText, // You can add this if needed for the Export icon
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import * as XLSX from 'xlsx';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
+import axios from 'axios';
 
 export default function NavbarTopConfigurationPage() {
   const location = useLocation();
@@ -38,10 +42,135 @@ export default function NavbarTopConfigurationPage() {
     navigate("/add ");
   };
 
-  const handleExportClick = (type) => {
-    // Handle export logic here (e.g., download Excel or PDF file)
-    console.log(`Export as ${type}`);
-    setIsExportOpen(false); // Close dropdown after selection
+  const getPageFromPath = (pathname) => {
+    const path = pathname.toLowerCase();
+    if (path.includes('industry-partners')) {
+      return 'INDUSTRYPARTNERS';
+    } else if (path.includes('moas')) {
+      return 'MOAS';
+    } else if (path.includes('ojt-coordinators')) {
+      return 'COORDINATORS';
+    }
+    return '';
+  };
+
+  const handleExportClick = async (type) => {
+    try {
+      const currentPath = getPageFromPath(location.pathname);
+      let endpoint = '';
+      let filename = '';
+      let title = '';
+      
+      switch(currentPath) {
+        case 'INDUSTRYPARTNERS':
+          endpoint = 'http://localhost:3001/api/ip/getPartner';
+          filename = 'industry_partners';
+          title = 'Industry Partners List';
+          break;
+        case 'MOAS':
+          endpoint = 'http://localhost:3001/api/moa/getMoa';
+          filename = 'moa_list';
+          title = 'MOA List';
+          break;
+        case 'COORDINATORS':
+          endpoint = 'http://localhost:3001/api/coordinator/getCoordinator';
+          filename = 'ojt_coordinators';
+          title = 'OJT Coordinators List';
+          break;
+        default:
+          console.error('Unknown page for export:', location.pathname);
+          return;
+      }
+
+      console.log('Exporting from endpoint:', endpoint); // Debug log
+
+      const response = await axios.get(endpoint);
+      const data = response.data;
+
+      if (type === 'Excel') {
+        exportToExcel(data, filename);
+      } else if (type === 'PDF') {
+        exportToPDF(data, title, filename, currentPath);
+      }
+      
+      setIsExportOpen(false);
+    } catch (error) {
+      console.error('Error fetching data for export:', error);
+    }
+  };
+
+  const exportToExcel = (data, filename) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, `${filename}.xlsx`);
+  };
+
+  const exportToPDF = (data, title, filename, currentPath) => {
+    const doc = new jsPDF();
+    
+    let tableColumn = [];
+    let tableRows = [];
+
+    switch(currentPath) {
+      case 'INDUSTRYPARTNERS':
+        tableColumn = [
+          "ID", "Company Name", "Business Type", "Campus", "Contact Person",
+          "Contact Number", "Email", "Expiry Date", "Fax Number", "MOA Status",
+          "Office Address", "Position", "College", "Courses", "Remarks",
+          "Telephone", "MOA Notarized", "Year Included"
+        ];
+        tableRows = data.map(item => [
+          item.id, item.company_name, item.business_type, item.campus,
+          item.contact_person, item.contact_number, item.email_address,
+          item.expiry_date, item.fax_number, item.moa_status,
+          item.office_address, item.position_department, item.preferred_college,
+          item.preferred_courses, item.remarks, item.telephone,
+          item.with_moa_date_notarized, item.year_included
+        ]);
+        break;
+      case 'MOAS':
+        tableColumn = [
+          "ID", "Company Name", "Address", "Business Type", "Status",
+          "Expiration Date", "MOA Started", "Contact Person", "Contact No",
+          "Email", "Draft Sent", "Remarks", "Type", "Validity", "Date Notarized"
+        ];
+        tableRows = data.map(item => [
+          item.id, item.company_name, item.address, item.business_type,
+          item.moa_status, item.expiration_date, item.year_moa_started,
+          item.contact_person, item.contact_no, item.email,
+          item.moa_draft_sent, item.remarks, item.type_of_moa,
+          item.validity, item.date_notarized
+        ]);
+        break;
+      case 'COORDINATORS':
+        tableColumn = [
+          "ID", "Name", "Campus", "College", "Assigned Students",
+          "Status", "Email", "Office"
+        ];
+        tableRows = data.map(item => [
+          item.id, item.name, item.campus, item.college,
+          item.assigned_student, item.status, item.email, item.office
+        ]);
+        break;
+      default:
+        console.error('Unknown page type for PDF export');
+        return;
+    }
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+      headStyles: { fillColor: [128, 1, 1] },
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+      },
+    });
+
+    doc.text(title, 14, 15);
+    doc.save(`${filename}.pdf`);
   };
 
   return (
