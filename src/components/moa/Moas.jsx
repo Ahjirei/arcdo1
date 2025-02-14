@@ -8,16 +8,16 @@ import EditMoa from "../moa/EditMoa";
 
 export default function Moas() {
   const allData = [
-    { id: "00001", company: "Christine Brooks", address: "089 Kutch Green Apt. 448", date: "2019-09-04", business: "Electric", validity: "Completed" },
-    { id: "00002", company: "Rosie Pearson", address: "979 Immanuel Ferry Suite 526", date: "2019-05-28", business: "Book", validity: "Processing" },
-    { id: "00003", company: "Jasmine Lee", address: "452 Main St. Suite 12", date: "2020-01-15", business: "Consulting", validity: "Completed" },
-    { id: "00004", company: "Michael Harris", address: "301 Elm St. Apt. 22", date: "2019-08-30", business: "Retail", validity: "On Hold" },
-    { id: "00005", company: "Sarah Carter", address: "123 Pine Ave. Suite 8B", date: "2020-11-19", business: "Food Services", validity: "Rejected" },
-    { id: "00006", company: "William Jones", address: "984 Maple St. Building 3", date: "2021-02-03", business: "Tech", validity: "Processing" },
-    { id: "00007", company: "Emma Wilson", address: "17 Oak Lane", date: "2021-07-12", business: "Education", validity: "Completed" },
-    { id: "00008", company: "James Brown", address: "456 Cedar Rd.", date: "2022-03-23", business: "Healthcare", validity: "Processing" },
-    { id: "00009", company: "Alice Johnson", address: "789 Pine St.", date: "2022-12-10", business: "Finance", validity: "Completed" },
-    { id: "00010", company: "Robert Smith", address: "321 Birch Rd.", date: "2023-01-18", business: "Logistics", validity: "On Hold" },
+    { id: "00001", company: "Christine Brooks", address: "089 Kutch Green Apt. 448", date: "2019-09-04", business: "Electric", validity: "Active" },
+    { id: "00002", company: "Rosie Pearson", address: "979 Immanuel Ferry Suite 526", date: "2019-05-28", business: "Book", validity: "Inactive" },
+    { id: "00003", company: "Jasmine Lee", address: "452 Main St. Suite 12", date: "2020-01-15", business: "Consulting", validity: "Active" },
+    { id: "00004", company: "Michael Harris", address: "301 Elm St. Apt. 22", date: "2019-08-30", business: "Retail", validity: "Inactive" },
+    { id: "00005", company: "Sarah Carter", address: "123 Pine Ave. Suite 8B", date: "2020-11-19", business: "Food Services", validity: "Active" },
+    { id: "00006", company: "William Jones", address: "984 Maple St. Building 3", date: "2021-02-03", business: "Tech", validity: "Inactive" },
+    { id: "00007", company: "Emma Wilson", address: "17 Oak Lane", date: "2021-07-12", business: "Education", validity: "Active" },
+    { id: "00008", company: "James Brown", address: "456 Cedar Rd.", date: "2022-03-23", business: "Healthcare", validity: "Inactive" },
+    { id: "00009", company: "Alice Johnson", address: "789 Pine St.", date: "2022-12-10", business: "Finance", validity: "Active" },
+    { id: "00010", company: "Robert Smith", address: "321 Birch Rd.", date: "2023-01-18", business: "Logistics", validity: "Inactive" },
     ];
 
   const [Moa, setmoa] = useState([allData]);
@@ -74,14 +74,10 @@ export default function Moas() {
 
   const getValidityColor = (validity) => {
     switch (validity) {
-      case "Completed":
+      case "Active":
         return "bg-green-100 text-green-600";
-      case "Processing":
-        return "bg-purple-100 text-purple-600";
-      case "Rejected":
+      case "Inactive":
         return "bg-red-100 text-red-600";
-      case "On Hold":
-        return "bg-yellow-100 text-yellow-600";
       default:
         return "bg-gray-100 text-gray-600";
     }
@@ -152,10 +148,8 @@ export default function Moas() {
               className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
             >
               <option value="" disabled>MOA Validity</option>
-              <option value="Completed">Completed</option>
-              <option value="Processing">Processing</option>
-              <option value="On Hold">On Hold</option>
-              <option value="Rejected">Rejected</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
             </select>
 
             {/* Divider (Visible only on larger screens) */}
