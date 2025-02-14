@@ -9,16 +9,6 @@ import EditHTE from "../hte/EditHTE";
 
 
 export default function HTEDashboard() {
-  // const allData = [
-  //   { id: 1, company: "Company A", address: "Address 1", date: "2025-01-20", business: "IT", validity: "Completed" },
-  //   { id: 2, company: "Company B", address: "Address 2", date: "2025-01-18", business: "Consulting", validity: "Processing" },
-  //   { id: 3, company: "Company C", address: "Address 3", date: "2025-01-15", business: "Education", validity: "On Hold" },
-  //   { id: 4, company: "Company D", address: "Address 4", date: "2025-01-10", business: "Manufacturing", validity: "Rejected" },
-  //   { id: 5, company: "Company E", address: "Address 5", date: "2025-01-08", business: "Retail", validity: "Completed" },
-  //   { id: 6, company: "Company F", address: "Address 6", date: "2025-01-05", business: "Logistics", validity: "Processing" },
-  //   { id: 7, company: "Company G", address: "Address 7", date: "2025-01-03", business: "Healthcare", validity: "On Hold" },
-  //   { id: 8, company: "Company H", address: "Address 8", date: "2025-01-01", business: "Finance", validity: "Rejected" },
-  // ];
 
   const [hte, sethte] = useState([ ]);
   const [editingHTE, setEditingHTE] = useState(null);
@@ -452,6 +442,10 @@ export default function HTEDashboard() {
           <AddHTE
             isOpen={isAddModalOpen}
             onClose={() => setIsAddModalOpen(false)}
+            onHTEAdded={() => {
+              fetchHte();
+              setIsAddModalOpen(false);
+            }}
           />
 
           <EditHTE
