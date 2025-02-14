@@ -77,11 +77,6 @@ export default function HTEDashboard() {
     setOpenDropdown(null);
   };
 
-  // const handleDelete = (id) => {
-  //   sethte(hte.filter((hte) => hte.id !== id));
-  //   setOpenDropdown(null);
-  // };
-
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:3001/api/hte/deleteHte/${id}`);
@@ -271,7 +266,7 @@ export default function HTEDashboard() {
                 <td className="px-4 py-2 border-t block md:table-cell">{hte.college}</td>
                 <td className="px-4 py-2 border-t block md:table-cell">{hte.campus}</td>
                 <td className="px-4 py-2 border-t block md:table-cell">{hte.year_submitted}</td>
-                <td className="px-4 py-2 border-t block md:table-cell">{hte.with_moa_date_notarized}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}</td>
                 <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.expiry_date).toLocaleDateString("en-CA")}</td>
                 <td className="px-4 py-2 border-t block md:table-cell">{hte.business_type}</td>
                 <td className="px-4 py-2 border-t block md:table-cell">

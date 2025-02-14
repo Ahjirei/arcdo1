@@ -150,6 +150,9 @@ export const updateHte = async (req, res) => {
             return res.status(400).json({ error: "All fields are required." });
         }
 
+        const formattedExpiryDate = new Date(expiry_date).toISOString().split("T")[0];
+        const formattedMoaDate = new Date(with_moa_date_notarized).toISOString().split("T")[0];
+
         const connection = await initializeConnection();
         const [result] = await connection.query(
             `UPDATE hte SET 
@@ -170,9 +173,9 @@ export const updateHte = async (req, res) => {
                 campus,
                 college,
                 course,
-                expiry_date,
+                formattedExpiryDate,
                 position_department,
-                with_moa_date_notarized,
+                formattedMoaDate,
                 year_included,
                 id,
             ]

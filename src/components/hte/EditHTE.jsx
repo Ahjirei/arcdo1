@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHTEEdited }) => {
+const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHteEdited }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -10,6 +10,11 @@ const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHTEEdited }) =>
     try {
       setIsLoading(true);
       setError("");
+
+      const formatDate = (date) => {
+        if (!date) return null; // Ensure null if no date is set
+        return new Date(date).toISOString().split("T")[0]; // Format YYYY-MM-DD
+      };
 
       const response = await fetch(`http://localhost:3001/api/hte/updateHte/${editingHTE.id}`, {
         method: 'PUT',
@@ -29,9 +34,9 @@ const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHTEEdited }) =>
           campus: editingHTE.campus,
           college: editingHTE.college,
           course: editingHTE.course,
-          expiry_date: editingHTE.expiry_date,
+          expiry_date: formatDate(editingHTE.expiry_date),
           position_department: editingHTE.position_department,
-          with_moa_date_notarized: editingHTE.with_moa_date_notarized,
+          with_moa_date_notarized: formatDate(editingHTE.with_moa_date_notarized),
           year_included: editingHTE.year_included
         }),
       });
@@ -42,7 +47,7 @@ const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHTEEdited }) =>
         throw new Error(data.error || 'Failed to update HTE');
       }
 
-      onHTEEdited();
+      onHteEdited();
     } catch (err) {
       setError(err.message);
     } finally {
@@ -225,7 +230,9 @@ const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHTEEdited }) =>
             </label>
             <input
               type="date"
-              value={editingHTE.with_moa_date_notarized}
+              value={editingHTE.with_moa_date_notarized 
+                ? new Date(editingHTE.with_moa_date_notarized).toISOString().split("T")[0] 
+                : ""}
               onChange={(e) => setEditingHTE({ ...editingHTE, with_moa_date_notarized: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
             />
@@ -237,7 +244,9 @@ const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHTEEdited }) =>
             </label>
             <input
               type="date"
-              value={editingHTE.expiry_date}
+              value={editingHTE.expiry_date 
+                ? new Date(editingHTE.expiry_date).toISOString().split("T")[0] 
+                : ""}
               onChange={(e) => setEditingHTE({ ...editingHTE, expiry_date: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
             />
