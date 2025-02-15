@@ -54,6 +54,7 @@ export default function NavbarTopConfigurationPage() {
     return '';
   };
 
+  
   const handleExportClick = async (type) => {
     try {
       const currentPath = getPageFromPath(location.pathname);
