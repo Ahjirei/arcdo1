@@ -2,167 +2,190 @@ import initializeConnection from '../config/db.js';
 
 // Get all MOA records
 export const getMoa = async (req, res) => {
-    let connection;
     try {
-        connection = await initializeConnection();
-        const [moaRecords] = await connection.query("SELECT * FROM moa");
-
-        // Format date fields for all records
-        const dateFields = ['expiration_date', 'year_moa_started', 'moa_draft_sent'];
-        moaRecords.forEach(record => {
-            dateFields.forEach(field => {
-                if (record[field]) {
-                    const date = new Date(record[field]);
-                    record[field] = date.toISOString().split('T')[0];
-                }
-            });
-
-            // Handle date_notarized separately if it's stored as timestamp
-            if (record.date_notarized) {
-                const date = new Date(record.date_notarized);
-                record.date_notarized = date.toISOString().split('T')[0];
-            }
-        });
-
-        res.status(200).json(moaRecords);
+        const connection = await initializeConnection();
+        const [moa] = await connection.query("SELECT * FROM moa");
+        res.status(200).json(moa);
     } catch (error) {
-        console.error("Error fetching MOA records:", error);
+        console.error("Error fetching moa:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
-    } finally {
-        if (connection) connection.end();
     }
 };
 
 // Get MOA by ID
 export const getMoaById = async (req, res) => {
-    let connection;
     try {
         const { id } = req.params;
-        connection = await initializeConnection();
+        const connection = await initializeConnection();
         const [moa] = await connection.query("SELECT * FROM moa WHERE id = ?", [id]);
-
+        
         if (moa.length === 0) {
-            return res.status(404).json({ error: "MOA record not found." });
-        }
-
-        // Format date fields to YYYY-MM-DD
-        const dateFields = ['expiration_date', 'year_moa_started', 'moa_draft_sent'];
-        dateFields.forEach(field => {
-            if (moa[0][field]) {
-                const date = new Date(moa[0][field]);
-                moa[0][field] = date.toISOString().split('T')[0];
-            }
-        });
-
-        // Handle date_notarized separately if it's stored as timestamp
-        if (moa[0].date_notarized) {
-            const date = new Date(moa[0].date_notarized);
-            moa[0].date_notarized = date.toISOString().split('T')[0];
+            return res.status(404).json({ error: "MOA not found." });
         }
 
         res.status(200).json(moa[0]);
     } catch (error) {
-        console.error("Error fetching MOA record by ID:", error);
+        console.error("Error fetching moa by ID:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
-    } finally {
-        if (connection) connection.end();
     }
 };
 
 // Add a new MOA record
 export const addMoa = async (req, res) => {
-    let connection;
     try {
-        const newMoa = { ...req.body };
+        const {
+            company_name,
+            address,
+            year_moa_started,
+            business_type,
+            moa_status,
+            contact_person,
+            contact_no,
+            email,
+            remarks,
+            expiration_date,
+            type_of_moa,
+            validity,
+            date_notarized
+        } = req.body;
+        
 
-        // Convert empty fields to NULL
-        const fieldsToConvert = ['date_notarized', 'expiration_date', 'moa_draft_sent', 'type_of_moa', 'moa_status'];
-        fieldsToConvert.forEach(field => {
-            if (newMoa[field] === '') {
-                newMoa[field] = null;
-            }
-        });
+        if (
+            !company_name ||
+            !address ||
+            !year_moa_started ||
+            !business_type ||
+            !moa_status ||
+            !contact_person ||
+            !contact_no ||
+            !email ||
+            !remarks ||
+            !expiration_date ||
+            !type_of_moa ||
+            !validity ||
+            !date_notarized
+        ) {
+            return res.status(400).json({ error: "All fields are required." });
+        }
 
-        connection = await initializeConnection();
+        const connection = await initializeConnection();
         const [result] = await connection.query(
-            "INSERT INTO moa SET ?",
-            [newMoa]
+            `INSERT INTO moa (
+                company_name, address, year_moa_started, business_type, moa_status,
+                contact_person, contact_no, email, remarks, expiration_date,
+                type_of_moa, validity, date_notarized
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+
+            [
+                company_name,
+                address,
+                year_moa_started,
+                business_type,
+                moa_status,
+                contact_person,
+                contact_no,
+                email,
+                remarks,
+                expiration_date,
+                type_of_moa,
+                validity,
+                date_notarized
+            ]
         );
 
-        const addedMoa = {
-            id: result.insertId,
-            ...newMoa
-        };
-
-        res.status(201).json(addedMoa);
+        res.status(201).json({ id: result.insertId, message: "MOA added successfully." });
     } catch (error) {
-        console.error("Error adding MOA record:", error);
-        res.status(500).json({ error: "Internal server error" });
-    } finally {
-        if (connection) connection.end();
+        console.error("Error adding MOA:", error);
+        res.status(500).json({ error: `An error occurred: ${error.message}` });
     }
 };
 
 // Update an existing MOA record
 export const updateMoa = async (req, res) => {
-    let connection;
     try {
         const { id } = req.params;
-        const updates = { ...req.body };
-
-        // Convert empty fields to NULL
-        const fieldsToConvert = ['date_notarized', 'expiration_date', 'moa_draft_sent', 'type_of_moa', 'moa_status'];
-        fieldsToConvert.forEach(field => {
-            if (updates[field] === '' || updates[field] === '1970-01-01') {
-                updates[field] = null;
-            }
-        });
-
-        connection = await initializeConnection();
-        
-        const updateQuery = 'UPDATE moa SET ? WHERE id = ?';
-        const [result] = await connection.query(updateQuery, [updates, id]);
-        
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'MOA not found' });
+        if (!id) {
+            return res.status(400).json({ error: "MOA ID is required." });
         }
 
-        const [updated] = await connection.query('SELECT * FROM moa WHERE id = ?', [id]);
-        res.json(updated[0]);
+        let {
+            company_name,
+            address,
+            year_moa_started,
+            business_type,
+            moa_status,
+            contact_person,
+            contact_no,
+            email,
+            remarks,
+            expiration_date,
+            type_of_moa,
+            validity,
+            date_notarized
+        } = req.body;
 
+        const formattedExpiryDate = expiration_date ? new Date(expiration_date).toISOString().split("T")[0] : null;
+        const formattedMoaDate = year_moa_started ? new Date(year_moa_started).toISOString().split("T")[0] : null;
+
+        const connection = await initializeConnection();
+        const [result] = await connection.query(
+            `UPDATE moa SET 
+                company_name = ?, address = ?, year_moa_started = ?, business_type = ?, moa_status = ?,
+                contact_person = ?, contact_no = ?, email = ?, remarks = ?, expiration_date = ?, 
+                type_of_moa = ?, validity = ?, date_notarized = ?
+             WHERE id = ?`,
+            [
+                company_name,
+                address,
+                formattedMoaDate,
+                business_type,
+                moa_status,
+                contact_person,
+                contact_no,
+                email,
+                remarks,
+                formattedExpiryDate,
+                type_of_moa,
+                validity,
+                date_notarized,
+                id,
+            ]
+        );
+
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "MOA not found." });
+        }
+
+        res.status(200).json({ message: "MOA updated successfully." });
     } catch (error) {
-        console.error('Database error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    } finally {
-        if (connection) connection.end();
+        console.error("Error updating MOA:", error);
+        res.status(500).json({ error: `An error occurred: ${error.message}` });
     }
 };
 
 // Delete an MOA record
 export const deleteMoa = async (req, res) => {
-    let connection;
     try {
         const { id } = req.params;
-        connection = await initializeConnection();
-
+        const connection = await initializeConnection();
+        
         // Check if the MOA record exists
         const [existingMoa] = await connection.query("SELECT * FROM moa WHERE id = ?", [id]);
         if (existingMoa.length === 0) {
-            return res.status(404).json({ error: "MOA record not found." });
+            return res.status(404).json({ error: "MOA not found." });
         }
-
+        
         // Delete the MOA record
         const [result] = await connection.query("DELETE FROM moa WHERE id = ?", [id]);
-
+        
         if (result.affectedRows === 0) {
-            return res.status(404).json({ error: "MOA record not found." });
+            return res.status(404).json({ error: "MOA not found." });
         }
-
-        res.status(200).json({ message: "MOA record deleted successfully." });
+        
+        res.status(200).json({ message: "MOA deleted successfully." });
     } catch (error) {
-        console.error("Error deleting MOA record:", error);
+        console.error("Error deleting MOA:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
-    } finally {
-        if (connection) connection.end();
     }
 };
