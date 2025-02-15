@@ -374,35 +374,35 @@ export default function HTEDashboard() {
                 <strong>MOA</strong> 
               </div> <hr className="my-2" />
               <div className="mt-2">
-                <strong>Year Included:</strong> {hte.yearIncluded}
+                <strong>Year Included:</strong> {hte.year_included}
               </div>
               <div className="mt-2">
-                <strong>Year Submitted:</strong> {hte.yearSubmitted}
+                <strong>Year Submitted:</strong> {hte.year_submitted}
               </div>
               <div className="mt-2">
-                <strong>Moa Notorized:</strong> {hte.moaNotorized}
+                <strong>Moa Notorized:</strong> {new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}
               </div>
               <div className="mt-2">
-                <strong>Expiry Date:</strong> {hte.expiryDate}
+                <strong>Expiry Date:</strong> {new Date(hte.expiry_date).toLocaleDateString("en-CA")}
               </div>
               <hr className="my-2" />
               <div className="mt-2 text-center">
                 <strong>Contact Person</strong> 
               </div> <hr className="my-2" />
               <div className="mt-2">
-                <strong>Name:</strong> {hte.contactPerson}
+                <strong>Name:</strong> {hte.contact_person}
               </div>
               <div className="mt-2">
-                <strong>Contact Number:</strong> {hte.number}
+                <strong>Contact Number:</strong> {hte.contact_number}
               </div>
               <div className="mt-2">
-                <strong>Email Address:</strong> {hte.email}
+                <strong>Email Address:</strong> {hte.email_address}
               </div>
               <div className="mt-2">
-                <strong>Position:</strong> {hte.position}
+                <strong>Position:</strong> {hte.position_department}
               </div>
               <div className="mt-2">
-                <strong>Office Address:</strong> {hte.officeAddress}
+                <strong>Office Address:</strong> {hte.office_address}
               </div>
               <div className="mt-2">
                 <strong>Remarks:</strong> {hte.remarks}
