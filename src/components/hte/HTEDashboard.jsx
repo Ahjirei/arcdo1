@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker"; 
 import "react-datepicker/dist/react-datepicker.css"; 
@@ -9,50 +9,109 @@ import EditHTE from "../hte/EditHTE";
 
 
 export default function HTEDashboard() {
-  const allData = [
-    { id: 1, company: "Company A", address: "Address 1", date: "2025-01-20", business: "IT", validity: "Completed" },
-    { id: 2, company: "Company B", address: "Address 2", date: "2025-01-18", business: "Consulting", validity: "Processing" },
-    { id: 3, company: "Company C", address: "Address 3", date: "2025-01-15", business: "Education", validity: "On Hold" },
-    { id: 4, company: "Company D", address: "Address 4", date: "2025-01-10", business: "Manufacturing", validity: "Rejected" },
-    { id: 5, company: "Company E", address: "Address 5", date: "2025-01-08", business: "Retail", validity: "Completed" },
-    { id: 6, company: "Company F", address: "Address 6", date: "2025-01-05", business: "Logistics", validity: "Processing" },
-    { id: 7, company: "Company G", address: "Address 7", date: "2025-01-03", business: "Healthcare", validity: "On Hold" },
-    { id: 8, company: "Company H", address: "Address 8", date: "2025-01-01", business: "Finance", validity: "Rejected" },
-  ];
 
-  const [hte, sethte] = useState([allData ]);
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [hte, sethte] = useState([ ]);
+  const [editingHTE, setEditingHTE] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingHTE, setEditingHTE] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [filters, setFilters] = useState({
     date: "",
     business: "",
-    validity: "",
+    moa_status: "",
   });
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [newHTE, setNewHTE] = useState({
+      company_name: '',
+      year_submitted: '',
+      business_type: '',
+      moa_status: 'Processing',
+      contact_person: '',
+      contact_number: '',
+      remarks: '',
+      year_included: '',
+      position_department: '',
+      course: '',
+      campus: '',
+      college: '',
+      email_address: '',
+      office_address: '',
+      with_moa_date_notarized: '',
+      expiry_date: '',
+      status: 'Active'
+    });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await fetchHte();
+      } catch (error) {
+        console.error("Error fetching hte:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
+  const fetchHte = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/api/hte/getHte"
+      );
+      sethte(response.data);
+    } catch (error) {
+      console.error("Error fetching hte:", error);
+    }
+  };
+
+  const handleEdit = (hte) => {
+    setEditingHTE({...hte}); 
+    setIsEditModalOpen(true);
+    setOpenDropdown(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/hte/deleteHte/${id}`);
+      fetchHte();
+      setOpenDropdown(null);
+    } catch (error) {
+      console.error("Error deleting hte:", error);
+    }
+  };
+
+  const toggleDropdown = (id) => {
+    setOpenDropdown(openDropdown === id ? null : id);
+  };
+
   const htesPerPage = 5;
-  const totalPages = Math.ceil(allData.length / htesPerPage);
 
   // Apply filters
-  const filteredData = allData.filter((hte) => {
+  const filteredHte = hte.filter((hte) => {
     const matchesDate = filters.date
-      ? hte.date.startsWith(filters.date) // Compare YYYY
+      ? hte.year_submitted === filters.date  // Compare exact year
       : true;
     const matchesBusiness = filters.business
-      ? hte.business.toLowerCase().includes(filters.business.toLowerCase())
+      ? hte.business_type.toLowerCase().includes(filters.business.toLowerCase())
       : true;
-    const matchesValidity = filters.validity
-      ? hte.validity === filters.validity
+    const matchesValidity = filters.moa_status
+      ? hte.moa_status === filters.moa_status
       : true;
 
     return matchesDate && matchesBusiness && matchesValidity;
   });
 
+  const totalPages = Math.ceil(filteredHte.length / htesPerPage);
   const startIndex = (currentPage - 1) * htesPerPage;
   const endIndex = startIndex + htesPerPage;
-  const currentData = filteredData.slice(startIndex, endIndex);
+  const currentHte = filteredHte.slice(startIndex, endIndex);
 
   const handleNext = () => {
     if (currentPage < totalPages) {
@@ -67,12 +126,12 @@ export default function HTEDashboard() {
   };
 
   const resetFilters = () => {
-    setFilters({ date: "", business: "", validity: "" });
+    setFilters({ date: "", business: "", moa_status: "" });
     setCurrentPage(1);
   };
 
-  const getValidityColor = (validity) => {
-    switch (validity) {
+  const getValidityColor = (moa_status) => {
+    switch (moa_status) {
       case "Completed":
         return "bg-green-100 text-green-600";
       case "Processing":
@@ -86,20 +145,7 @@ export default function HTEDashboard() {
     }
   };
 
-  const handleEdit = (hte) => {
-    setEditingHTE(hte); 
-    setIsEditModalOpen(true);
-    setOpenDropdown(null);
-  };
-
-  const handleDelete = (id) => {
-    sethte(hte.filter((hte) => hte.id !== id));
-    setOpenDropdown(null);
-  };
-
-  const toggleDropdown = (id) => {
-    setOpenDropdown((prev) => (prev === id ? null : id));
-  };
+  
   
 
   return (
@@ -107,19 +153,15 @@ export default function HTEDashboard() {
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 mt-3 text-center sm:text-left">
         Host Training Establishments
       </h1>
+      
+      {/* Filter Section */}
       <div className="mb-3">
       <div className="flex flex-wrap items-center gap-2 md:gap-4 bg-gray-50 border border-gray-200 rounded-lg p-3 w-full md:w-fit">
-        
-        {/* Filter Icon */}
         <div className="flex items-center">
           <i className="fas fa-filter text-black mr-2"></i>
           <span className="text-sm text-black">Filter by</span>
         </div>
-
-        {/* Divider */}
         <div className="hidden md:block h-6 border-r border-gray-300 mx-2"></div>
-
-         {/* Year Filter */}
          <div className="md:ml-0 ml-auto"> 
          <DatePicker
               selected={filters.date ? new Date(filters.date) : null}
@@ -148,8 +190,8 @@ export default function HTEDashboard() {
 
         {/* Validity Filter */}
         <select
-          value={filters.validity}
-          onChange={(e) => setFilters({ ...filters, validity: e.target.value })}
+          value={filters.moa_status}
+          onChange={(e) => setFilters({ ...filters, moa_status: e.target.value })}
           className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
         >
           <option value="" disabled>MOA Validity</option>
@@ -182,9 +224,8 @@ export default function HTEDashboard() {
 
         </div>
       </div>
-    
 
-
+      {/* Table Section */}
     <div className="flex-grow h-full mt-1 overflow-x-auto">
       {/* Responsive Wrapper for Table */}
       <div className="overflow-x-auto">
@@ -213,89 +254,33 @@ export default function HTEDashboard() {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((hte, index) => (
-              <tr key={hte.id} className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-                {/* ID */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">ID: </span> {hte.id}
-                </td>
+            {currentHte.map((hte, index) => (
+              <tr 
+                key={hte.id} 
+                className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
+              >
                 
-                {/* Company */}
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.id}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.company_name}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.course}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.college}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.campus}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.year_submitted}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.expiry_date).toLocaleDateString("en-CA")}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.business_type}</td>
                 <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
-                </td>
-
-                {/* Company */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
-                </td>
-
-                {/* Company */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
-                </td>
-
-                {/* Company */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Company: </span> {hte.company}
-                </td>
-                
-                
-                {/* Date */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Date: </span> {hte.date}
-                </td>
-
-                {/* Date */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Date: </span> {hte.date}
-                </td>
-
-                {/* Date */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Date: </span> {hte.date}
-                </td>
-
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
-                
-                {/* MOA Validity */}
-                <td className="px-4 border-t py-1 border-r block md:table-cell">
-                  <span className="md:hidden font-semibold">MOA Validity: </span> 
-                  <span className={`rounded-full px-2 py-1 ${getValidityColor(hte.validity)}`}>
-                    {hte.validity}
+                  <span className={`rounded-full px-2 py-1 ${getValidityColor(hte.moa_status)}`}>
+                    {hte.moa_status}
                   </span>
                 </td>
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
-                {/* Nature of Business */}
-                <td className="px-4 py-2 border-t block md:table-cell">
-                  <span className="md:hidden font-semibold">Business: </span> {hte.business}
-                </td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_person}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_number}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.year_ncluded}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.position_department}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.email_address}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.office_address}</td>
+                <td className="px-4 py-2 border-t block md:table-cell">{hte.remarks}</td>
 
                 <td className="px-6 py-2 border-t relative">
                   <button onClick={() => toggleDropdown(hte.id)} className="text-gray-600">
@@ -330,13 +315,13 @@ export default function HTEDashboard() {
 
        {/* Mobile View (Cards) */}
         <div className="md:hidden">
-          {currentData.map((hte, index) => (
+          {currentHte.map((hte, index) => (
             <div key={hte.id} className={`border border-black p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
               <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
-                <div className="font-bold">{hte.company}</div>
-                <div className={`px-3 rounded-full py-1 text-sm ${getValidityColor(hte.validity)}`}>
-                  {hte.validity}
+                <div className="font-bold">{hte.company_name}</div>
+                <div className={`px-3 rounded-full py-1 text-sm ${getValidityColor(hte.moa_status)}`}>
+                  {hte.moa_status}
                 </div>
               </div>
               
@@ -373,7 +358,7 @@ export default function HTEDashboard() {
                 <strong>ID:</strong> {hte.id}
               </div>
               <div className="mt-2">
-                <strong>Nature of Business:</strong> {hte.business}
+                <strong>Nature of Business:</strong> {hte.business_type}
               </div>
               <div className="mt-2">
                 <strong>Course:</strong> {hte.course}
@@ -389,35 +374,35 @@ export default function HTEDashboard() {
                 <strong>MOA</strong> 
               </div> <hr className="my-2" />
               <div className="mt-2">
-                <strong>Year Included:</strong> {hte.yearIncluded}
+                <strong>Year Included:</strong> {hte.year_included}
               </div>
               <div className="mt-2">
-                <strong>Year Submitted:</strong> {hte.yearSubmitted}
+                <strong>Year Submitted:</strong> {hte.year_submitted}
               </div>
               <div className="mt-2">
-                <strong>Moa Notorized:</strong> {hte.moaNotorized}
+                <strong>Moa Notorized:</strong> {new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}
               </div>
               <div className="mt-2">
-                <strong>Expiry Date:</strong> {hte.expiryDate}
+                <strong>Expiry Date:</strong> {new Date(hte.expiry_date).toLocaleDateString("en-CA")}
               </div>
               <hr className="my-2" />
               <div className="mt-2 text-center">
                 <strong>Contact Person</strong> 
               </div> <hr className="my-2" />
               <div className="mt-2">
-                <strong>Name:</strong> {hte.contactPerson}
+                <strong>Name:</strong> {hte.contact_person}
               </div>
               <div className="mt-2">
-                <strong>Contact Number:</strong> {hte.number}
+                <strong>Contact Number:</strong> {hte.contact_number}
               </div>
               <div className="mt-2">
-                <strong>Email Address:</strong> {hte.email}
+                <strong>Email Address:</strong> {hte.email_address}
               </div>
               <div className="mt-2">
-                <strong>Position:</strong> {hte.position}
+                <strong>Position:</strong> {hte.position_department}
               </div>
               <div className="mt-2">
-                <strong>Office Address:</strong> {hte.officeAddress}
+                <strong>Office Address:</strong> {hte.office_address}
               </div>
               <div className="mt-2">
                 <strong>Remarks:</strong> {hte.remarks}
@@ -452,6 +437,10 @@ export default function HTEDashboard() {
           <AddHTE
             isOpen={isAddModalOpen}
             onClose={() => setIsAddModalOpen(false)}
+            onHTEAdded={() => {
+              fetchHte();
+              setIsAddModalOpen(false);
+            }}
           />
 
           <EditHTE
@@ -460,12 +449,18 @@ export default function HTEDashboard() {
               setIsEditModalOpen(false);
               setEditingHTE(null);
             }}
-            hteData={editingHTE}
+            editingHTE={editingHTE}
+            setEditingHTE={setEditingHTE}
+            onHteEdited={() => {
+              fetchHte();
+              setIsEditModalOpen(false);
+              setEditingHTE(null);
+            }}
           />
 
         {/* Showing Results Info */}
         <span className="text-gray-500 text-sm mt-2 md:mt-0">
-          Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredData.length)}</b> of <b>{filteredData.length}</b>
+          Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredHte.length)}</b> of <b>{filteredHte.length}</b>
         </span>
       </div>
     </div>

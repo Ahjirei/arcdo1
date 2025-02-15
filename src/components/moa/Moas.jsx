@@ -6,8 +6,8 @@ import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
 import AddMoa from "../moa/AddMoa";
 import EditMoa from "../moa/EditMoa";
 
-export default function Moas() {
-  const [moas, setMoas] = useState([]);
+export default function Moa() {
+  const [moa, setMoa] = useState([]);
   const [editingMoa, setEditingMoa] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -16,64 +16,117 @@ export default function Moas() {
   const [filters, setFilters] = useState({
     date: "",
     business: "",
-    validity: "",
+    moa_status: "",
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [newMoa, setNewMoa] = useState({
+      company_name: "",
+      year_moa_started: "",
+      business_type: "",
+      moa_status: "Active",
+      contact_person: "",
+      contact_no: "",
+      remarks: "",
+      email: "",
+      address: "",
+      date_notarized: "",
+      expiration_date: "",
+      type_of_moa: "",
+      moa_draft_sent: "",
+      validity: "Processing"
+    });
+
   // Fetch MoA data from the API
   useEffect(() => {
-    fetchMoas();
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await fetchMoa();
+      } catch (error) {
+        console.error("Error fetching moa:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchData();
   }, []);
-
-  const fetchMoas = async () => {
-    setLoading(true);
+  
+  const fetchMoa = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/moa/getMoa");
-      setMoas(response.data);
-    } catch (err) {
-      console.error("Error fetching MoAs:", err);
-      setError("Error fetching MoAs");
-    } finally {
-      setLoading(false);
+      const response = await axios.get(
+        "http://localhost:3001/api/moa/getMoa"
+      );
+      setMoa(response.data);
+    } catch (error) {
+      console.error("Error fetching moa:", error);
     }
   };
 
+  const handleEdit = (moa) => {
+    setEditingMoa(moa);
+    setIsEditModalOpen(true);
+    setOpenDropdown(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/moa/deleteMoa/${id}`);
+      fetchMoa();
+      setOpenDropdown(null);
+    } catch (err) {
+      console.error("Error deleting Moa:", err);
+    }
+  };
+
+  const toggleDropdown = (id) => {
+    setOpenDropdown(openDropdown === id ? null : id);
+  };
+
+  const MoaPerPage = 5;
+
   // Filter data based on the selected filters.
   // For the "date" filter, we compare the year of the 'moaStarted' field.
-  const filteredMoas = moas.filter((moa) => {
+  const filteredMoa = moa.filter((moa) => {
     const matchesDate = filters.date
-      ? new Date(moa.year_moa_started).getFullYear().toString() === filters.date
+      ? moa.year_moa_started === filters.date
       : true;
     const matchesBusiness = filters.business
       ? moa.business_type?.toLowerCase().includes(filters.business.toLowerCase())
       : true;
-    const matchesValidity = filters.validity ? moa.validity === filters.validity : true;
+    const matchesValidity = filters.moa_status 
+      ? moa.moa_status === filters.moa_status 
+      : true;
 
     return matchesDate && matchesBusiness && matchesValidity;
   });
 
-  const MoasPerPage = 5;
-  const totalPages = Math.ceil(filteredMoas.length / MoasPerPage);
-  const startIndex = (currentPage - 1) * MoasPerPage;
-  const endIndex = startIndex + MoasPerPage;
-  const currentData = filteredMoas.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredMoa.length / MoaPerPage);
+  const startIndex = (currentPage - 1) * MoaPerPage;
+  const endIndex = startIndex + MoaPerPage;
+  const currentData = filteredMoa.slice(startIndex, endIndex);
 
   const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handlePrevious = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const resetFilters = () => {
-    setFilters({ date: "", business: "", validity: "" });
+    setFilters({ date: "", business: "", moa_status: "" });
     setCurrentPage(1);
   };
 
-  const getValidityColor = (validity) => {
-    switch (validity) {
+  const getValidityColor = (moa_status) => {
+    switch (moa_status) {
       case "Completed":
         return "bg-green-100 text-green-600";
       case "Processing":
@@ -87,25 +140,9 @@ export default function Moas() {
     }
   };
 
-  const toggleDropdown = (id) => {
-    setOpenDropdown(openDropdown === id ? null : id);
-  };
+ 
 
-  const handleEdit = (moa) => {
-    setEditingMoa(moa);
-    setIsEditModalOpen(true);
-    setOpenDropdown(null);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:3001/api/moa/deleteMoa/${id}`);
-      fetchMoas();
-      setOpenDropdown(null);
-    } catch (err) {
-      console.error("Error deleting Moa:", err);
-    }
-  };
+  
 
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
@@ -147,8 +184,8 @@ export default function Moas() {
             className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
           />
           <select
-            value={filters.validity}
-            onChange={(e) => setFilters({ ...filters, validity: e.target.value })}
+            value={filters.moa_status}
+            onChange={(e) => setFilters({ ...filters, moa_status: e.target.value })}
             className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"
           >
             <option value="">MOA Validity</option>
@@ -216,15 +253,15 @@ export default function Moas() {
                   <td className="px-4 py-2 border-t">{moa.id}</td>
                   <td className="px-4 py-2 border-t">{moa.company_name}</td>
                   <td className="px-4 py-2 border-t">{moa.address}</td>
-                  <td className="px-2 py-2 border-t">{moa.year_moa_started}</td>
+                  <td className="px-2 py-2 border-t">{new Date(moa.year_moa_started).toLocaleDateString("en-CA")}</td>
                   <td className="px-2 py-2 border-t">{moa.date_notarized}</td>
                   <td className="px-2 py-2 border-t">{moa.moa_draft_sent}</td>
-                  <td className="px-2 py-2 border-t">{moa.expiration_date}</td>
+                  <td className="px-2 py-2 border-t">{new Date(moa.expiration_date).toLocaleDateString("en-CA")}</td>
                   <td className="px-4 py-2 border-t">{moa.type_of_moa}</td>
                   <td className="px-4 py-2 border-t">{moa.business_type}</td>
                   <td className="px-4 py-2 border-t">
-                    <span className={`rounded-full px-2 py-1 ${getValidityColor(moa.validity)}`}>
-                      {moa.validity}
+                    <span className={`rounded-full px-2 py-1 ${getValidityColor(moa.moa_status)}`}>
+                      {moa.moa_status}
                     </span>
                   </td>
                   <td className="px-4 py-2 border-t">{moa.contact_person}</td>
@@ -266,19 +303,21 @@ export default function Moas() {
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onMoaAdded={() => {
-          fetchMoas();
+          fetchMoa();
           setIsAddModalOpen(false);
         }}
       />
+      
       <EditMoa
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);
           setEditingMoa(null);
         }}
-        MoaData={editingMoa}
+        editingMoa={editingMoa}
+        setEditingMoa={setEditingMoa}
         onMoaEdited={() => {
-          fetchMoas();
+          fetchMoa();
           setIsEditModalOpen(false);
           setEditingMoa(null);
         }}
@@ -291,8 +330,8 @@ export default function Moas() {
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
                 <div className="font-bold">{moa.company_name}</div>
-                <div className={`px-4 rounded-full py-1 ${getValidityColor(moa.validity)}`}>
-                  {moa.validity}
+                <div className={`px-4 rounded-full py-1 ${getValidityColor(moa.moa_status)}`}>
+                  {moa.moa_status}
                 </div>
               </div>
               <div className="relative ml-4">
@@ -335,7 +374,7 @@ export default function Moas() {
             </div>
             <hr className="my-2" />
             <div className="mt-2">
-              <strong>Moa Started:</strong> {moa.year_moa_started}
+              <strong>Moa Started:</strong> {new Date(moa.year_moa_started).toLocaleDateString("en-CA")}
             </div>
             <div className="mt-2">
               <strong>Moa Draft Sent:</strong> {moa.moa_draft_sent}
@@ -344,7 +383,7 @@ export default function Moas() {
               <strong>Moa Notorized:</strong> {moa.date_notarized}
             </div>
             <div className="mt-2">
-              <strong>Expiry Date:</strong> {moa.expiration_date}
+              <strong>Expiry Date:</strong> {new Date(moa.expiration_date).toLocaleDateString("en-CA")}
             </div>
             <div className="mt-2">
               <strong>Type of Moa:</strong> {moa.type_of_moa}
@@ -388,7 +427,7 @@ export default function Moas() {
             →
           </button>
           <span className="text-gray-500">
-            Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredMoas.length)}</b> of <b>{filteredMoas.length}</b>
+            Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredMoa.length)}</b> of <b>{filteredMoa.length}</b>
           </span>
         </div>
       </div>

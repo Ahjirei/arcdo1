@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
   const [newMoa, setNewMoa] = useState({
@@ -38,36 +39,36 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
     if (!validateForm()) return;
 
     try {
-      // Convert empty fields to NULL
-      const fieldsToConvert = ['date_notarized', 'expiration_date', 'moa_draft_sent', 'type_of_moa', 'moa_status'];
-      const updatedMoa = { ...newMoa };
-      fieldsToConvert.forEach(field => {
-        if (updatedMoa[field] === '') {
-          updatedMoa[field] = null;
-        }
-      });
-
-      const response = await fetch("http://localhost:3001/api/moa/addMoa", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedMoa),
-      });
-
-      if (response.ok) {
-        onMoaAdded();
+      const response = await axios.post(
+        "http://localhost:3001/api/moa/addMoa",
+        newMoa
+      );
+      if (response.status === 201) {
+        onMoaAdded(response.data);
+        setNewMoa({
+            company_name: "",
+            year_moa_started: "",
+            business_type: "",
+            moa_status: "Processing",
+            contact_person: "",
+            contact_no: "",
+            remarks: "",
+            expiration_date: "",
+            email: "",
+            address: "",
+            type_of_moa: "",
+            validity: "",
+            date_notarized: "",
+            status: "Active"
+        });
         onClose();
-      } else {
-        const errorData = await response.json();
-        console.error('Error response:', errorData);
-        setError(errorData.error || 'Failed to add MOA. Please try again.');
       }
-    } catch (err) {
-      console.error('Error adding MOA:', err);
-      setError('An error occurred while adding the MOA. Please try again later.');
+    } catch (error) {
+      console.error("Error adding moa:", error);
+      setError(error.response?.data?.error || "Failed to add moa");
     }
   };
+    
 
   if (!isOpen) return null;
 
@@ -95,13 +96,17 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Type</label>
-              <input
-                type="text"
-                value={newMoa.type_of_moa}
-                onChange={(e) => setNewMoa({ ...newMoa, type_of_moa: e.target.value })}
+              <select
+                value={editingMoa.type_of_moa || ""}
+                onChange={(e) => setEditingMoa({ ...editingMoa, type_of_moa: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
-                placeholder="MOA Type"
-              />
+              >
+                <option value="" disabled>Select MOA Type</option>
+                <option value="Practicum">Practicum</option>
+                <option value="Research">Research</option>
+                <option value="Employment">Employment</option>
+                <option value="Scholarship">Scholarship</option>
+              </select>
             </div>
 
             <div>
@@ -120,8 +125,8 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">Validity</label>
               <select
-                value={newMoa.validity}
-                onChange={(e) => setNewMoa({ ...newMoa, validity: e.target.value })}
+                value={newMoa.moa_status}
+                onChange={(e) => setNewMoa({ ...newMoa, moa_status: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="Processing">Processing</option>
@@ -158,7 +163,7 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">Contact Number</label>
               <input
-                type="text"
+                type="number"
                 value={newMoa.contact_no}
                 onChange={(e) => setNewMoa({ ...newMoa, contact_no: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
@@ -203,21 +208,21 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Year Started</label>
               <input
-                type="text"
+                type="date"
                 value={newMoa.year_moa_started}
                 onChange={(e) => setNewMoa({ ...newMoa, year_moa_started: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
-                placeholder="MOA Year Started"
               />
             </div>
 
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
               <input
-                type="date"
+                type="number"
                 value={newMoa.date_notarized}
                 onChange={(e) => setNewMoa({ ...newMoa, date_notarized: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
+                placeholder="Date Notarized"
               />
             </div>
 
@@ -234,8 +239,16 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
         </div>
 
         <div className="flex justify-end mt-6 space-x-2">
-          <button onClick={onClose} className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50">Cancel</button>
-          <button onClick={handleSave} className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">Save</button>
+          <button 
+            onClick={onClose} 
+            className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50">
+              Cancel
+          </button>
+          <button 
+            onClick={handleSave} 
+            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
+              Save
+          </button>
         </div>
       </div>
     </div>

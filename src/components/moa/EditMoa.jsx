@@ -1,51 +1,52 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
-  const [moa, setMoa] = useState({});
+const EditMoa = ({ isOpen, onClose, editingMoa, setEditingMoa, onMoaEdited }) => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    if (MoaData) {
-      setMoa(MoaData);
-    }
-  }, [MoaData]);
-
-  if (!isOpen) return null;
+  if (!isOpen || !editingMoa) return null;
 
   const handleSave = async () => {
     try {
       setIsLoading(true);
       setError("");
 
-      // Convert empty fields to NULL
-      const fieldsToConvert = ['date_notarized', 'expiration_date', 'moa_draft_sent', 'type_of_moa', 'moa_status'];
-      const updatedMoa = { ...moa };
-      fieldsToConvert.forEach(field => {
-        if (updatedMoa[field] === '' || updatedMoa[field] === '1970-01-01') {
-          updatedMoa[field] = null;
-        }
-      });
+      const formatDate = (date) => {
+        if (!date || date === "null" || date === "") return null;
+        return new Date(date).toISOString().split("T")[0];
+      };     
       
-      const response = await fetch(`http://localhost:3001/api/moa/updateMoa/${moa.id}`, {
+      const response = await fetch(`http://localhost:3001/api/moa/updateMoa/${editingMoa.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(updatedMoa),
+        body: JSON.stringify({
+          company_name: editingMoa.company_name,
+          address: editingMoa.address,
+          year_moa_started: formatDate(editingMoa.year_moa_started),
+          business_type: editingMoa.business_type,
+          moa_status: editingMoa.moa_status,
+          contact_person: editingMoa.contact_person,
+          contact_no: editingMoa.contact_no,
+          email: editingMoa.email,
+          remarks: editingMoa.remarks,
+          expiration_date: formatDate(editingMoa.expiration_date),
+          type_of_moa: editingMoa.type_of_moa,
+          validity: editingMoa.validity,
+          date_notarized: editingMoa.date_notarized
+        }),
       });
 
-      if (response.ok) {
-        onMoaEdited();
-        onClose();
-      } else {
-        const errorData = await response.json();
-        console.error('Error response:', errorData);
-        setError(errorData.error || 'Failed to update MOA. Please try again.');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update MOA');
       }
+
+      onMoaEdited();
     } catch (err) {
-      console.error('Error updating MOA:', err);
-      setError('An error occurred while updating the MOA. Please try again later.');
+      setError(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -57,7 +58,9 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
         <h2 className="text-xl font-semibold mb-4 text-center">Edit MOA</h2>
 
         {error && (
-          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
+          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
+            {error}
+          </div>
         )}
 
         <div className="space-y-4">
@@ -65,8 +68,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
             <label className="text-sm font-medium text-gray-700">Company Name</label>
             <input
               type="text"
-              value={moa.company_name || ""}
-              onChange={(e) => setMoa({ ...moa, company_name: e.target.value })}
+              value={editingMoa.company_name}
+              onChange={(e) => setEditingMoa({ ...editingMoa, company_name: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Company Name"
             />
@@ -75,21 +78,25 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Type</label>
-              <input
-                type="text"
-                value={moa.type_of_moa || ""}
-                onChange={(e) => setMoa({ ...moa, type_of_moa: e.target.value })}
+              <select
+                value={editingMoa.type_of_moa}
+                onChange={(e) => setEditingMoa({ ...editingMoa, type_of_moa: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
-                placeholder="MOA Type"
-              />
+              >
+                <option value="" disabled>Select MOA Type</option>
+                <option value="Practicum">Practicum</option>
+                <option value="Research">Research</option>
+                <option value="Employment">Employment</option>
+                <option value="Scholarship">Scholarship</option>
+              </select>
             </div>
 
             <div>
               <label className="text-sm font-medium text-gray-700">Draft of MOA Sent</label>
               <input
                 type="text"
-                value={moa.moa_draft_sent || ""}
-                onChange={(e) => setMoa({ ...moa, moa_draft_sent: e.target.value })}
+                value={editingMoa.moa_draft_sent}
+                onChange={(e) => setEditingMoa({ ...editingMoa, moa_draft_sent: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Draft of MOA Sent"
               />
@@ -100,8 +107,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">Validity</label>
               <select
-                value={moa.validity || ""}
-                onChange={(e) => setMoa({ ...moa, validity: e.target.value })}
+                value={editingMoa.moa_status}
+                onChange={(e) => setEditingMoa({ ...editingMoa, moa_status: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="Processing">Processing</option>
@@ -115,8 +122,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
               <label className="text-sm font-medium text-gray-700">Business Type</label>
               <input
                 type="text"
-                value={moa.business_type || ""}
-                onChange={(e) => setMoa({ ...moa, business_type: e.target.value })}
+                value={editingMoa.business_type}
+                onChange={(e) => setEditingMoa({ ...editingMoa, business_type: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Business Type"
               />
@@ -128,8 +135,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
               <label className="text-sm font-medium text-gray-700">Contact Person</label>
               <input
                 type="text"
-                value={moa.contact_person || ""}
-                onChange={(e) => setMoa({ ...moa, contact_person: e.target.value })}
+                value={editingMoa.contact_person}
+                onChange={(e) => setEditingMoa({ ...editingMoa, contact_person: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Contact Person"
               />
@@ -139,8 +146,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
               <label className="text-sm font-medium text-gray-700">Contact Number</label>
               <input
                 type="text"
-                value={moa.contact_no || ""}
-                onChange={(e) => setMoa({ ...moa, contact_no: e.target.value })}
+                value={editingMoa.contact_no}
+                onChange={(e) => setEditingMoa({ ...editingMoa, contact_no: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Contact Number"
               />
@@ -150,8 +157,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
               <label className="text-sm font-medium text-gray-700">Email Address</label>
               <input
                 type="email"
-                value={moa.email || ""}
-                onChange={(e) => setMoa({ ...moa, email: e.target.value })}
+                value={editingMoa.email}
+                onChange={(e) => setEditingMoa({ ...editingMoa, email: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="email@domain.com"
               />
@@ -162,8 +169,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
             <label className="text-sm font-medium text-gray-700">Office Address</label>
             <input
               type="text"
-              value={moa.address || ""}
-              onChange={(e) => setMoa({ ...moa, address: e.target.value })}
+              value={editingMoa.address}
+              onChange={(e) => setEditingMoa({ ...editingMoa, address: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Office Address"
             />
@@ -172,8 +179,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
           <div>
             <label className="text-sm font-medium text-gray-700">Remarks</label>
             <textarea
-              value={moa.remarks || ""}
-              onChange={(e) => setMoa({ ...moa, remarks: e.target.value })}
+              value={editingMoa.remarks}
+              onChange={(e) => setEditingMoa({ ...editingMoa, remarks: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Remarks"
             />
@@ -183,9 +190,11 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Year Started</label>
               <input
-                type="text"
-                value={moa.year_moa_started || ""}
-                onChange={(e) => setMoa({ ...moa, year_moa_started: e.target.value })}
+                type="date"
+                value={editingMoa.year_moa_started 
+                  ? new Date(editingMoa.year_moa_started).toISOString().split("T")[0] 
+                  : ""}
+                onChange={(e) => setEditingMoa({ ...editingMoa, year_moa_started: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="MOA Year Started"
               />
@@ -194,19 +203,25 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
               <input
-                type="date"
-                value={moa.date_notarized || ""}
-                onChange={(e) => setMoa({ ...moa, date_notarized: e.target.value })}
+                type="number"
+                value={editingMoa.date_notarized}
+                onChange={(e) =>
+                  setEditingMoa({ ...editingMoa, date_notarized: parseInt(e.target.value, 10)})
+                }
+                min="1900" max="2100"
                 className="w-full p-2 border rounded border-gray-500"
               />
+
             </div>
 
             <div>
               <label className="text-sm font-medium text-gray-700">Expiry Date</label>
               <input
                 type="date"
-                value={moa.expiration_date || ""}
-                onChange={(e) => setMoa({ ...moa, expiration_date: e.target.value })}
+                value={editingMoa.expiration_date 
+                  ? new Date(editingMoa.expiration_date).toISOString().split("T")[0] 
+                  : ""}
+                onChange={(e) => setEditingMoa({ ...editingMoa, expiration_date: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               />
             </div>
@@ -215,8 +230,8 @@ const EditMoa = ({ isOpen, onClose, MoaData, onMoaEdited }) => {
           <div>
             <label className="text-sm font-medium text-gray-700">Status</label>
             <select
-              value={moa.moa_status || "Inactive"}
-              onChange={(e) => setMoa({ ...moa, moa_status: e.target.value })}
+              value={editingMoa.moa_status || "Inactive"}
+              onChange={(e) => setEditingMoa({ ...editingMoa, moa_status: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
             >
               <option value="Active">Active</option>

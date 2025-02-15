@@ -1,46 +1,59 @@
 import React, { useState } from "react";
 
-const EditHTE = ({ isOpen, onClose, hteData }) => {
-  const [hte, setHTE] = useState(hteData || {
-    company_name: "",
-    year_submitted: "",
-    business_type: "",
-    moa_status: "Processing",
-    contact_person: "",
-    contact_number: "",
-    remarks: "",
-    year_included: "",
-    position_department: "",
-    course: "",
-    campus: "",
-    college: "",
-    email_address: "",
-    office_address: "",
-    with_moa_date_notarized: "",
-    expiry_date: "",
-    assigned_student: "",
-    status: "Active"
-  });
-
+const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHteEdited }) => {
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const validateForm = () => {
-    const requiredFields = [
-      'company_name', 'year_submitted', 'business_type', 'moa_status', 'contact_person', 'contact_number', 
-      'remarks', 'year_included', 'position_department', 'course', 'campus', 'college', 'email_address', 
-      'office_address', 'assigned_student'
-    ];
-    const missingFields = requiredFields.filter(field => !hte[field]);
-    
-    if (missingFields.length > 0) {
-      setError(`Please fill in all required fields: ${missingFields.join(', ')}`);
-      return false;
+  if (!isOpen || !editingHTE) return null;
+
+  const handleSave = async () => {
+    try {
+      setIsLoading(true);
+      setError("");
+
+      const formatDate = (date) => {
+        if (!date) return null; // Ensure null if no date is set
+        return new Date(date).toISOString().split("T")[0]; // Format YYYY-MM-DD
+      };
+
+      const response = await fetch(`http://localhost:3001/api/hte/updateHte/${editingHTE.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          company_name: editingHTE.company_name,
+          office_address: editingHTE.office_address,
+          year_submitted: editingHTE.year_submitted,
+          business_type: editingHTE.business_type,
+          moa_status: editingHTE.moa_status,
+          contact_person: editingHTE.contact_person,
+          contact_number: editingHTE.contact_number,
+          email_address: editingHTE.email_address,
+          remarks: editingHTE.remarks,
+          campus: editingHTE.campus,
+          college: editingHTE.college,
+          course: editingHTE.course,
+          expiry_date: formatDate(editingHTE.expiry_date),
+          position_department: editingHTE.position_department,
+          with_moa_date_notarized: formatDate(editingHTE.with_moa_date_notarized),
+          year_included: editingHTE.year_included
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update HTE');
+      }
+
+      onHteEdited();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
-    setError("");
-    return true;
   };
-
-  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-5 sm:mt-0 mt-20">
@@ -58,8 +71,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             <label className="text-sm font-medium text-gray-700">Company Name</label>
             <input
               type="text"
-              value={hte.company_name}
-              onChange={(e) => setHTE({ ...hte, company_name: e.target.value })}
+              value={editingHTE.company_name}
+              onChange={(e) => setEditingHTE({ ...editingHTE, company_name: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Company Name"
             />
@@ -70,8 +83,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
               <label className="text-sm font-medium text-gray-700">Year Submitted</label>
               <input
                 type="text"
-                value={hte.year_submitted}
-                onChange={(e) => setHTE({ ...hte, year_submitted: e.target.value })}
+                value={editingHTE.year_submitted}
+                onChange={(e) => setEditingHTE({ ...editingHTE, year_submitted: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Year Submitted"
               />
@@ -81,8 +94,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
               <label className="text-sm font-medium text-gray-700">Business Type</label>
               <input
                 type="text"
-                value={hte.business_type}
-                onChange={(e) => setHTE({ ...hte, business_type: e.target.value })}
+                value={editingHTE.business_type}
+                onChange={(e) => setEditingHTE({ ...editingHTE, business_type: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Business Type"
               />
@@ -90,8 +103,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Status</label>
               <select
-                value={hte.moa_status}
-                onChange={(e) => setHTE({ ...hte, moa_status: e.target.value })}
+                value={editingHTE.moa_status}
+                onChange={(e) => setEditingHTE({ ...editingHTE, moa_status: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="Processing">Processing</option>
@@ -108,8 +121,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
               <label className="text-sm font-medium text-gray-700">Contact Person</label>
               <input
                 type="text"
-                value={hte.contact_person}
-                onChange={(e) => setHTE({ ...hte, contact_person: e.target.value })}
+                value={editingHTE.contact_person}
+                onChange={(e) => setEditingHTE({ ...editingHTE, contact_person: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Contact Person"
               />
@@ -119,8 +132,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
               <label className="text-sm font-medium text-gray-700">Contact Number</label>
               <input
                 type="text"
-                value={hte.contact_number}
-                onChange={(e) => setHTE({ ...hte, contact_number: e.target.value })}
+                value={editingHTE.contact_number}
+                onChange={(e) => setEditingHTE({ ...editingHTE, contact_number: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Contact Number"
               />
@@ -131,8 +144,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             <label className="text-sm font-medium text-gray-700">Office Address</label>
             <input
               type="text"
-              value={hte.office_address}
-              onChange={(e) => setHTE({ ...hte, office_address: e.target.value })}
+              value={editingHTE.office_address}
+              onChange={(e) => setEditingHTE({ ...editingHTE, office_address: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Office Address"
             />
@@ -141,8 +154,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
           <div>
             <label className="text-sm font-medium text-gray-700">Remarks</label>
             <textarea
-              value={hte.remarks}
-              onChange={(e) => setHTE({ ...hte, remarks: e.target.value })}
+              value={editingHTE.remarks}
+              onChange={(e) => setEditingHTE({ ...editingHTE, remarks: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Remarks"
             />
@@ -156,8 +169,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             </label>
             <input
               type="text"
-              value={hte.course}
-              onChange={(e) => setHTE({ ...hte, course: e.target.value })}
+              value={editingHTE.course}
+              onChange={(e) => setEditingHTE({ ...editingHTE, course: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Course"
             />
@@ -168,8 +181,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
               Campus
             </label>
             <select
-              value={hte.campus}
-              onChange={(e) => setHTE({ ...hte, campus: e.target.value })}
+              value={editingHTE.campus}
+              onChange={(e) => setEditingHTE({ ...editingHTE, campus: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
             >
               <option value="">Select Campus</option>
@@ -187,8 +200,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             </label>
             <input
               type="text"
-              value={hte.college}
-              onChange={(e) => setHTE({ ...hte, college: e.target.value })}
+              value={editingHTE.college}
+              onChange={(e) => setEditingHTE({ ...editingHTE, college: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="College"
             />
@@ -204,8 +217,8 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             </label>
             <input
               type="text"
-              value={hte.year_included}
-              onChange={(e) => setHTE({ ...hte, year_included: e.target.value })}
+              value={editingHTE.year_included}
+              onChange={(e) => setEditingHTE({ ...editingHTE, year_included: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Year Included"
             />
@@ -217,8 +230,10 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             </label>
             <input
               type="date"
-              value={hte.with_moa_date_notarized}
-              onChange={(e) => setHTE({ ...hte, with_moa_date_notarized: e.target.value })}
+              value={editingHTE.with_moa_date_notarized 
+                ? new Date(editingHTE.with_moa_date_notarized).toISOString().split("T")[0] 
+                : ""}
+              onChange={(e) => setEditingHTE({ ...editingHTE, with_moa_date_notarized: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
             />
           </div>
@@ -229,8 +244,10 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
             </label>
             <input
               type="date"
-              value={hte.expiry_date}
-              onChange={(e) => setHTE({ ...hte, expiry_date: e.target.value })}
+              value={editingHTE.expiry_date 
+                ? new Date(editingHTE.expiry_date).toISOString().split("T")[0] 
+                : ""}
+              onChange={(e) => setEditingHTE({ ...editingHTE, expiry_date: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
             />
           </div>
@@ -240,18 +257,16 @@ const EditHTE = ({ isOpen, onClose, hteData }) => {
           <button 
             onClick={onClose} 
             className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50"
+            disabled={isLoading}
           >
             Cancel
           </button>
           <button 
-            onClick={() => {
-              if (validateForm()) {
-                onSave(hte);
-              }
-            }}
+            onClick={handleSave} 
             className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            disabled={isLoading}
           >
-            Save Changes
+            {isLoading ? 'Saving...' : 'Save'}
           </button>
         </div>
       </div>
