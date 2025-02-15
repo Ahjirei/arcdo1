@@ -54,6 +54,20 @@ export default function NavbarTopConfigurationPage() {
     return '';
   };
 
+  const verifyToken = async (token) => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/auth/verify-token', { token });
+      return response.status === 200;
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      return false;
+    }
+  };
+
+  const handleRefreshClick = () => {
+    window.location.reload();
+  };
+
   const handleExportClick = async (type) => {
     try {
       const currentPath = getPageFromPath(location.pathname);
@@ -73,11 +87,11 @@ export default function NavbarTopConfigurationPage() {
           title = 'MOA List';
           break;
         case 'COORDINATORS':
-          endpoint = 'http://localhost:3001/api/coordinator/getCoordinator';
+          endpoint = 'http://localhost:3001/api/coordinator/getCoordinators'; // Corrected endpoint
           filename = 'ojt_coordinators';
           title = 'OJT Coordinators List';
           break;
-        default:
+        default:  
           console.error('Unknown page for export:', location.pathname);
           return;
       }
@@ -107,26 +121,50 @@ export default function NavbarTopConfigurationPage() {
   };
 
   const exportToPDF = (data, title, filename, currentPath) => {
-    const doc = new jsPDF();
-    
+    const doc = new jsPDF({ orientation: 'landscape', format: 'a3' });
+
+
+  
     let tableColumn = [];
     let tableRows = [];
-
+  
     switch(currentPath) {
       case 'INDUSTRYPARTNERS':
         tableColumn = [
-          "ID", "Company Name", "Business Type", "Campus", "Contact Person",
-          "Contact Number", "Email", "Expiry Date", "Fax Number", "MOA Status",
-          "Office Address", "Position", "College", "Courses", "Remarks",
-          "Telephone", "MOA Notarized", "Year Included"
+          "ID", 
+          "Company Name", 
+          "Business Type", 
+          "Campus", 
+          "Contact Person",
+          "Contact Number", 
+          "Email", 
+          "Expiry Date", 
+          "MOA Status",
+          "Office Address", 
+          "Position", 
+          "College", 
+          "Courses", 
+          "Remarks",
+          "Telephone", 
+          "MOA Notarized", 
         ];
         tableRows = data.map(item => [
-          item.id, item.company_name, item.business_type, item.campus,
-          item.contact_person, item.contact_number, item.email_address,
-          item.expiry_date, item.fax_number, item.moa_status,
-          item.office_address, item.position_department, item.preferred_college,
-          item.preferred_courses, item.remarks, item.telephone,
-          item.with_moa_date_notarized, item.year_included
+          item.id, 
+          item.company_name, 
+          item.business_type, 
+          item.campus,
+          item.contact_person, 
+          item.contact_number, 
+          item.email_address,
+          item.expiry_date, 
+          item.moa_status,
+          item.office_address, 
+          item.position_department, 
+          item.preferred_college,
+          item.preferred_courses, 
+          item.remarks, 
+          item.telephone,
+          item.with_moa_date_notarized, 
         ]);
         break;
       case 'MOAS':
@@ -157,21 +195,43 @@ export default function NavbarTopConfigurationPage() {
         console.error('Unknown page type for PDF export');
         return;
     }
+  
+// COMMENT: Modified the doc.autoTable configuration below to fix formatting
+doc.autoTable({
+  head: [tableColumn],
+  body: tableRows,
+  startY: 20,
+  headStyles: { fillColor: [128, 1, 1] },
+  styles: {
+    tableWidth: 'auto',
+    fontSize: 7,
+    cellPadding: 2,
+    overflow: 'linebreak',  // ensures text wraps properly
+  },
+  columnStyles: {
+    0: { cellWidth: 7 },  // Example widths, adjust as needed
+    1: { cellWidth: 20 },
+    2: { cellWidth: 25 },
+    3: { cellWidth: 20 },
+    4: { cellWidth: 30 },
+    5: { cellWidth: 20 },
+    6: { cellWidth: 40 },
+    7: { cellWidth: 25 },
+    8: { cellWidth: 20 },
+    9: { cellWidth: 40 },
+    10: { cellWidth: 25 },
+    11: { cellWidth: 25 },
+    12: { cellWidth: 30 },
+    13: { cellWidth: 25 },
+    14: { cellWidth: 20 },
+    15: { cellWidth: 25 },
+  }
+});
 
-    doc.autoTable({
-      head: [tableColumn],
-      body: tableRows,
-      startY: 20,
-      headStyles: { fillColor: [128, 1, 1] },
-      styles: {
-        fontSize: 8,
-        cellPadding: 2,
-      },
-    });
-
-    doc.text(title, 14, 15);
-    doc.save(`${filename}.pdf`);
-  };
+doc.text(title, 11, 12);
+doc.save(`${filename}.pdf`);
+};
+  
 
   return (
     <nav className="fixed bg-[#800101] sm:shadow-md shadow-none top-0 flex items-center px-3 sm:px-10 z-50 h-[4rem] w-full text-white">
@@ -210,7 +270,10 @@ export default function NavbarTopConfigurationPage() {
         {/* Icons for Desktop */}
         <ul className="hidden lg:flex items-center space-x-5 text-white">
           <li>
-            <button className="text-md hover:text-gray-400 transition duration-300">
+            <button 
+              className="text-md hover:text-gray-400 transition duration-300"
+              onClick={handleRefreshClick}
+            >
               <RotateCcw className="h-5 w-5" />
             </button>
           </li>
