@@ -18,6 +18,7 @@ export default function NavbarTopConfigurationPage() {
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false); // For controlling the export dropdown
+  const [searchQuery, setSearchQuery] = useState(""); 
   const settingsMenuRef = useRef(null);
 
   const pathSegments = location.pathname.split("/").filter(Boolean);
@@ -50,9 +51,135 @@ export default function NavbarTopConfigurationPage() {
       return 'MOAS';
     } else if (path.includes('ojt-coordinators')) {
       return 'COORDINATORS';
+    } else if (path.includes('hte')) {
+      return 'HTE';
     }
     return '';
   };
+
+  useEffect(() => {
+    fetchAllData(); // Fetch all data globally on mount
+    fetchDataForCurrentPage();
+  }, [location.pathname]); // Fetch data when the page changes
+  
+  const [allData, setAllData] = useState([]); // Store all entities for global search
+  const [originalData, setOriginalData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  
+  const fetchAllData = async () => {
+    try {
+      const [hteRes, moaRes, ipRes, coordRes] = await Promise.all([
+        axios.get("http://localhost:3001/api/hte/getHte"),
+        axios.get("http://localhost:3001/api/moa/getMoa"),
+        axios.get("http://localhost:3001/api/ip/getPartner"),
+        axios.get("http://localhost:3001/api/coordinator/getCoordinators"),
+      ]);
+  
+      // Add a type field to differentiate records
+      const combinedData = [
+        ...hteRes.data.map(item => ({ ...item, type: "HTE" })),
+        ...moaRes.data.map(item => ({ ...item, type: "MOA" })),
+        ...ipRes.data.map(item => ({ ...item, type: "Industry Partner" })),
+        ...coordRes.data.map(item => ({ ...item, type: "OJT Coordinator" })),
+      ];
+  
+      setAllData(combinedData); // Store full dataset for global search
+    } catch (error) {
+      console.error("Error fetching all data:", error);
+    }
+  };
+  
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  
+    if (!query) {
+      setFilteredData(originalData); // Reset to original data when query is empty
+      return;
+    }
+  
+    // Filter across all entities
+    const filtered = allData.filter((item) => {
+      if (item.company_name) {
+        return item.company_name.toLowerCase().includes(query.toLowerCase());
+      } else if (item.name) {
+        return item.name.toLowerCase().includes(query.toLowerCase());
+      }
+      return false;
+    });
+  
+    setFilteredData(filtered);
+  };
+  
+
+  useEffect(() => {
+    fetchDataForCurrentPage();
+  }, [location.pathname]); // Fetch data when the page changes
+
+  const fetchDataForCurrentPage = async () => {
+    try {
+      const currentPath = getPageFromPath(location.pathname);
+      let endpoint = "";
+
+      switch (currentPath) {
+        case "INDUSTRYPARTNERS":
+          endpoint = "http://localhost:3001/api/ip/getPartner";
+          break;
+        case "MOAS":
+          endpoint = "http://localhost:3001/api/moa/getMoa";
+          break;
+        case "HTE":
+          endpoint = "http://localhost:3001/api/hte/getHte";
+        break;
+        case "COORDINATORS":
+          endpoint = "http://localhost:3001/api/coordinator/getCoordinators";
+          break;
+        default:
+          return;
+      }
+
+      const response = await axios.get(endpoint);
+      setOriginalData(response.data); // Store the full dataset
+      setFilteredData(response.data); // Set initial filtered data
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  
+  
+
+  const handleSearchClick = (item) => {
+    let pagePath = "";
+    
+    switch (item.type) {
+      case "HTE":
+        pagePath = "/hte";
+        break;
+      case "MOA":
+        pagePath = "/moas";
+        break;
+      case "Industry Partner":
+        pagePath = "/industry-partners";
+        break;
+      case "OJT Coordinator":
+        pagePath = "/OJT-coordinators";
+        break;
+      default:
+        pagePath = "/"; // Fallback
+    }
+  
+    navigate(pagePath, { 
+      state: { 
+        searchQuery: item.company_name || item.name,
+        searchId: item.id
+      } 
+    }); // Send searchQuery
+  };
+  
+  
+  
+  
+  
+  
 
   
   const handleExportClick = async (type) => {
@@ -204,6 +331,8 @@ export default function NavbarTopConfigurationPage() {
               type="text"
               placeholder="Search..."
               className="px-4 py-2 rounded-2xl text-md text-black focus:outline-none focus:ring-2 focus:ring-red-800-400"
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
             />
           )}
         </div>
@@ -241,6 +370,26 @@ export default function NavbarTopConfigurationPage() {
                     <span>as</span>
                     <span>PDF</span>
                   </button>
+                </div>
+              )}
+
+              {searchQuery && (
+                <div 
+                className="absolute top-9 left-[10%] transform -translate-x-[76%] bg-white shadow-lg p-3 rounded-lg w-96 max-h-60 overflow-auto">
+                  {filteredData.length > 0 ? (
+                    filteredData.map((item, index) => (
+                  <div
+                    key={index}
+                    className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
+                    onClick={() => handleSearchClick(item)}
+                  >
+                    <p className="text-black">{item.company_name || item.name || item.title}</p>
+                  </div>
+                    ))
+                  ) : (
+                    <p className="text-black">No results found.</p>
+                  )}
+
                 </div>
               )}
 
@@ -283,7 +432,27 @@ export default function NavbarTopConfigurationPage() {
                       type="text"
                       placeholder="Search..."
                       className="mt-2 px-4 py-2 rounded-2xl text-md text-black focus:outline-none focus:ring-2 focus:ring-red-800-400"
+                      value={searchQuery}
+                      onChange={(e) => handleSearch(e.target.value)}
                     />
+                  )}
+                  {searchQuery && (
+                    <div 
+                      className="absolute top-9 left-[10%] transform -translate-x-[76%] bg-white shadow-lg p-3 rounded-lg w-96 max-h-60 overflow-auto">
+                      {filteredData.length > 0 ? (
+                        filteredData.map((item, index) => (
+                          <div
+                            key={index}
+                            className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
+                            onClick={() => handleSearchClick(item)}
+                          >
+                            <p className="text-black">{item.company_name || item.name || item.title}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-black">No results found.</p>
+                      )}
+                    </div>
                   )}
                 </li>
                 {/* Export options inside settings menu */}

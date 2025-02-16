@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
 import AddMoa from "../moa/AddMoa";
 import EditMoa from "../moa/EditMoa";
+import { useLocation } from "react-router-dom";
 
 export default function Moa() {
   const [moa, setMoa] = useState([]);
@@ -20,6 +21,11 @@ export default function Moa() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const location = useLocation();
+  const searchQuery = location.state?.searchQuery || "";
+  const searchId = location.state?.searchId || ""; // Get ID from search query
+  const [displayedMoa, setDisplayedMoa] = useState([]); 
 
   const [newMoa, setNewMoa] = useState({
       company_name: "",
@@ -37,6 +43,24 @@ export default function Moa() {
       moa_draft_sent: "",
       validity: "Processing"
     });
+
+  useEffect(() => {
+      fetchMoa();
+    }, []);
+  
+  useEffect(() => {
+    if (searchQuery || searchId) {
+      // Show only the matching entry (just like the business type filter)
+      setDisplayedMoa(
+        moa.filter(item =>
+          item.id.toString() === searchId.toString() || 
+          item.company_name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    } else {
+      setDisplayedMoa(moa); // Show all data when there's no search
+    }
+  }, [searchQuery, searchId, moa]);
 
   // Fetch MoA data from the API
   useEffect(() => {
@@ -248,7 +272,7 @@ export default function Moa() {
               </tr>
             </thead>
             <tbody>
-              {currentData.map((moa, index) => (
+              {(searchQuery || searchId ? displayedMoa : currentData).map((moa, index) => (
                 <tr key={moa.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                   <td className="px-4 py-2 border-t">{moa.id}</td>
                   <td className="px-4 py-2 border-t">{moa.company_name}</td>
@@ -325,88 +349,89 @@ export default function Moa() {
 
       {/* Mobile View */}
       <div className="md:hidden">
-        {currentData.map((moa, index) => (
+        {(searchQuery || searchId ? displayedMoa : currentData).map((moa, index) => (
           <div key={moa.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
-                <div className="font-bold">{moa.company_name}</div>
-                <div className={`px-4 rounded-full py-1 ${getValidityColor(moa.moa_status)}`}>
-                  {moa.moa_status}
-                </div>
-              </div>
-              <div className="relative ml-4">
-                <button onClick={() => toggleDropdown(moa.id)} className="p-1 hover:bg-gray-100 rounded-full">
-                  <MoreVertical size={20} />
-                </button>
-                {openDropdown === moa.id && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                    <button
-                      onClick={() => handleEdit(moa)}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      <FilePenLine size={16} className="inline-block mr-2" />
-                      Edit File
-                    </button>
-                    <button
-                      onClick={() => handleDelete(moa.id)}
-                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                    >
-                      <Trash2 size={16} className="inline-block mr-2" />
-                      Delete File
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="mt-2">
-              <strong>ID:</strong> {moa.id}
-              
-            </div>
-            <div className="mt-2">
-              <strong>Address:</strong> {moa.address}
-            </div>
-            <div className="mt-2">
-              <strong>Nature of Business:</strong> {moa.business_type}
-            </div>
-            <hr className="my-2" />
-            <div className="mt-2 text-center">
-              <strong>MOA Details</strong>
-            </div>
-            <hr className="my-2" />
-            <div className="mt-2">
-              <strong>Moa Started:</strong> {new Date(moa.year_moa_started).toLocaleDateString("en-CA")}
-            </div>
-            <div className="mt-2">
-              <strong>Moa Draft Sent:</strong> {moa.moa_draft_sent}
-            </div>
-            <div className="mt-2">
-              <strong>Moa Notorized:</strong> {moa.date_notarized}
-            </div>
-            <div className="mt-2">
-              <strong>Expiry Date:</strong> {new Date(moa.expiration_date).toLocaleDateString("en-CA")}
-            </div>
-            <div className="mt-2">
-              <strong>Type of Moa:</strong> {moa.type_of_moa}
-            </div>
-            <hr className="my-2" />
-            <div className="mt-2 text-center">
-              <strong>Contact Details</strong>
-            </div>
-            <hr className="my-2" />
-            <div className="mt-2">
-              <strong>Contact Person:</strong> {moa.contact_person}
-            </div>
-            <div className="mt-2">
-              <strong>Contact Number:</strong> {moa.contact_no}
-            </div>
-            <div className="mt-2">
-              <strong>Email Address:</strong> {moa.email}
-            </div>
-            <div className="mt-2">
-              <strong>Remarks:</strong> {moa.remarks}
-            </div>
-          </div>
-        ))}
+                                        <div className="font-bold">{moa.company_name}</div>
+                                        <div className={`px-4 rounded-full py-1 ${getValidityColor(moa.moa_status)}`}>
+                                          {moa.moa_status}
+                                        </div>
+                                      </div>
+                                      <div className="relative ml-4">
+                                        <button onClick={() => toggleDropdown(moa.id)} className="p-1 hover:bg-gray-100 rounded-full">
+                                          <MoreVertical size={20} />
+                                        </button>
+                                        {openDropdown === moa.id && (
+                                          <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                                            <button
+                                              onClick={() => handleEdit(moa)}
+                                              className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                            >
+                                              <FilePenLine size={16} className="inline-block mr-2" />
+                                              Edit File
+                                            </button>
+                                            <button
+                                              onClick={() => handleDelete(moa.id)}
+                                              className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                                            >
+                                              <Trash2 size={16} className="inline-block mr-2" />
+                                              Delete File
+                                            </button>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>ID:</strong> {moa.id}
+                                      
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Address:</strong> {moa.address}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Nature of Business:</strong> {moa.business_type}
+                                    </div>
+                                    <hr className="my-2" />
+                                    <div className="mt-2 text-center">
+                                      <strong>MOA Details</strong>
+                                    </div>
+                                    <hr className="my-2" />
+                                    <div className="mt-2">
+                                      <strong>Moa Started:</strong> {new Date(moa.year_moa_started).toLocaleDateString("en-CA")}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Moa Draft Sent:</strong> {moa.moa_draft_sent}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Moa Notorized:</strong> {moa.date_notarized}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Expiry Date:</strong> {new Date(moa.expiration_date).toLocaleDateString("en-CA")}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Type of Moa:</strong> {moa.type_of_moa}
+                                    </div>
+                                    <hr className="my-2" />
+                                    <div className="mt-2 text-center">
+                                      <strong>Contact Details</strong>
+                                    </div>
+                                    <hr className="my-2" />
+                                    <div className="mt-2">
+                                      <strong>Contact Person:</strong> {moa.contact_person}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Contact Number:</strong> {moa.contact_no}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Email Address:</strong> {moa.email}
+                                    </div>
+                                    <div className="mt-2">
+                                      <strong>Remarks:</strong> {moa.remarks}
+                                    </div>
+                                  </div>
+                        )
+                      )}
       </div>
 
       {/* Pagination Section */}
@@ -426,9 +451,17 @@ export default function Moa() {
           >
             →
           </button>
-          <span className="text-gray-500">
-            Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredMoa.length)}</b> of <b>{filteredMoa.length}</b>
-          </span>
+          <span className="text-gray-500 text-sm mt-2 md:mt-0">
+          {searchQuery || searchId ? (
+            <>
+              Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, displayedMoa.length)}</b> of <b>{displayedMoa.length}</b> results for your search.
+            </>
+          ) : (
+            <>
+              Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredMoa.length)}</b> of <b>{filteredMoa.length}</b>
+            </>
+          )}
+        </span>
         </div>
       </div>
     </div>
