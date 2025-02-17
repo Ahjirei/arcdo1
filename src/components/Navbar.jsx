@@ -262,11 +262,9 @@ export default function NavbarTopConfigurationPage() {
   const exportToPDF = (data, title, filename, currentPath) => {
     const doc = new jsPDF({ orientation: 'landscape', format: 'a3' });
 
-
-  
     let tableColumn = [];
     let tableRows = [];
-  
+
     switch(currentPath) {
       case 'INDUSTRYPARTNERS':
         tableColumn = [
@@ -349,42 +347,42 @@ export default function NavbarTopConfigurationPage() {
         console.error('Unknown page type for PDF export');
         return;
     }
-  
-// COMMENT: Modified the doc.autoTable configuration below to fix formatting
-doc.autoTable({
-  head: [tableColumn],
-  body: tableRows,
-  startY: 20,
-  headStyles: { fillColor: [128, 1, 1] },
-  styles: {
-    tableWidth: 'auto',
-    fontSize: 7,
-    cellPadding: 2,
-    overflow: 'linebreak',  // ensures text wraps properly
-  },
-  columnStyles: {
-    0: { cellWidth: 7 },  // Example widths, adjust as needed
-    1: { cellWidth: 20 },
-    2: { cellWidth: 25 },
-    3: { cellWidth: 20 },
-    4: { cellWidth: 30 },
-    5: { cellWidth: 20 },
-    6: { cellWidth: 40 },
-    7: { cellWidth: 25 },
-    8: { cellWidth: 20 },
-    9: { cellWidth: 40 },
-    10: { cellWidth: 25 },
-    11: { cellWidth: 25 },
-    12: { cellWidth: 30 },
-    13: { cellWidth: 25 },
-    14: { cellWidth: 20 },
-    15: { cellWidth: 25 },
-  }
-});
 
-doc.text(title, 11, 12);
-doc.save(`${filename}.pdf`);
-};
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+      headStyles: { fillColor: [128, 1, 1] },
+      styles: {
+        tableWidth: 'wrap',
+        fontSize: 8,
+        cellPadding: 3,
+        overflow: 'linebreak',
+      },
+      columnStyles: {
+        0: { cellWidth: 10 },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 20 },
+        5: { cellWidth: 25 },
+        6: { cellWidth: 25 },
+        7: { cellWidth: 20 },
+        8: { cellWidth: 20 },
+        9: { cellWidth: 25 },
+        10: { cellWidth: 20 },
+        11: { cellWidth: 20 },
+        12: { cellWidth: 20 },
+        13: { cellWidth: 30 },
+        14: { cellWidth: 30 },
+        15: { cellWidth: 25 },
+        16: { cellWidth: 20 },
+      }
+    });
+
+    doc.text(title, 14, 15);
+    doc.save(`${filename}.pdf`);
+  };
   
 
   return (
