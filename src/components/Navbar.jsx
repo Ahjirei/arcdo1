@@ -305,8 +305,6 @@ doc.save(`${filename}.pdf`);
                   </button>
                 </div>
               )}
-
-
             </div>
           </li>
         </ul>
