@@ -133,11 +133,12 @@ export default function Moa() {
   const currentData = filteredMoa.slice(startIndex, endIndex);
 
   const handleNext = () => {
+    const totalPages = Math.ceil((searchQuery || searchId ? displayedMoa.length : filteredMoa.length) / MoaPerPage);
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
-
+  
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);

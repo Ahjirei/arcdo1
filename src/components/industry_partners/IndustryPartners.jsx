@@ -64,7 +64,6 @@ export default function IndustryPartners() {
   };
 
   const industryPartnersPerPage = 5;
-  const totalPages = Math.ceil(industryPartners.length / industryPartnersPerPage);
 
   // Apply filters
   const filteredData = industryPartners.filter((partner) => {
@@ -81,16 +80,18 @@ export default function IndustryPartners() {
     return matchesDate && matchesBusiness && matchesValidity;
   });
 
+  const totalPages = Math.ceil(industryPartners.length / industryPartnersPerPage);
   const startIndex = (currentPage - 1) * industryPartnersPerPage;
   const endIndex = startIndex + industryPartnersPerPage;
   const currentData = filteredData.slice(startIndex, endIndex);
 
   const handleNext = () => {
+    const totalPages = Math.ceil((searchQuery || searchId ? displayedPartners.length : industryPartners.length) / industryPartnersPerPage);
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
-
+  
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);

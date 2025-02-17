@@ -116,11 +116,16 @@ export default function OJTCoordinators() {
   const currentCoordinators = filteredCoordinators.slice(startIndex, endIndex);
 
   const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    const totalPages = Math.ceil((searchQuery || searchId ? displayedCoordinator.length : filteredCoordinators.length) / itemsPerPage);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
-
+  
   const handlePrevious = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   const resetFilters = () => {

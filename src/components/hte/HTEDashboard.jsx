@@ -139,11 +139,12 @@ export default function HTEDashboard() {
   const currentHte = filteredHte.slice(startIndex, endIndex);
 
   const handleNext = () => {
+    const totalPages = Math.ceil((searchQuery || searchId ? displayedHte.length : filteredHte.length) / htesPerPage);
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
   };
-
+  
   const handlePrevious = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
