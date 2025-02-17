@@ -4,6 +4,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
 import AddCoordinator from "../ojt_coordinators/AddCoordinator";
 import EditCoordinator from "../ojt_coordinators/EditCoordinator";
+import { useLocation } from "react-router-dom";
 
 export default function OJTCoordinators() {
   const [coordinators, setCoordinators] = useState([]);
@@ -16,6 +17,10 @@ export default function OJTCoordinators() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const location = useLocation();
+  const searchQuery = location.state?.searchQuery || "";
+  const searchId = location.state?.searchId || ""; // Get ID from search query
+  const [displayedCoordinator, setDisplayedCoordinator] = useState([]); 
   
   const [newCoordinator, setNewCoordinator] = useState({
     name: '',
@@ -26,6 +31,24 @@ export default function OJTCoordinators() {
     assigned_student: '',
     status: 'Active'
   });
+
+  useEffect(() => {
+      fetchCoordinators();
+    }, []);
+  
+  useEffect(() => {
+    if (searchQuery || searchId) {
+      // Show only the matching entry (just like the business type filter)
+      setDisplayedCoordinator(
+        coordinators.filter(item =>
+          item.id.toString() === searchId.toString() || 
+          item.name.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    } else {
+      setDisplayedCoordinator(coordinators); // Show all data when there's no search
+    }
+  }, [searchQuery, searchId, coordinators]); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -197,8 +220,7 @@ export default function OJTCoordinators() {
               </tr>
             </thead>
             <tbody>
-              {currentCoordinators.map((coordinator, index) => (
-
+              {(searchQuery || searchId ? displayedCoordinator : currentCoordinators).map((coordinator, index) => (
                 <tr
                   key={coordinator.id}
                   className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
@@ -216,7 +238,7 @@ export default function OJTCoordinators() {
                     <button onClick={() => toggleDropdown(coordinator.id)} className="text-gray-600">
                       <MoreVertical size={20} />
                     </button>
-
+                              
                     {openDropdown === coordinator.id && (
                       <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50 bottom-0">
                         <button
@@ -272,62 +294,62 @@ export default function OJTCoordinators() {
 
       {/* mobile view section */}
       <div className="md:hidden">
-        {currentCoordinators.map((coordinator, index) => (
-          <div key={coordinator.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
-            <div className="flex justify-between items-center">
-              <div className="flex items-center space-x-3 flex-1">
-                <div className="font-bold">{coordinator.name}</div>
-                <div className={`px-3 rounded-full py-1 text-sm ${getStatusColor(coordinator.status)}`}>
-                  {coordinator.status}
-                </div>
-              </div>
-              <div className="relative ml-4">
-                <button 
-                  onClick={() => toggleDropdown(coordinator.id)} 
-                  className="p-1 hover:bg-gray-100 rounded-full"
-                >
-                  <MoreVertical size={20} />
-                </button>
-                {openDropdown === coordinator.id && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                    <button
-                      onClick={() => handleEdit(coordinator)}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      <FilePenLine size={16} className="inline-block mr-2" />
-                      Edit File
-                    </button>
-                    <button
-                      onClick={() => handleDelete(coordinator.id)}
-                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                    >
-                      <Trash2 size={16} className="inline-block mr-2" />
-                      Delete File
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="mt-2">
-              <strong>ID:</strong> {coordinator.id}
-            </div>
-            <div className="mt-2">
-              <strong>Campus:</strong> {coordinator.campus}
-            </div>
-            <div className="mt-2">
-              <strong>College:</strong> {coordinator.college}
-            </div>
-            <div className="mt-2">
-              <strong>Contact:</strong> {coordinator.email}
-            </div>
-            <div className="mt-2">
-              <strong>Office:</strong> {coordinator.office}
-            </div>
-            <div className="mt-2">
-              <strong>Assigned Students:</strong> {coordinator.assigned_student}
-            </div>
-          </div>
-        ))}
+        {(searchQuery || searchId ? displayedCoordinator : currentCoordinators).map((coordinator, index) => (
+                  <div key={coordinator.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
+                              <div className="flex justify-between items-center">
+                                <div className="flex items-center space-x-3 flex-1">
+                                  <div className="font-bold">{coordinator.name}</div>
+                                  <div className={`px-3 rounded-full py-1 text-sm ${getStatusColor(coordinator.status)}`}>
+                                    {coordinator.status}
+                                  </div>
+                                </div>
+                                <div className="relative ml-4">
+                                  <button 
+                                    onClick={() => toggleDropdown(coordinator.id)} 
+                                    className="p-1 hover:bg-gray-100 rounded-full"
+                                  >
+                                    <MoreVertical size={20} />
+                                  </button>
+                                  {openDropdown === coordinator.id && (
+                                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                                      <button
+                                        onClick={() => handleEdit(coordinator)}
+                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                      >
+                                        <FilePenLine size={16} className="inline-block mr-2" />
+                                        Edit File
+                                      </button>
+                                      <button
+                                        onClick={() => handleDelete(coordinator.id)}
+                                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                                      >
+                                        <Trash2 size={16} className="inline-block mr-2" />
+                                        Delete File
+                                      </button>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="mt-2">
+                                <strong>ID:</strong> {coordinator.id}
+                              </div>
+                              <div className="mt-2">
+                                <strong>Campus:</strong> {coordinator.campus}
+                              </div>
+                              <div className="mt-2">
+                                <strong>College:</strong> {coordinator.college}
+                              </div>
+                              <div className="mt-2">
+                                <strong>Contact:</strong> {coordinator.email}
+                              </div>
+                              <div className="mt-2">
+                                <strong>Office:</strong> {coordinator.office}
+                              </div>
+                              <div className="mt-2">
+                                <strong>Assigned Students:</strong> {coordinator.assigned_student}
+                              </div>
+                            </div>
+                ))}
       </div>
 
       {/* Pagination Section */}
@@ -347,9 +369,17 @@ export default function OJTCoordinators() {
         >
           →
         </button>
-        <span className="text-gray-500">
-          Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredCoordinators.length)}</b> of{" "}
-          <b>{filteredCoordinators.length}</b>
+        <span className="text-gray-500 text-sm mt-2 md:mt-0">
+          {searchQuery || searchId ? (
+            <>
+              Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, displayedCoordinator.length)}</b> of <b>{displayedCoordinator.length}</b> results for your search.
+            </>
+          ) : (
+            <>
+              Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredCoordinators.length)}</b> of{" "}
+              <b>{filteredCoordinators.length}</b>
+            </>
+          )}
         </span>
       </div>
     </div>

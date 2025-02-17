@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
 import AddIndustryPartner from "../industry_partners/AddIndustryPartner";
 import EditIndustryPartner from "../industry_partners/EditIndustryPartner";
+import { useLocation } from "react-router-dom";
 
 export default function IndustryPartners() {
   const [industryPartners, setIndustryPartners] = useState([]);
@@ -21,9 +22,28 @@ export default function IndustryPartners() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const location = useLocation();
+  const searchQuery = location.state?.searchQuery || "";
+  const searchId = location.state?.searchId || ""; // Get ID from search query
+  const [displayedPartners, setDisplayedPartners] = useState([]); 
+
   useEffect(() => {
     fetchIndustryPartners();
   }, []);
+
+  useEffect(() => {
+    if (searchQuery || searchId) {
+      // Show only the matching entry (just like the business type filter)
+      setDisplayedPartners(
+        industryPartners.filter(item =>
+          item.id.toString() === searchId.toString() || 
+          item.company_namename.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      );
+    } else {
+      setDisplayedPartners(industryPartners); // Show all data when there's no search
+    }
+  }, [searchQuery, searchId, industryPartners]); 
 
   const fetchIndustryPartners = async () => {
     setLoading(true);
@@ -249,7 +269,7 @@ export default function IndustryPartners() {
               </tr>
             </thead>
             <tbody>
-              {currentData.map((partner, index) => (
+              {(searchQuery || searchId ? displayedPartners : currentData).map((partner, index) => (
                 <tr key={partner.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                   <td className="px-4 py-2 border-t">{partner.id}</td>
                   <td className="px-4 py-2 border-t">{partner.company_name}</td>
@@ -306,7 +326,7 @@ export default function IndustryPartners() {
 
       {/* Mobile View (Cards) */}
       <div className="md:hidden">
-        {currentData.map((partner, index) => (
+        {(searchQuery || searchId ? displayedPartners : currentData).map((partner, index) => (
           <div key={partner.id} className={`border border-black p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
@@ -442,7 +462,15 @@ export default function IndustryPartners() {
 
         {/* Showing Results Info */}
         <span className="text-gray-500 text-sm mt-2 md:mt-0">
-          Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredData.length)}</b> of <b>{filteredData.length}</b>
+          {searchQuery || searchId ? (
+            <>
+              Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, displayedPartners.length)}</b> of <b>{displayedPartners.length}</b> results for your search.
+            </>
+          ) : (
+            <>
+              Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredData.length)}</b> of <b>{filteredData.length}</b>
+            </>
+          )}
         </span>
       </div>
     </div>
