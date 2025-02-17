@@ -60,6 +60,8 @@ export default function NavbarTopConfigurationPage() {
   useEffect(() => {
     fetchAllData(); // Fetch all data globally on mount
     fetchDataForCurrentPage();
+    setSearchQuery(""); // Clear search query
+    setFilteredData([]); // Clear filtered data
   }, [location.pathname]); // Fetch data when the page changes
   
   const [allData, setAllData] = useState([]); // Store all entities for global search
@@ -173,6 +175,10 @@ export default function NavbarTopConfigurationPage() {
         searchId: item.id
       } 
     }); // Send searchQuery
+
+    // Clear search state after navigation
+    setSearchQuery("");
+    setFilteredData([]);
   };
   
   
