@@ -225,6 +225,11 @@ export default function NavbarTopConfigurationPage() {
           filename = 'ojt_coordinators';
           title = 'OJT Coordinators List';
           break;
+        case 'HTE':
+          endpoint = 'http://localhost:3001/api/hte/getHte';
+          filename = 'hte_list';
+          title = 'HTE List';
+          break;
         default:  
           console.error('Unknown page for export:', location.pathname);
           return;
@@ -323,6 +328,21 @@ export default function NavbarTopConfigurationPage() {
         tableRows = data.map(item => [
           item.id, item.name, item.campus, item.college,
           item.assigned_student, item.status, item.email, item.office
+        ]);
+        break;
+      case 'HTE':
+        tableColumn = [
+          "ID", "Company Name", "Year Submitted", "Business Type", "MOA Status",
+          "Contact Person", "Contact Number", "Remarks", "Year Included",
+          "Position/Department", "Course", "Campus", "College", "Email Address",
+          "Office Address", "MOA Date Notarized", "Expiry Date"
+        ];
+        tableRows = data.map(item => [
+          item.id, item.company_name, item.year_submitted, item.business_type,
+          item.moa_status, item.contact_person, item.contact_number, item.remarks,
+          item.year_included, item.position_department, item.course, item.campus,
+          item.college, item.email_address, item.office_address,
+          item.with_moa_date_notarized, item.expiry_date
         ]);
         break;
       default:
