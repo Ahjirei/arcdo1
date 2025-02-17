@@ -254,90 +254,97 @@ export default function HTEDashboard() {
       {/* Table Section */}
       <div className="flex-grow h-full mt-1 overflow-x-auto">
         {/* Responsive Wrapper for Table */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-2 text-center border-b">ID</th>
-                <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
-                <th className="px-4 py-2 text-center border-b">COURSE</th>
-                <th className="px-4 py-2 text-center border-b">COLLEGE</th>
-                <th className="px-4 py-2 text-center border-b">CAMPUS</th>
-                <th className="px-2 py-2 text-center border-b">YEAR SUBMITTED</th>
-                <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
-                <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
-                <th className="px-4 py-2 text-center border-b">NATURE OF BUSINESS</th>
-                <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
-                <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
-                <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
-                <th className="px-2 py-2 text-center border-b">YEAR INCLUDED</th>
-                <th className="px-4 py-2 text-center border-b">POSITION</th>
-                <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
-                <th className="px-4 py-2 text-center border-b">OFFICE ADDRESS</th>
-                <th className="px-2 py-2 text-center border-b">REMARKS</th>
-                <th className="px-1 py-2 text-center border-b"></th>
-                
-              </tr>
-            </thead>
-            <tbody>
-              {(searchQuery || searchId ? displayedHte : currentHte).map((hte, index) => (
-                <tr 
-                  key={hte.id} 
-                  className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
-                >
-                    
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.id}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.company_name}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.course}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.college}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.campus}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.year_submitted}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.expiry_date).toLocaleDateString("en-CA")}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.business_type}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">
-                    <span className={`rounded-full px-2 py-1 ${getValidityColor(hte.moa_status)}`}>
-                      {hte.moa_status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_person}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_number}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.year_ncluded}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.position_department}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.email_address}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.office_address}</td>
-                  <td className="px-4 py-2 border-t block md:table-cell">{hte.remarks}</td>
-                  <td className="px-6 py-2 border-t relative">
-                    <button onClick={() => toggleDropdown(hte.id)} className="text-gray-600">
-                      <MoreVertical size={20} />
-                    </button>
-
-                    {openDropdown === hte.id && (
-                      <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                        <button
-                          onClick={() => handleEdit(hte)}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                        >
-                          <FilePenLine size={16} className="inline-block mr-2" />
-                          Edit File
-                        </button>
-                        <button
-                          onClick={() => handleDelete(hte.id)}
-                          className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                        >
-                          <Trash2 size={16} className="inline-block mr-2" />
-                          Delete File
-                        </button>
-                      </div>
-                    )}
-                  </td>
-
+        {loading ? (
+          <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
+            <div className="flex flex-col items-center">
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
+              <p className="mt-2 text-lg font-semibold text-gray-700">Loading...</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="text-red-500">{error}</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="px-4 py-2 text-center border-b">ID</th>
+                  <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
+                  <th className="px-4 py-2 text-center border-b">COURSE</th>
+                  <th className="px-4 py-2 text-center border-b">COLLEGE</th>
+                  <th className="px-4 py-2 text-center border-b">CAMPUS</th>
+                  <th className="px-2 py-2 text-center border-b">YEAR SUBMITTED</th>
+                  <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
+                  <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
+                  <th className="px-4 py-2 text-center border-b">NATURE OF BUSINESS</th>
+                  <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
+                  <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
+                  <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
+                  <th className="px-2 py-2 text-center border-b">YEAR INCLUDED</th>
+                  <th className="px-4 py-2 text-center border-b">POSITION</th>
+                  <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
+                  <th className="px-4 py-2 text-center border-b">OFFICE ADDRESS</th>
+                  <th className="px-2 py-2 text-center border-b">REMARKS</th>
+                  <th className="px-1 py-2 text-center border-b"></th>
                 </tr>
-                )
-              )}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {(searchQuery || searchId ? displayedHte : currentHte).map((hte, index) => (
+                  <tr 
+                    key={hte.id} 
+                    className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
+                  >        
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.id}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.company_name}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.course}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.college}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.campus}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.year_submitted}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.expiry_date).toLocaleDateString("en-CA")}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.business_type}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">
+                      <span className={`rounded-full px-2 py-1 ${getValidityColor(hte.moa_status)}`}>
+                        {hte.moa_status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_person}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_number}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.year_ncluded}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.position_department}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.email_address}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.office_address}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.remarks}</td>
+                    <td className="px-6 py-2 border-t relative">
+                      <button onClick={() => toggleDropdown(hte.id)} className="text-gray-600">
+                        <MoreVertical size={20} />
+                      </button>
+          
+                      {openDropdown === hte.id && (
+                        <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                          <button
+                            onClick={() => handleEdit(hte)}
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            <FilePenLine size={16} className="inline-block mr-2" />
+                            Edit File
+                          </button>
+                          <button
+                            onClick={() => handleDelete(hte.id)}
+                            className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                          >
+                            <Trash2 size={16} className="inline-block mr-2" />
+                            Delete File
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Mobile View (Cards) */}
         <div className="md:hidden">
