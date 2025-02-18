@@ -8,7 +8,7 @@ import EditMoa from "../moa/EditMoa";
 import { useLocation } from "react-router-dom";
 
 export default function Moa() {
-  const [moa, setMoa] = useState([]);
+  const [moas, setMoas] = useState([]);
   const [editingMoa, setEditingMoa] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -52,15 +52,15 @@ export default function Moa() {
     if (searchQuery || searchId) {
       // Show only the matching entry (just like the business type filter)
       setDisplayedMoa(
-        moa.filter(item =>
+        moas.filter(item =>
           item.id.toString() === searchId.toString() || 
           item.company_name.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     } else {
-      setDisplayedMoa(moa); // Show all data when there's no search
+      setDisplayedMoa(moas); // Show all data when there's no search
     }
-  }, [searchQuery, searchId, moa]);
+  }, [searchQuery, searchId, moas]);
 
   // Fetch MoA data from the API
   useEffect(() => {
@@ -82,7 +82,7 @@ export default function Moa() {
     try {
       const response = await axios.get("http://localhost:3001/api/moa/getMoa");
       const sortedData = response.data.sort((a, b) => new Date(b.year_submitted) - new Date(a.year_submitted));
-      setMoa(sortedData);
+      setMoas(sortedData);
       setDisplayedMoa(sortedData);
     } catch (error) {
       console.error("Error fetching moa:", error);
@@ -113,10 +113,10 @@ export default function Moa() {
 
   // Filter data based on the selected filters.
   // For the "date" filter, we compare the year of the 'moaStarted' field.
-  const filteredMoa = moa.filter((moa) => {
+  const filteredMoas = moas.filter((moa) => {
     const matchesDate = filters.date
-      ? moa.year_moa_started === filters.date
-      : true;
+    ? new Date(moa.year_moa_started).getFullYear().toString() === filters.date
+    : true;
     const matchesBusiness = filters.business
       ? moa.business_type?.toLowerCase().includes(filters.business.toLowerCase())
       : true;
@@ -127,13 +127,13 @@ export default function Moa() {
     return matchesDate && matchesBusiness && matchesValidity;
   });
 
-  const totalPages = Math.ceil(filteredMoa.length / MoaPerPage);
+  const totalPages = Math.ceil(filteredMoas.length / MoaPerPage);
   const startIndex = (currentPage - 1) * MoaPerPage;
   const endIndex = startIndex + MoaPerPage;
-  const currentData = filteredMoa.slice(startIndex, endIndex);
+  const currentData = filteredMoas.slice(startIndex, endIndex);
 
   const handleNext = () => {
-    const totalPages = Math.ceil((searchQuery || searchId ? displayedMoa.length : filteredMoa.length) / MoaPerPage);
+    const totalPages = Math.ceil((searchQuery || searchId ? displayedMoa.length : filteredMoas.length) / MoaPerPage);
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
     }
@@ -454,7 +454,7 @@ export default function Moa() {
               </>
             ) : (
               <>
-                Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredMoa.length)}</b> of <b>{filteredMoa.length}</b>
+                Showing <b>{startIndex + 1}</b> to <b>{Math.min(endIndex, filteredMoas.length)}</b> of <b>{filteredMoas.length}</b>
               </>
             )}
         </span>
