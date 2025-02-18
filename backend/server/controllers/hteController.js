@@ -40,16 +40,17 @@ export const addHte = async (req, res) => {
             contact_person,
             contact_number,
             email_address,
-            remarks,
-            campus,
-            college,
-            course,
-            expiry_date,
+            remarks = null,
+            campus = null,
+            college = null,
+            course = null,
+            expiry_date = null,
             position_department,
-            with_moa_date_notarized,
-            year_included,
+            with_moa_date_notarized = null,
+            year_included
         } = req.body;
 
+        // Validate only the required fields
         if (
             !company_name ||
             !office_address ||
@@ -59,16 +60,10 @@ export const addHte = async (req, res) => {
             !contact_person ||
             !contact_number ||
             !email_address ||
-            !remarks ||
-            !campus ||
-            !college ||
-            !course ||
-            !expiry_date ||
             !position_department ||
-            !with_moa_date_notarized ||
             !year_included
         ) {
-            return res.status(400).json({ error: "All fields are required." });
+            return res.status(400).json({ error: "All required fields must be provided." });
         }
 
         const connection = await initializeConnection();
@@ -77,7 +72,7 @@ export const addHte = async (req, res) => {
                 company_name, office_address, year_submitted, business_type, moa_status,
                 contact_person, contact_number, email_address, remarks, campus, 
                 college, course, expiry_date, position_department, with_moa_date_notarized, year_included
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
             [
                 company_name,
                 office_address,
@@ -94,7 +89,7 @@ export const addHte = async (req, res) => {
                 expiry_date,
                 position_department,
                 with_moa_date_notarized,
-                year_included,
+                year_included
             ]
         );
 
@@ -129,7 +124,6 @@ export const updateHte = async (req, res) => {
         } = req.body;
 
         if (
-            !id ||
             !company_name ||
             !office_address ||
             !year_submitted ||
@@ -138,16 +132,10 @@ export const updateHte = async (req, res) => {
             !contact_person ||
             !contact_number ||
             !email_address ||
-            !remarks ||
-            !campus ||
-            !college ||
-            !course ||
-            !expiry_date ||
             !position_department ||
-            !with_moa_date_notarized ||
             !year_included
         ) {
-            return res.status(400).json({ error: "All fields are required." });
+            return res.status(400).json({ error: "All required fields must be provided." });
         }
 
         const formattedExpiryDate = new Date(expiry_date).toISOString().split("T")[0];
