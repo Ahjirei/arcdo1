@@ -22,36 +22,34 @@ function App() {
         setIsAuthenticated(false);
         return;
       }
-
+  
       try {
         const response = await fetch("http://localhost:3001/api/auth/verify-token", {
           method: "POST",
           headers: { Authorization: `Bearer ${token}` },
         });
-
+  
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
-          setIsAuthenticated(false);
-          localStorage.removeItem("token");
-          localStorage.removeItem("role");
-          localStorage.removeItem("user_id");
+          const data = await response.json();
+          if (data.error === "Token expired" || data.error === "Invalid token") {
+            setIsAuthenticated(false);
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+            localStorage.removeItem("user_id");
+          }
         }
       } catch (error) {
         console.error("Token verification failed:", error);
-        setIsAuthenticated(false);
+        // Prevents unnecessary logout on network errors
+        setIsAuthenticated(true);
       }
     };
-
+  
     verifyToken();
-
-    const handleStorageChange = () => {
-      verifyToken();
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
+  
 
   return (
     <Router>
