@@ -80,10 +80,10 @@ export default function Moa() {
   
   const fetchMoa = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3001/api/moa/getMoa"
-      );
-      setMoa(response.data);
+      const response = await axios.get("http://localhost:3001/api/moa/getMoa");
+      const sortedData = response.data.sort((a, b) => new Date(b.year_submitted) - new Date(a.year_submitted));
+      setMoa(sortedData);
+      setDisplayedMoa(sortedData);
     } catch (error) {
       console.error("Error fetching moa:", error);
     }
@@ -109,7 +109,7 @@ export default function Moa() {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  const MoaPerPage = 5;
+  const MoaPerPage = 8;
 
   // Filter data based on the selected filters.
   // For the "date" filter, we compare the year of the 'moaStarted' field.
@@ -160,14 +160,13 @@ export default function Moa() {
         return "bg-red-100 text-red-600";
       case "On Hold":
         return "bg-yellow-100 text-yellow-600";
+      case "For Renewal":
+        return "bg-orange-100 text-orange-600";
       default:
         return "bg-gray-100 text-gray-600";
     }
   };
 
- 
-
-  
 
   return (
     <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
@@ -255,45 +254,43 @@ export default function Moa() {
           <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
             <thead>
               <tr className="bg-gray-100">
-                <th className="px-4 py-2 text-center border-b">ID</th>
-                <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
-                <th className="px-4 py-2 text-center border-b">ADDRESS</th>
-                <th className="px-2 py-2 text-center border-b">MOA STARTED</th>
-                <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
-                <th className="px-2 py-2 text-center border-b">MOA DRAFT SENT</th>
-                <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
-                <th className="px-4 py-2 text-center border-b">TYPE OF MOA</th>
-                <th className="px-4 py-2 text-center border-b">NATURE OF BUSINESS</th>
-                <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
-                <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
-                <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
-                <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
-                <th className="px-2 py-2 text-center border-b">REMARKS</th>
-                <th className="px-1 py-2 text-center border-b"></th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">COMPANY NAME</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">ADDRESS</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">MOA STARTED</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">MOA NOTORIZED</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">MOA DRAFT SENT</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">EXPIRY DATE</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">TYPE OF MOA</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">NATURE OF BUSINESS</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap border-r">MOA VALIDITY</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">CONTACT PERSON</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">CONTACT NUMBER</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">EMAIL ADDRESS</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">REMARKS</th>
+                <th className="px-1 py-2 text-center border-b whitespace-nowrap"></th>
               </tr>
             </thead>
             <tbody>
               {(searchQuery || searchId ? displayedMoa : currentData).map((moa, index) => (
                 <tr key={moa.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-2 border-t">{moa.id}</td>
-                  <td className="px-4 py-2 border-t">{moa.company_name}</td>
-                  <td className="px-4 py-2 border-t">{moa.address}</td>
-                  <td className="px-2 py-2 border-t">{new Date(moa.year_moa_started).toLocaleDateString("en-CA")}</td>
-                  <td className="px-2 py-2 border-t">{moa.date_notarized}</td>
-                  <td className="px-2 py-2 border-t">{moa.moa_draft_sent}</td>
-                  <td className="px-2 py-2 border-t">{new Date(moa.expiration_date).toLocaleDateString("en-CA")}</td>
-                  <td className="px-4 py-2 border-t">{moa.type_of_moa}</td>
-                  <td className="px-4 py-2 border-t">{moa.business_type}</td>
-                  <td className="px-4 py-2 border-t">
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{moa.company_name}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{moa.address}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{new Date(moa.year_moa_started).toLocaleDateString("en-CA")}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{moa.date_notarized}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{moa.moa_draft_sent}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{new Date(moa.expiration_date).toLocaleDateString("en-CA")}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{moa.type_of_moa}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{moa.business_type}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">
                     <span className={`rounded-full px-2 py-1 ${getValidityColor(moa.moa_status)}`}>
                       {moa.moa_status}
                     </span>
                   </td>
-                  <td className="px-4 py-2 border-t">{moa.contact_person}</td>
-                  <td className="px-4 py-2 border-t">{moa.contact_no}</td>
-                  <td className="px-4 py-2 border-t">{moa.email}</td>
-                  <td className="px-2 py-2 border-t">{moa.remarks}</td>
-                  <td className="px-1 py-2 border-t relative">
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{moa.contact_person}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{moa.contact_no}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{moa.email}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{moa.remarks}</td>
+                  <td className="px-1 py-2 border-t whitespace-nowrap relative">
                     <button onClick={() => toggleDropdown(moa.id)} className="text-gray-600">
                       <MoreVertical size={20} />
                     </button>

@@ -133,6 +133,7 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
                 <option value="On Hold">On Hold</option>
                 <option value="Rejected">Rejected</option>
                 <option value="Completed">Completed</option>
+                <option value="For Renewal">For Renewal</option>
               </select>
             </div>
 

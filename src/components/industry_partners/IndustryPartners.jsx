@@ -63,7 +63,7 @@ export default function IndustryPartners() {
     }
   };
 
-  const industryPartnersPerPage = 5;
+  const industryPartnersPerPage = 8;
 
   // Apply filters
   const filteredData = industryPartners.filter((partner) => {
@@ -113,6 +113,8 @@ export default function IndustryPartners() {
         return "bg-red-100 text-red-600";
       case "On Hold":
         return "bg-yellow-100 text-yellow-600";
+      case "For Renewal":
+        return "bg-orange-100 text-orange-600";
       default:
         return "bg-gray-100 text-gray-600";
     }
@@ -247,55 +249,53 @@ export default function IndustryPartners() {
           <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
             <thead>
               <tr className="bg-gray-100">
-                <th className="px-4 py-2 text-center border-b">ID</th>
-                <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
-                <th className="px-4 py-2 text-center border-b">TELEPHONE NUMBER</th>
-                <th className="px-4 py-2 text-center border-b">FAX NUMBER</th>
-                <th className="px-4 py-2 text-center border-b">COURSE</th>
-                <th className="px-4 py-2 text-center border-b">COLLEGE</th>
-                <th className="px-4 py-2 text-center border-b">CAMPUS</th>
-                <th className="px-2 py-2 text-center border-b">YEAR SUBMITTED</th>
-                <th className="px-2 py-2 text-center border-b">MOA NOTARIZED</th>
-                <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
-                <th className="px-4 py-2 text-center border-b">NATURE OF BUSINESS</th>
-                <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
-                <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
-                <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
-                <th className="px-2 py-2 text-center border-b">YEAR INCLUDED</th>
-                <th className="px-4 py-2 text-center border-b">POSITION</th>
-                <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
-                <th className="px-4 py-2 text-center border-b">OFFICE ADDRESS</th>
-                <th className="px-2 py-2 text-center border-b">REMARKS</th>
-                <th className="px-1 py-2 text-center border-b"></th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">COMPANY NAME</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">TELEPHONE NUMBER</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">FAX NUMBER</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">COURSE</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">COLLEGE</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">CAMPUS</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">YEAR SUBMITTED</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">MOA NOTARIZED</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">EXPIRY DATE</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">NATURE OF BUSINESS</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap border-r">MOA VALIDITY</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">CONTACT PERSON</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">CONTACT NUMBER</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">YEAR INCLUDED</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">POSITION</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">EMAIL ADDRESS</th>
+                <th className="px-4 py-2 text-center border-b whitespace-nowrap">OFFICE ADDRESS</th>
+                <th className="px-2 py-2 text-center border-b whitespace-nowrap">REMARKS</th>
+                <th className="px-1 py-2 text-center border-b whitespace-nowrap"></th>
               </tr>
             </thead>
             <tbody>
               {(searchQuery || searchId ? displayedPartners : currentData).map((partner, index) => (
                 <tr key={partner.id} className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                  <td className="px-4 py-2 border-t">{partner.id}</td>
-                  <td className="px-4 py-2 border-t">{partner.company_name}</td>
-                  <td className="px-4 py-2 border-t">{partner.telephone}</td>
-                  <td className="px-4 py-2 border-t">{partner.fax_number}</td>
-                  <td className="px-4 py-2 border-t">{partner.preferred_courses}</td>
-                  <td className="px-4 py-2 border-t">{partner.preferred_college}</td>
-                  <td className="px-4 py-2 border-t">{partner.campus}</td>
-                  <td className="px-2 py-2 border-t">{partner.year_submitted}</td>
-                  <td className="px-2 py-2 border-t">{partner.with_moa_date_notarized}</td>
-                  <td className="px-2 py-2 border-t">{partner.expiry_date}</td>
-                  <td className="px-4 py-2 border-t">{partner.business_type}</td>
-                  <td className="px-4 py-2 border-t">
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.company_name}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.telephone}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.fax_number}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.preferred_courses}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.preferred_college}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.campus}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.year_submitted}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.with_moa_date_notarized}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.expiry_date}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.business_type}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">
                     <span className={`rounded-full px-2 py-1 ${getValidityColor(partner.moa_status)}`}>
                       {partner.moa_status}
                     </span>
                   </td>
-                  <td className="px-4 py-2 border-t">{partner.contact_person}</td>
-                  <td className="px-4 py-2 border-t">{partner.contact_number}</td>
-                  <td className="px-2 py-2 border-t">{partner.year_included}</td>
-                  <td className="px-4 py-2 border-t">{partner.position_department}</td>
-                  <td className="px-4 py-2 border-t">{partner.email_address}</td>
-                  <td className="px-4 py-2 border-t">{partner.office_address}</td>
-                  <td className="px-2 py-2 border-t">{partner.remarks}</td>
-                  <td className="px-1 py-2 border-t relative">
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.contact_person}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.contact_number}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.year_included}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.position_department}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.email_address}</td>
+                  <td className="px-4 py-2 border-t whitespace-nowrap">{partner.office_address}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.remarks}</td>
+                  <td className="px-1 py-2 border-t whitespace-nowrap relative">
                     <button onClick={() => toggleDropdown(partner.id)} className="text-gray-600">
                       <MoreVertical size={20} />
                     </button>
