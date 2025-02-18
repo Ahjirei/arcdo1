@@ -203,7 +203,7 @@ const EditMoa = ({ isOpen, onClose, editingMoa, setEditingMoa, onMoaEdited }) =>
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
               <input
-                type="number"
+                type="date"
                 value={editingMoa.date_notarized}
                 onChange={(e) =>
                   setEditingMoa({ ...editingMoa, date_notarized: parseInt(e.target.value, 10)})

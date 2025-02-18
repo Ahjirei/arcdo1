@@ -171,7 +171,9 @@ export default function IndustryPartners() {
           <div className="md:ml-0 ml-auto">
             <DatePicker
               selected={filters.date ? new Date(filters.date) : null}
-              onChange={(date) => setFilters({ ...filters, date: date ? date.getFullYear().toString() : "" })}
+              onChange={(date) =>
+                setFilters({ ...filters, date: date ? date.getFullYear().toString() : "" })
+              }
               dateFormat="yyyy"
               showYearPicker
               className="block w-full md:w-auto px-3 py-2 border rounded-md shadow-sm focus:outline-none"

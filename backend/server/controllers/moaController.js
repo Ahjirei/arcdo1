@@ -59,13 +59,12 @@ export const addMoa = async (req, res) => {
             !contact_person ||
             !contact_no ||
             !email ||
-            !remarks ||
             !expiration_date ||
             !type_of_moa ||
             !validity ||
             !date_notarized
         ) {
-            return res.status(400).json({ error: "All fields are required." });
+            return res.status(400).json({ error: "All required fields must be provided." });
         }
 
         const connection = await initializeConnection();

@@ -252,7 +252,7 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData, onPartnerEd
             <div>
               <label className="text-sm font-medium text-gray-700">Year Included</label>
               <input
-                type="text"
+                type="date"
                 value={industryPartner.year_included || ""}
                 onChange={(e) => setIndustryPartner({ ...industryPartner, year_included: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"

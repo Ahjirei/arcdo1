@@ -219,7 +219,7 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
               <input
-                type="number"
+                type="date"
                 value={newMoa.date_notarized}
                 onChange={(e) => setNewMoa({ ...newMoa, date_notarized: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
