@@ -97,8 +97,8 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Type</label>
               <select
-                value={editingMoa.type_of_moa || ""}
-                onChange={(e) => setEditingMoa({ ...editingMoa, type_of_moa: e.target.value })}
+                value={newMoa.type_of_moa || ""}
+                onChange={(e) => setNewMoa({ ...newMoa, type_of_moa: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="" disabled>Select MOA Type</option>
