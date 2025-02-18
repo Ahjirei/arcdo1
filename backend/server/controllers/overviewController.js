@@ -24,8 +24,8 @@ export const getIndustrypartnercard = async (req, res) => {
   let connection;
   try {
     connection = await initializeConnection();
-    const [Industrypartnercard] = await connection.query(`
-      SELECT moa_status AS STATUS, COUNT() * 100.0 / (SELECT COUNT() FROM industry_partner) AS percentage, 
+    const [industryPartnerCard] = await connection.query(`
+      SELECT moa_status AS STATUS, COUNT(*) * 100.0 / (SELECT COUNT(*) FROM industry_partner) AS percentage, 
       CASE 
         WHEN moa_status = 'Completed' THEN '#34C759'
         WHEN moa_status = 'Processing' THEN '#6750A4'
@@ -35,12 +35,12 @@ export const getIndustrypartnercard = async (req, res) => {
       FROM industry_partner
       GROUP BY moa_status
     `);
-    res.status(200).json(Industrypartnercard);
+    res.status(200).json(industryPartnerCard);
   } catch (error) {
     console.error('Error fetching industry partner card data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   } finally {
-    if (connection) connection.end();
+    if (connection) await connection.end();
   }
 };
 
@@ -53,13 +53,14 @@ export const getNatureOfBusinesses = async (req, res) => {
       FROM hte 
       GROUP BY business_type 
       ORDER BY count DESC
+      LIMIT 5
     `);
     res.status(200).json(natureOfBusinesses);
   } catch (error) {
     console.error('Error fetching nature of businesses data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   } finally {
-    if (connection) connection.end();
+    if (connection) await connection.end();
   }
 };
 
@@ -68,12 +69,12 @@ export const getMoaStatus = async (req, res) => {
   try {
     connection = await initializeConnection();
     const [moaStatus] = await connection.query(`
-      SELECT moa_status AS STATUS, COUNT() * 100.0 / (SELECT COUNT() FROM moa) AS percentage, 
+      SELECT moa_status AS STATUS, COUNT(*) * 100.0 / (SELECT COUNT(*) FROM moa) AS percentage, 
       CASE 
-        WHEN moa_status = 'Completed' THEN '#31111D'
-        WHEN moa_status = 'For Renewal' THEN '#630F3C'
-        WHEN moa_status = 'For Revision' THEN '#7A1642'
-        ELSE '#FF2D55'  
+        WHEN moa_status = 'Completed' THEN '#FFDF00'
+        WHEN moa_status = 'For Renewal' THEN '#DAA520'
+        WHEN moa_status = 'For Revision' THEN '#80000'
+        ELSE '#FFFFFF'  
       END AS color
       FROM moa
       GROUP BY moa_status
@@ -83,7 +84,7 @@ export const getMoaStatus = async (req, res) => {
     console.error('Error fetching MOA status data:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   } finally {
-    if (connection) connection.end();
+    if (connection) await connection.end();
   }
 };
 
