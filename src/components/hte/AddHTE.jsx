@@ -32,8 +32,12 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
       'moa_status', 
       'contact_person', 
       'contact_number', 
+      'remarks', 
       'year_included', 
       'position_department', 
+      'course', 
+      'campus', 
+      'college', 
       'email_address', 
       'office_address'
     ];
@@ -250,17 +254,10 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
               >
                 <option value="">Select Campus</option>
                 <option value="Main">PUP Main</option>
-                <option value="Bataan">PUP Bataan</option>
-                <option value="Calauan">PUP Calauan</option>
-                <option value="Lopez">PUP Lopez</option>
-                <option value="Paranaque">PUP Paranaque</option>
-                <option value="Quezon City">PUP Quezon City</option>
-                <option value="Ragay">PUP Ragay</option>
-                <option value="San Juan">PUP San Juan</option>
-                <option value="Sto. Tomas">PUP Sto. Tomas</option>
-                <option value="San Pedro">PUP San Pedro</option>
-                <option value="Santa Rosa">PUP Santa Rosa</option>
                 <option value="Taguig">PUP Taguig</option>
+                <option value="Quezon City">PUP Quezon City</option>
+                <option value="San Juan">PUP San Juan</option>
+                <option value="Paranaque">PUP Paranaque</option>
               </select>
             </div>
           </div>

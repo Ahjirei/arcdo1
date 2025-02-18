@@ -7,6 +7,8 @@ import AddHTE from "../hte/AddHTE";
 import EditHTE from "../hte/EditHTE";
 import { useLocation } from "react-router-dom";
 
+
+
 export default function HTEDashboard() {
 
   const [hte, sethte] = useState([ ]);
@@ -84,14 +86,15 @@ export default function HTEDashboard() {
   
   const fetchHte = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/api/hte/getHte");
-      const sortedData = response.data.sort((a, b) => new Date(b.year_submitted) - new Date(a.year_submitted));
-      sethte(sortedData);
-      setDisplayedHte(sortedData);
+      const response = await axios.get(
+        "http://localhost:3001/api/hte/getHte"
+      );
+      sethte(response.data);
+      setDisplayedHte(response.data); 
     } catch (error) {
       console.error("Error fetching hte:", error);
     }
-  };  
+  };
 
   const handleEdit = (hte) => {
     setEditingHTE({...hte}); 
@@ -113,7 +116,7 @@ export default function HTEDashboard() {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  const htesPerPage = 8;
+  const htesPerPage = 5;
 
   // Apply filters
   const filteredHte = hte.filter((hte) => {
@@ -163,16 +166,16 @@ export default function HTEDashboard() {
         return "bg-red-100 text-red-600";
       case "On Hold":
         return "bg-yellow-100 text-yellow-600";
-      case "For Renewal":
-        return "bg-orange-100 text-orange-600";
       default:
         return "bg-gray-100 text-gray-600";
     }
   };
 
   
+  
+
   return (
-    <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 max-h-screen overflow-auto">
+    <div className="bg-gray-50 md:ml-[250px] mt-10 p-7 min-h-screen overflow-auto">
       <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold mb-4 mt-3 text-center sm:text-left">
         Host Training Establishments
       </h1>
@@ -250,10 +253,10 @@ export default function HTEDashboard() {
       </div>
 
       {/* Table Section */}
-      <div className="flex-grow h-full mt-1 overflow-x-auto overflow-y-hidden block">
+      <div className="flex-grow h-full mt-1 overflow-x-auto">
         {/* Responsive Wrapper for Table */}
         {loading ? (
-          <div className="fixed inset-0 flex items-center justify-center bg-white -z-50">
+          <div className="fixed inset-0 flex items-center justify-center bg-white z-50">
             <div className="flex flex-col items-center">
               <div className="animate-spin rounded-full h-10 w-10 border-4 border-blue-500 border-t-transparent"></div>
               <p className="mt-2 text-lg font-semibold text-gray-700">Loading...</p>
@@ -266,58 +269,60 @@ export default function HTEDashboard() {
             <table className="min-w-full h-auto border-collapse mt-3 hidden md:table">
               <thead>
                 <tr className="bg-gray-100">
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">COMPANY NAME</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">COURSE</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">COLLEGE</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">CAMPUS</th>
-                  <th className="px-2 py-2 text-center border-b whitespace-nowrap">YEAR SUBMITTED</th>
-                  <th className="px-2 py-2 text-center border-b whitespace-nowrap">MOA NOTORIZED</th>
-                  <th className="px-2 py-2 text-center border-b whitespace-nowrap">EXPIRY DATE</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">NATURE OF BUSINESS</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap border-r">MOA VALIDITY</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">CONTACT PERSON</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">CONTACT NUMBER</th>
-                  <th className="px-2 py-2 text-center border-b whitespace-nowrap">YEAR INCLUDED</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">POSITION</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">EMAIL ADDRESS</th>
-                  <th className="px-4 py-2 text-center border-b whitespace-nowrap">OFFICE ADDRESS</th>
-                  <th className="px-2 py-2 text-center border-b whitespace-nowrap">REMARKS</th>
-                  <th className="px-1 py-2 text-center border-b whitespace-nowrap"></th>
+                  <th className="px-4 py-2 text-center border-b">ID</th>
+                  <th className="px-4 py-2 text-center border-b">COMPANY NAME</th>
+                  <th className="px-4 py-2 text-center border-b">COURSE</th>
+                  <th className="px-4 py-2 text-center border-b">COLLEGE</th>
+                  <th className="px-4 py-2 text-center border-b">CAMPUS</th>
+                  <th className="px-2 py-2 text-center border-b">YEAR SUBMITTED</th>
+                  <th className="px-2 py-2 text-center border-b">MOA NOTORIZED</th>
+                  <th className="px-2 py-2 text-center border-b">EXPIRY DATE</th>
+                  <th className="px-4 py-2 text-center border-b">NATURE OF BUSINESS</th>
+                  <th className="px-4 py-2 text-center border-b border-r">MOA VALIDITY</th>
+                  <th className="px-4 py-2 text-center border-b">CONTACT PERSON</th>
+                  <th className="px-4 py-2 text-center border-b">CONTACT NUMBER</th>
+                  <th className="px-2 py-2 text-center border-b">YEAR INCLUDED</th>
+                  <th className="px-4 py-2 text-center border-b">POSITION</th>
+                  <th className="px-4 py-2 text-center border-b">EMAIL ADDRESS</th>
+                  <th className="px-4 py-2 text-center border-b">OFFICE ADDRESS</th>
+                  <th className="px-2 py-2 text-center border-b">REMARKS</th>
+                  <th className="px-1 py-2 text-center border-b"></th>
                 </tr>
               </thead>
-              <tbody >
+              <tbody>
                 {(searchQuery || searchId ? displayedHte : currentHte).map((hte, index) => (
                   <tr 
                     key={hte.id} 
                     className={`md:table-row block w-full ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                   >        
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.company_name}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.course}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.college}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.campus}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.year_submitted}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{new Date(hte.expiry_date).toLocaleDateString("en-CA")}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.business_type}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.id}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.company_name}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.course}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.college}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.campus}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.year_submitted}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.with_moa_date_notarized).toLocaleDateString("en-CA")}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{new Date(hte.expiry_date).toLocaleDateString("en-CA")}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.business_type}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">
                       <span className={`rounded-full px-2 py-1 ${getValidityColor(hte.moa_status)}`}>
                         {hte.moa_status}
                       </span>
                     </td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.contact_person}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.contact_number}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.year_ncluded}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.position_department}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.email_address}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.office_address}</td>
-                    <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.remarks}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_person}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.contact_number}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.year_ncluded}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.position_department}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.email_address}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.office_address}</td>
+                    <td className="px-4 py-2 border-t block md:table-cell">{hte.remarks}</td>
                     <td className="px-6 py-2 border-t relative">
                       <button onClick={() => toggleDropdown(hte.id)} className="text-gray-600">
                         <MoreVertical size={20} />
                       </button>
           
                       {openDropdown === hte.id && (
-                        <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
+                        <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
                           <button
                             onClick={() => handleEdit(hte)}
                             className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -501,8 +506,8 @@ export default function HTEDashboard() {
           )}
         </span>
       </div>
-      </div>
     </div>
+  </div>
   
 
     
