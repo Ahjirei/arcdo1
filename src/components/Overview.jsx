@@ -35,10 +35,10 @@ const Overview = () => {
 
         setData({
           summaryCards: [
-            { title: "Host Training Establishments (HTEs)", value: Number(summaryCardsResponse.data.HTEs || 0), change: "-10%" },
-            { title: "Memorandum of Agreements (MOAs)", value: Number(summaryCardsResponse.data.MOAs || 0), change: "-5%" },
-            { title: "On-the-Job Training Coordinators", value: Number(summaryCardsResponse.data.OJT_Coordinators || 0), change: "-8%" },
-            { title: "Industry Partners", value: Number(summaryCardsResponse.data.Industry_Partners || 0), change: "-12%" },
+            { title: "Host Training Establishments (HTEs)", value: Number(summaryCardsResponse.data.HTEs || 0), change: "Total" },
+            { title: "Memorandum of Agreements (MOAs)", value: Number(summaryCardsResponse.data.MOAs || 0), change: "Total" },
+            { title: "On-the-Job Training Coordinators", value: Number(summaryCardsResponse.data.OJT_Coordinators || 0), change: "Total" },
+            { title: "Industry Partners", value: Number(summaryCardsResponse.data.Industry_Partners || 0), change: "Total" },
           ],
           industryPartnerCard: industryPartnerCardResponse.data,
           natureOfBusinesses: natureOfBusinessesResponse.data,

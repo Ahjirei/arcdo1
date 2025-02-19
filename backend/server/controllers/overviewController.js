@@ -10,7 +10,7 @@ export const getSummaryCards = async (req, res) => {
         (SELECT COUNT(*) FROM moa) AS MOAs,
         (SELECT COUNT(*) FROM ojt_coordinator) AS OJT_Coordinators,
         (SELECT COUNT(*) FROM industry_partner) AS Industry_Partners
-    `);
+    `); 
     res.status(200).json(summaryCards[0]);
   } catch (error) {
     console.error('Error fetching summary cards data:', error);
@@ -29,7 +29,7 @@ export const getIndustrypartnercard = async (req, res) => {
       CASE 
         WHEN moa_status = 'Completed' THEN '#34C759'
         WHEN moa_status = 'Processing' THEN '#6750A4'
-        WHEN moa_status = 'On-hold' THEN '#FF2D55'
+        WHEN moa_status = 'On hold' THEN '#FF2D55'
         ELSE '#CE93D8'
       END AS color
       FROM industry_partner
@@ -93,15 +93,15 @@ export const getTableData = async (req, res) => {
   try {
     connection = await initializeConnection();
     const [hteTableData] = await connection.query(`
-      SELECT id AS DOC, company_name AS COMPANY, office_address AS ADDRESS, year_submitted AS DATE, business_type AS BUSINESS, moa_status AS STATUS FROM hte
+      SELECT id AS DOC, company_name AS COMPANY, office_address AS ADDRESS, year_submitted AS DATE, business_type AS BUSINESS, moa_status AS STATUS FROM hte WHERE moa_status = 'On hold' or moa_status = 'Rejected'
     `);
 
     const [industryPartnersTableData] = await connection.query(`
-      SELECT id AS DOC, company_name AS COMPANY, office_address AS ADDRESS, expiry_date AS DATE, business_type AS BUSINESS, moa_status AS STATUS FROM industry_partner
+      SELECT id AS DOC, company_name AS COMPANY, office_address AS ADDRESS, expiry_date AS DATE, business_type AS BUSINESS, moa_status AS STATUS FROM industry_partner WHERE moa_status = 'On hold' or moa_status = 'Rejected'
     `);
 
     const [ojtCoordinatorsTableData] = await connection.query(`
-      SELECT id AS DOC, name AS COMPANY, campus AS ADDRESS, assigned_student AS DATE, college AS BUSINESS, status AS STATUS FROM ojt_coordinator
+      SELECT id AS DOC, name AS COMPANY, campus AS ADDRESS, assigned_student AS DATE, college AS BUSINESS, status AS STATUS FROM ojt_coordinator WHERE status = 'On-leave' or status = 'Retired'
     `);
 
     const tableData = {
