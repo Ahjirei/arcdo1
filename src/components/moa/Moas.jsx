@@ -295,7 +295,7 @@ export default function Moa() {
                       <MoreVertical size={20} />
                     </button>
                     {openDropdown === moa.id && (
-                      <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
+                      <div className="absolute right-5 w-40 bg-white border rounded shadow-lg z-10 bottom-0">
                         <button
                           onClick={() => handleEdit(moa)}
                           className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -351,7 +351,7 @@ export default function Moa() {
           <div key={moa.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
-                <div className="font-bold">{moa.company_name}</div>
+                <div className="font-bold italic">{moa.company_name}</div>
                 <div className={`px-4 rounded-full py-1 ${getValidityColor(moa.moa_status)}`}>
                   {moa.moa_status}
                 </div>

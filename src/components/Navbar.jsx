@@ -503,8 +503,9 @@ export default function NavbarTopConfigurationPage() {
                     <span>Refresh</span>
                   </button>
                 </li>
+
                 {/* Search icon inside settings */}
-                <li>
+                <li className="relative">
                   <button
                     className="flex items-center text-black hover:text-red-800 transition duration-300"
                     onClick={() => setIsSearchOpen(!isSearchOpen)} // Toggle search visibility on click
@@ -512,34 +513,39 @@ export default function NavbarTopConfigurationPage() {
                     <Search className="h-5 w-5 mr-2" />
                     <span>Search</span>
                   </button>
+
                   {isSearchOpen && (
-                    <input
-                      type="text"
-                      placeholder="Search..."
-                      className="mt-2 px-4 py-2 rounded-2xl text-md text-black focus:outline-none focus:ring-2 focus:ring-red-800-400"
-                      value={searchQuery}
-                      onChange={(e) => handleSearch(e.target.value)}
-                    />
-                  )}
-                  {searchQuery && (
-                    <div 
-                      className="absolute top-9 left-[10%] transform -translate-x-[76%] bg-white shadow-lg p-3 rounded-lg w-96 max-h-60 overflow-auto">
-                      {filteredData.length > 0 ? (
-                        filteredData.map((item, index) => (
-                          <div
-                            key={index}
-                            className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
-                            onClick={() => handleSearchClick(item)}
-                          >
-                            <p className="text-black">{item.company_name || item.name || item.title}</p>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-black">No results found.</p>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search..."
+                        className="mt-2 px-4 py-2 rounded-2xl text-md text-black w-71 focus:outline-none focus:ring-2 focus:ring-red-800"
+                        value={searchQuery}
+                        onChange={(e) => handleSearch(e.target.value)}
+                      />
+
+                      {searchQuery && (
+                        <div 
+                          className="absolute left-0 mt-1 bg-white shadow-lg p-3 rounded-lg w-71 max-h-60 overflow-auto z-50">
+                          {filteredData.length > 0 ? (
+                            filteredData.map((item, index) => (
+                              <div
+                                key={index}
+                                className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
+                                onClick={() => handleSearchClick(item)}
+                              >
+                                <p className="text-black">{item.company_name || item.name || item.title}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-black">No results found.</p>
+                          )}
+                        </div>
                       )}
                     </div>
                   )}
                 </li>
+
                 {/* Export options inside settings menu */}
                 <li>
                   <div className="relative">

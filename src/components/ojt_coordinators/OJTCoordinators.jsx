@@ -252,7 +252,7 @@ export default function OJTCoordinators() {
                     </button>
                               
                     {openDropdown === coordinator.id && (
-                      <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50 bottom-0">
+                      <div className="absolute right-10  w-40 bg-white border rounded shadow-lg z-10 bottom-0">
                         <button
                           onClick={() => handleEdit(coordinator)}
                           className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -310,7 +310,7 @@ export default function OJTCoordinators() {
                   <div key={coordinator.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                               <div className="flex justify-between items-center">
                                 <div className="flex items-center space-x-3 flex-1">
-                                  <div className="font-bold">{coordinator.name}</div>
+                                  <div className="font-bold italic">{coordinator.name}</div>
                                   <div className={`px-3 rounded-full py-1 text-sm ${getStatusColor(coordinator.status)}`}>
                                     {coordinator.status}
                                   </div>

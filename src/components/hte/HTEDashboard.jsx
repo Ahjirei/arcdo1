@@ -328,7 +328,7 @@ export default function HTEDashboard() {
                       </button>
           
                       {openDropdown === hte.id && (
-                        <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-50">
+                        <div className="absolute right-10 bottom-0 w-40 bg-white border rounded shadow-lg z-10">
                           <button
                             onClick={() => handleEdit(hte)}
                             className="block w-full text-left px-4 py-2 hover:bg-gray-100"
@@ -359,7 +359,7 @@ export default function HTEDashboard() {
                 <div key={hte.id} className={`border border-black p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-3 flex-1">
-                    <div className="font-bold">{hte.company_name}</div>
+                    <div className="font-bold italic">{hte.company_name}</div>
                     <div className={`px-3 rounded-full py-1 text-sm ${getValidityColor(hte.moa_status)}`}>
                       {hte.moa_status}
                     </div>
