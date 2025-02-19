@@ -35,10 +35,10 @@ const Overview = () => {
 
         setData({
           summaryCards: [
-            { title: "Host Training Establishments (HTEs)", value: Number(summaryCardsResponse.data.HTEs || 0), change: "+10%" },
-            { title: "Memorandum of Agreements (MOAs)", value: Number(summaryCardsResponse.data.MOAs || 0), change: "+5%" },
-            { title: "On-the-Job Training Coordinators", value: Number(summaryCardsResponse.data.OJT_Coordinators || 0), change: "+8%" },
-            { title: "Industry Partners", value: Number(summaryCardsResponse.data.Industry_Partners || 0), change: "+12%" },
+            { title: "Host Training Establishments (HTEs)", value: Number(summaryCardsResponse.data.HTEs || 0), change: "-10%" },
+            { title: "Memorandum of Agreements (MOAs)", value: Number(summaryCardsResponse.data.MOAs || 0), change: "-5%" },
+            { title: "On-the-Job Training Coordinators", value: Number(summaryCardsResponse.data.OJT_Coordinators || 0), change: "-8%" },
+            { title: "Industry Partners", value: Number(summaryCardsResponse.data.Industry_Partners || 0), change: "-12%" },
           ],
           industryPartnerCard: industryPartnerCardResponse.data,
           natureOfBusinesses: natureOfBusinessesResponse.data,
@@ -61,7 +61,7 @@ const Overview = () => {
     datasets: [
       {
         data: data.industryPartnerCard.map((status) => status.percentage),
-        backgroundColor: data.industryPartnerCard.map((status) => status.color),
+        backgroundColor: ["#c30010", "#800000", "#f69697"],
         hoverOffset: 5,
       },
     ],
@@ -72,6 +72,12 @@ const Overview = () => {
     aspectRatio: 1,
     responsive: true,
     plugins: {
+      tooltip: {
+        enabled: true, // Keeps tooltips on hover
+      },
+      datalabels: {
+        display: false, // Hides labels inside the doughnut
+      },
       legend: {
         position: "right",
         labels: {
@@ -163,6 +169,18 @@ const Overview = () => {
         border: {
           display: false,
         },
+        ticks: {
+          autoSkip: false, // Ensure all labels are displayed
+          maxRotation: 0, // Keep labels straight
+          minRotation: 0,
+          font: {
+            size: 12, // Adjust for readability
+          },
+          callback: function (value) {
+            let label = this.getLabelForValue(value);
+            return label.match(/.{1,15}(\s|$)/g); // Split every 15 characters (adjust as needed)
+          },
+        },
       },
     },
     layout: {
@@ -186,7 +204,7 @@ const Overview = () => {
     datasets: [
       {
         data: data.moaSTATUS.map((status) => status.percentage),
-        backgroundColor: data.moaSTATUS.map((status) => status.color),
+        backgroundColor: ["#c30010", "#800000", "#f69697"],
         hoverOffset: 5,
       },
     ],
@@ -197,6 +215,12 @@ const Overview = () => {
     aspectRatio: 1,
     responsive: true,
     plugins: {
+      tooltip: {
+        enabled: true, // Keeps tooltips on hover
+      },
+      datalabels: {
+        display: false, // Hides labels inside the doughnut
+      },
       legend: {
         position: "right",
         labels: {
@@ -238,11 +262,11 @@ const Overview = () => {
 
           const gradientClass = card.title === "Host Training Establishments (HTEs)" || card.title === "On-the-Job Training Coordinators" 
             ? "bg-gradient-to-b from-[#31111D] to-[#9A3259]"
-            : "bg-gradient-to-b from-[#DAA521] via-[#E3B419] via-[#EDC211] via-[#F6D108] to-[#FFDF00]";
+            : "bg-gradient-to-b from-[#DAA521] via-[#E3B419] via-[#EDC211] via-[#F6D108] to-[#FFDF00]" ;
             
           const gradientClass2 = card.title === "Host Training Establishments (HTEs)" || card.title === "On-the-Job Training Coordinators" 
             ? "bg-gradient-to-b from-[#9A3259] to-[#31111D]"
-            : "bg-gradient-to-b from-[#FFDF00] via-[#F6D108] via-[#EDC211] via-[#E3B419] to-[#DAA521]";
+            : "bg-gradient-to-b from-[#FFDF00] via-[#F6D108] via-[#EDC211] via-[#E3B419] to-[#DAA521]" ;
 
           const transformScale = clickedCard === index 
             ? (window.innerWidth < 768 
@@ -451,6 +475,8 @@ const Overview = () => {
                         ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
                         : row.STATUS === "Rejected"
                         ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
+                        : row.STATUS === "For Renewal"
+                        ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
                         : row.STATUS === "Active"
                         ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
                         : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
