@@ -194,12 +194,19 @@ export default function SignUp() {
                                 className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
                                 required
                             >
-                                <option value="">Select</option>
+                                <option value="">Select Campus</option>
                                 <option value="Main">PUP Main</option>
-                                <option value="Taguig">PUP Taguig</option>
-                                <option value="Quezon City">PUP Quezon City</option>
-                                <option value="San Juan">PUP San Juan</option>
+                                <option value="Bataan">PUP Bataan</option>
+                                <option value="Calauan">PUP Calauan</option>
+                                <option value="Lopez">PUP Lopez</option>
                                 <option value="Paranaque">PUP Paranaque</option>
+                                <option value="Quezon City">PUP Quezon City</option>
+                                <option value="Ragay">PUP Ragay</option>
+                                <option value="San Juan">PUP San Juan</option>
+                                <option value="Sto. Tomas">PUP Sto. Tomas</option>
+                                <option value="San Pedro">PUP San Pedro</option>
+                                <option value="Santa Rosa">PUP Santa Rosa</option>
+                                <option value="Taguig">PUP Taguig</option>
                             </select>
                         </div>
                         <div>

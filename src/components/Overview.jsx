@@ -12,48 +12,64 @@ const Overview = () => {
   const [activeTab, setActiveTab] = useState("HTEs");
   const [clickedBarIndex, setClickedBarIndex] = useState(null);
   const [selectedYear, setSelectedYear] = useState("2020");
-  const [data, setData] = useState({
-    summaryCards: [],
-    industryPartnerCard: [],
-    natureOfBusinesses: [],
-    moaSTATUS: [],
+  
+  
+
+  
+
+  const data = {
+    summaryCards: [
+      { title: "Host Training Establishments (HTEs)", value: "7265", change: "+11.01%" },
+      { title: "Memorandum of Agreements (MOAs)", value: "3671", change: "-0.03%" },
+      { title: "On-the-Job Training Coordinators", value: "256", change: "+15.03%" },
+      { title: "Industry Partners", value: "2318", change: "+6.08%" },
+    ],
+  Industrypartnercard: [
+    { STATUS: "NOB 1", percentage: 52.1, color: "#34C759" },
+    { STATUS: "NOB 2", percentage: 22.8, color: "#6750A4" },
+    { STATUS: "NOB 3", percentage: 13.9, color: "#FF2D55" },
+    { STATUS: "Other", percentage: 11.2, color: "#CE93D8" },
+  ],
+    
+
+    natureOfBusinesses: [
+      { category: "Banking", count: 160000 },
+      { category: "IT", count: 200000 },
+      { category: "BPO", count: 140000 },
+      { category: "MFG", count: 243000  },
+      { category: "Corporation", count: 180000  },
+      { category: "Other", count: 100000 },
+    ],
+    moaSTATUS: [
+      { STATUS: "Completed", percentage: 52.1, color: "#31111D"},
+      { STATUS: "Under Review", percentage: 22.8, color: "#630F3C" },
+      { STATUS: "For Revision", percentage: 13.9, color: "#7A1642" },
+      { STATUS: "Other", percentage: 11.2, color: " #FF2D55 " },
+    ],
     tableData: {
-      HTEs: [],
-      "INDUSTRY PARTNERS": [],
-      "OJT COORDINATORS": [],
+      HTEs: [
+        { ID: "00001", COMPANY: "Christine Brooks", ADDRESS: "089 Kutch Green Apt. 448", DATE: "14 Feb 2019", business: "Electric", STATUS: "Completed" },
+        { ID: "00002", COMPANY: "Rosie Pearson", ADDRESS: "979 Immanuel Ferry Suite 526", DATE: "14 Feb 2019", business: "Book", STATUS: "Processing" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+        { ID: "00003", COMPANY: "Darrell Caldwell", ADDRESS: "8587 Frida Ports", DATE: "14 Feb 2019", business: "Medicine", STATUS: "Rejected" },
+      ],
+      "INDUSTRY PARTNERS": [
+        { ID: "00004", COMPANY: "Tech Innovators", ADDRESS: "45 Silicon Valley", DATE: "10 Mar 2020", business: "Software", STATUS: "Active" },
+        { ID: "00005", COMPANY: "Green Solutions", ADDRESS: "123 Eco Park", DATE: "20 Jan 2021", business: "Renewables", STATUS: "Inactive" },
+      ],
+      "OJT COORDINATORS": [
+        { ID: "00006", NAME: "Alice Johnson", CAMPUS: "789 Training Ave", COLLEGE: "05 May 2021", EMAIL: "OJT Management", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "Active" },
+        { ID: "00007", NAME: "Mark Smith", CAMPUS: "567 Coordinator Lane", COLLEGE: "15 Jul 2021", EMAIL: "OJT Oversight", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30",STATUS: "On Leave" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30",STATUS: "Retired" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "Retired" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "Active" },
+        { ID: "00003", NAME: "Darrell Caldwell", CAMPUS: "8587 Frida Ports", COLLEGE: "14 Feb 2019", EMAIL: "Medicine", OFFICE:"ROOM 123", ASSIGNED_STUDENTS: "30", STATUS: "On Leave" },
+
+      ],
     },
-  });
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const summaryCardsResponse = await axios.get('http://localhost:3001/api/overview/summaryCard');
-        const industryPartnerCardResponse = await axios.get('http://localhost:3001/api/overview/industryPartnerCard');
-        const natureOfBusinessesResponse = await axios.get('http://localhost:3001/api/overview/natureOfBusinesses');
-        const moaStatusResponse = await axios.get('http://localhost:3001/api/overview/moaStatus');
-        const tableDataResponse = await axios.get('http://localhost:3001/api/overview/tableData');
-
-        setData({
-          summaryCards: [
-            { title: "Host Training Establishments (HTEs)", value: Number(summaryCardsResponse.data.HTEs || 0), change: "Total" },
-            { title: "Memorandum of Agreements (MOAs)", value: Number(summaryCardsResponse.data.MOAs || 0), change: "Total" },
-            { title: "On-the-Job Training Coordinators", value: Number(summaryCardsResponse.data.OJT_Coordinators || 0), change: "Total" },
-            { title: "Industry Partners", value: Number(summaryCardsResponse.data.Industry_Partners || 0), change: "Total" },
-          ],
-          industryPartnerCard: industryPartnerCardResponse.data,
-          natureOfBusinesses: natureOfBusinessesResponse.data,
-          moaSTATUS: moaStatusResponse.data,
-          tableData: tableDataResponse.data,
-        });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Failed to fetch data. Please try again later.');
-      }
-    };
-
-    fetchData();
-  }, []);
+  };
 
   const [clickedCard, setClickedCard] = useState(null);
 
@@ -370,19 +386,24 @@ const Overview = () => {
             </div>
           )}
 
-              {clickedCard === index && card.title === "Industry Partners" && (
-                <div className={`absolute top-full left-0 w-full shadow-lg rounded-b-2xl p-4 z-10 ${gradientClass2}`}>
-                  <div className="flex justify-between mb-2 -mt-5">
-                    <div style={{ height: '150px', width: '100%' }}>
-                      <Doughnut data={doughnutIndustrycardData} options={doughnutndustrycardOptions} />
-                    </div>
-                  </div>
+          {/* Doughnut Chart for Industry Partners */}
+          {clickedCard === index && card.title === "Industry Partners" && (
+            <div className={`absolute top-full left-0 w-full shadow-lg rounded-b-2xl p-4 z-10 ${gradientClass2}`}>
+              <div className="flex justify-between mb-2 -mt-5">
+                <div style={{ height: '150px', width: '100%' }}>
+                  <Doughnut data={doughnutIndustrycardData} options={doughnutndustrycardOptions} />
                 </div>
-              )}
+              </div>
             </div>
-          );
-        })}
-      </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+
+
+
+
 
       {/* Nature of Businesses and MOA STATUS */}
 <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-4 mb-6 mt-5">
@@ -443,47 +464,89 @@ const Overview = () => {
           </select>
         </div>
 
-        <div className="flex-1 overflow-auto max-h-60 -mt-5 ">
-          <table className="w-full table-auto text-center ">
-            <thead className="sticky top-0 bg-white shadow">
-              <tr className="border-b border-gray-200">
-                <th className="py-2 px-4">DOC #</th>
-                <th className="py-2 px-4">COMPANY</th>
-                <th className="py-2 px-4">ADDRESS</th>
-                <th className="py-2 px-4">DATE</th>
-                <th className="py-2 px-4">NATURE OF BUSINESS</th>
-                <th className="py-2 px-4">STATUS</th>
+      {/* Table */}
+      <div className="flex-1 overflow-auto max-h-60 -mt-5 ">
+        <table className="w-full table-auto text-center ">
+          <thead className="sticky top-0 bg-white shadow">
+            <tr className="border-b border-gray-200">
+              {activeTab === "OJT COORDINATORS" ? (
+                <>
+                  <th className="px-4 py-2 text-left border-b">NAME</th>
+                  <th className="px-4 py-2 text-left border-b">CAMPUS</th>
+                  <th className="px-4 py-2 text-left border-b">COLLEGE</th>
+                  <th className="px-4 py-2 text-left border-b">EMAIL</th>
+                  <th className="px-4 py-2 text-left border-b">OFFICE</th>
+                  <th className="px-4 py-2 text-left border-b">ASSIGNED STUDENTS</th>
+                  <th className="px-4 py-2 text-left border-b">STATUS</th>
+                  <th className="px-4 py-2 text-left border-b"></th>
+                </>
+              ) : (
+                <>
+                  <th className="py-2 px-4">ID #</th>
+                  <th className="py-2 px-4">COMPANY</th>
+                  <th className="py-2 px-4">ADDRESS</th>
+                  <th className="py-2 px-4">DATE</th>
+                  <th className="py-2 px-4">NATURE OF BUSINESS</th>
+                  <th className="py-2 px-4">STATUS</th>
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {data.tableData[activeTab].map((row, index) => (
+              <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 text-left">
+                {activeTab === "OJT COORDINATORS" ? (
+                  <>
+                    <td className="py-2 px-4">{row.NAME}</td>
+                    <td className="py-2 px-4">{row.CAMPUS}</td>
+                    <td className="py-2 px-4">{row.COLLEGE}</td>
+                    <td className="py-2 px-4">{row.EMAIL}</td>
+                    <td className="py-2 px-4">{row.OFFICE}</td>
+                    <td className="py-2 px-4">{row.ASSIGNED_STUDENTS}</td>
+                    <td
+                      className={`py-2 px-4 text-center rounded-full font-normal ${
+                        row.STATUS === "Active"
+                          ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "On Leave"
+                          ? "text-yellow-600 bg-yellow-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Retired"
+                          ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
+                          : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
+                      }`}
+                    >
+                      {row.STATUS}
+                    </td>
+                    <td className="py-2 px-4"></td>
+                  </>
+                ) : (
+                  <>
+                    <td className="py-2 px-4">{row.ID}</td>
+                    <td className="py-2 px-4">{row.COMPANY}</td>
+                    <td className="py-2 px-4">{row.ADDRESS}</td>
+                    <td className="py-2 px-4">{row.DATE}</td>
+                    <td className="py-2 px-4">{row.business}</td>
+                    <td
+                      className={`py-2 px-4 text-center rounded-full font-normal ${
+                        row.STATUS === "Completed"
+                          ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Processing"
+                          ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Rejected"
+                          ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
+                          : row.STATUS === "Active"
+                          ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                          : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
+                      }`}
+                    >
+                      {row.STATUS}
+                    </td>
+                  </>
+                )}
               </tr>
-            </thead>
-            <tbody>
-              {Array.isArray(data.tableData[activeTab]) && data.tableData[activeTab].map((row, index) => (
-                <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 text-center">
-                  <td className="py-2 px-4">{row.DOC}</td>
-                  <td className="py-2 px-4">{row.COMPANY}</td>
-                  <td className="py-2 px-4">{row.ADDRESS}</td>
-                  <td className="py-2 px-4">{row.DATE}</td>
-                  <td className="py-2 px-4">{row.BUSINESS}</td>
-                  <td
-                    className={`py-2 px-4 text-center rounded-full font-normal ${
-                      row.STATUS === "Completed"
-                        ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
-                        : row.STATUS === "Processing"
-                        ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
-                        : row.STATUS === "Rejected"
-                        ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
-                        : row.STATUS === "For Renewal"
-                        ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
-                        : row.STATUS === "Active"
-                        ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
-                        : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
-                    }`}
-                  >
-                    {row.STATUS}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+
         </div>
       </div>
     </div>
