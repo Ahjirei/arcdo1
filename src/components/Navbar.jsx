@@ -13,6 +13,8 @@ import 'jspdf-autotable';
 import axios from 'axios';
 
 export default function NavbarTopConfigurationPage() {
+  const role = localStorage.getItem("role");
+  const canExport = role !== "User";
   const location = useLocation();
   const navigate = useNavigate();
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
@@ -431,56 +433,60 @@ export default function NavbarTopConfigurationPage() {
               <RotateCcw className="h-5 w-5" />
             </button>
           </li>
-          <li>
-            {/* Export Dropdown for Desktop */}
-            <div className="relative">
-              <button
-                className="text-md hover:text-gray-400 transition duration-300 flex items-center"
-                onClick={() => setIsExportOpen(!isExportOpen)}
-              >
-                <FileText className="h-5 w-5 mr-1" />
-                <span>Export</span>
-              </button>
-              {isExportOpen && (
-                <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg p-2">
-                  <button
-                    className="inline-flex items-center space-x-1 text-black hover:text-red-800 transition duration-300"
-                    onClick={() => handleExportClick("Excel")}
-                  >
-                    <span>as</span>
-                    <span>Excel</span>
-                  </button>
-                  <button
-                    className="inline-flex items-center space-x-1 text-black hover:text-red-800 transition duration-300"
-                    onClick={() => handleExportClick("PDF")}
-                  >
-                    <span>as</span>
-                    <span>PDF</span>
-                  </button>
-                </div>
-              )}
 
-              {searchQuery && (
-                <div 
-                className="absolute top-9 left-[10%] transform -translate-x-[76%] bg-white shadow-lg p-3 rounded-lg w-96 max-h-60 overflow-auto">
-                  {filteredData.length > 0 ? (
-                    filteredData.map((item, index) => (
-                  <div
-                    key={index}
-                    className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
-                    onClick={() => handleSearchClick(item)}
-                  >
-                    <p className="text-black">{item.company_name || item.name || item.title}</p>
+          {canExport && (
+            <li>
+              {/* Export Dropdown for Desktop */}
+              <div className="relative">
+                <button
+                  className="text-md hover:text-gray-400 transition duration-300 flex items-center"
+                  onClick={() => setIsExportOpen(!isExportOpen)}
+                >
+                  <FileText className="h-5 w-5 mr-1" />
+                  <span>Export</span>
+                </button>
+                {isExportOpen && (
+                  <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg p-2">
+                    <button
+                      className="inline-flex items-center space-x-1 text-black hover:text-red-800 transition duration-300"
+                      onClick={() => handleExportClick("Excel")}
+                    >
+                      <span>as</span>
+                      <span>Excel</span>
+                    </button>
+                    <button
+                      className="inline-flex items-center space-x-1 text-black hover:text-red-800 transition duration-300"
+                      onClick={() => handleExportClick("PDF")}
+                    >
+                      <span>as</span>
+                      <span>PDF</span>
+                    </button>
                   </div>
-                    ))
-                  ) : (
-                    <p className="text-black">No results found.</p>
-                  )}
+                )}
 
-                </div>
-              )}
-            </div>
-          </li>
+                {searchQuery && (
+                  <div 
+                  className="absolute top-9 left-[10%] transform -translate-x-[76%] bg-white shadow-lg p-3 rounded-lg w-96 max-h-60 overflow-auto">
+                    {filteredData.length > 0 ? (
+                      filteredData.map((item, index) => (
+                    <div
+                      key={index}
+                      className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
+                      onClick={() => handleSearchClick(item)}
+                    >
+                      <p className="text-black">{item.company_name || item.name || item.title}</p>
+                    </div>
+                      ))
+                    ) : (
+                      <p className="text-black">No results found.</p>
+                    )}
+
+                  </div>
+                )}
+              </div>
+            </li>
+          )}
+
         </ul>
 
         {/* Settings Menu for Small Devices */}
@@ -546,34 +552,37 @@ export default function NavbarTopConfigurationPage() {
                   )}
                 </li>
 
-                {/* Export options inside settings menu */}
-                <li>
-                  <div className="relative">
-                    <button
-                      className="flex items-center text-black hover:text-red-800 transition duration-300"
-                      onClick={() => setIsExportOpen(!isExportOpen)}
-                    >
-                      <FileText className="h-5 w-5 mr-2" />
-                      <span>Export</span>
-                    </button>
-                    {isExportOpen && (
-                      <div className="absolute left-0 mt-2 bg-white rounded-lg shadow-lg p-2">
-                        <button
-                          className="block w-full text-black hover:text-red-800 transition duration-300"
-                          onClick={() => handleExportClick("Excel")}
-                        >
-                           as Excel
-                        </button>
-                        <button
-                          className="block w-full text-black hover:text-red-800 transition duration-300"
-                          onClick={() => handleExportClick("PDF")}
-                        >
-                           as PDF
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </li>
+                {canExport && (
+                  <li>
+                    <div className="relative">
+                      <button
+                        className="flex items-center text-black hover:text-red-800 transition duration-300"
+                        onClick={() => setIsExportOpen(!isExportOpen)}
+                      >
+                        <FileText className="h-5 w-5 mr-2" />
+                        <span>Export</span>
+                      </button>
+                      {isExportOpen && (
+                        <div className="absolute left-0 mt-2 bg-white rounded-lg shadow-lg p-2">
+                          <button
+                            className="block w-full text-black hover:text-red-800 transition duration-300"
+                            onClick={() => handleExportClick("Excel")}
+                          >
+                            as Excel
+                          </button>
+                          <button
+                            className="block w-full text-black hover:text-red-800 transition duration-300"
+                            onClick={() => handleExportClick("PDF")}
+                          >
+                            as PDF
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </li>
+                )}
+
+
               </ul>
             </div>
           )}

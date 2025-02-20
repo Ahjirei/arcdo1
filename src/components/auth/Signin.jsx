@@ -70,6 +70,9 @@ export default function Signin() {
 
         } catch (error) {
             setError(error.message);
+            setTimeout(() => {
+                setError('');
+            }, 2000);
         }
     };
 

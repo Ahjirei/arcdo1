@@ -8,7 +8,8 @@ import EditHTE from "../hte/EditHTE";
 import { useLocation } from "react-router-dom";
 
 export default function HTEDashboard() {
-
+  const role = localStorage.getItem("role");
+  const notAdmin = role !== "User";
   const [hte, sethte] = useState([ ]);
   const [editingHTE, setEditingHTE] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -246,16 +247,19 @@ export default function HTEDashboard() {
             Reset Filters
           </button>
 
-          <button
-            onClick={() => {
-              setEditingHTE(null);
-              setIsAddModalOpen(true);
-            }}
-            className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
-          >
-            <PlusCircle size={20} className="mr-2" />
-            Add HTE
-          </button>
+          {notAdmin && (
+            <button
+              onClick={() => {
+                setEditingHTE(null);
+                setIsAddModalOpen(true);
+              }}
+              className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+            >
+              <PlusCircle size={20} className="mr-2" />
+              Add HTE
+            </button>
+          )}
+
 
         </div>
       </div>
@@ -293,7 +297,9 @@ export default function HTEDashboard() {
                   <th className="px-4 py-2 text-center border-b whitespace-nowrap">EMAIL ADDRESS</th>
                   <th className="px-4 py-2 text-center border-b whitespace-nowrap">OFFICE ADDRESS</th>
                   <th className="px-2 py-2 text-center border-b whitespace-nowrap">REMARKS</th>
+                  {notAdmin && (
                   <th className="px-1 py-2 text-center border-b whitespace-nowrap"></th>
+                  )}
                 </tr>
               </thead>
               <tbody >
@@ -322,6 +328,7 @@ export default function HTEDashboard() {
                     <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.email_address}</td>
                     <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.office_address}</td>
                     <td className="px-4 py-2 border-t block md:table-cell whitespace-nowrap">{hte.remarks}</td>
+                    {notAdmin && (
                     <td className="px-6 py-2 border-t relative">
                       <button onClick={() => toggleDropdown(hte.id)} className="text-gray-600">
                         <MoreVertical size={20} />
@@ -346,6 +353,7 @@ export default function HTEDashboard() {
                         </div>
                       )}
                     </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -364,7 +372,7 @@ export default function HTEDashboard() {
                       {hte.moa_status}
                     </div>
                   </div>
-                  
+                  {notAdmin && (
                   <div className="relative ml-4">
                     <button 
                       onClick={() => toggleDropdown(hte.id)} 
@@ -391,6 +399,7 @@ export default function HTEDashboard() {
                       </div>
                     )}
                   </div>
+                  )}
                 </div>
   
                   
