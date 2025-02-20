@@ -275,11 +275,12 @@ const Overview = () => {
 
               const gradientClass = card.title === "Host Training Establishments (HTEs)" || card.title === "On-the-Job Training Coordinators" 
                 ? "bg-gradient-to-b from-[#31111D] to-[#9A3259]"
-                : "bg-gradient-to-b from-[#DAA521] via-[#E3B419] via-[#EDC211] via-[#F6D108] to-[#FFDF00]" ;
+                : "bg-gradient-to-b from-[#A67F00] via-[#B68F00] via-[#C6A000] via-[#D6B100] to-[#E6C200]" ;
                 
               const gradientClass2 = card.title === "Host Training Establishments (HTEs)" || card.title === "On-the-Job Training Coordinators" 
-                ? "bg-gradient-to-b from-[#9A3259] to-[#31111D]"
-                : "bg-gradient-to-b from-[#FFDF00] via-[#F6D108] via-[#EDC211] via-[#E3B419] to-[#DAA521]" ;
+              ? "bg-gradient-to-b from-[#9A3259] to-[#31111D]"
+              : "bg-gradient-to-b from-[#E6C200] via-[#D6B100] via-[#C6A000] via-[#B68F00] to-[#A67F00]";
+              
 
               const transformScale = clickedCard === index 
                 ? (window.innerWidth < 768 
@@ -446,18 +447,6 @@ const Overview = () => {
                   </button>
                 ))}
               </div>
-              
-              <select
-                value={selectedYear}
-                onChange={handleYearChange}
-                className="py-1 px-4 mb-3 border rounded-md text-gray-700 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-900 focus:border-red-900 hidden sm:block" 
-              >
-                {[2020, 2021, 2022, 2023, 2024, 2025, 2026].map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
             </div>
 
             <div className="flex-1 overflow-auto max-h-60 -mt-5 ">
