@@ -1,4 +1,3 @@
-import React from 'react'
 import Moas from "../components/moa/Moas"
 import Navbar from "../components/Navbar"
 import HomeNavbar from "../components/HomeNavbar"
