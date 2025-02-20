@@ -7,6 +7,8 @@ import EditCoordinator from "../ojt_coordinators/EditCoordinator";
 import { useLocation } from "react-router-dom";
 
 export default function OJTCoordinators() {
+  const role = localStorage.getItem("role");
+  const notAdmin = role !== "User";
   const [coordinators, setCoordinators] = useState([]);
   const [editingCoordinator, setEditingCoordinator] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -192,17 +194,18 @@ export default function OJTCoordinators() {
             Reset Filters
           </button>
           
-          <button
-            onClick={() => {
-              setEditingCoordinator(null);
-              setIsAddModalOpen(true);
-            }}
-            className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
-          >
-            <PlusCircle size={20} className="mr-2" />
-            Add Coordinator
-          </button>
-
+          {notAdmin && (
+            <button
+              onClick={() => {
+                setEditingCoordinator(null);
+                setIsAddModalOpen(true);
+              }}
+              className="w-full sm:w-auto px-4 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+            >
+              <PlusCircle size={20} className="mr-2" />
+              Add Coordinator
+            </button>
+          )}
         </div>
       </div>
      
@@ -228,7 +231,9 @@ export default function OJTCoordinators() {
                 <th className="px-4 py-2 text-left border-b">OFFICE</th>
                 <th className="px-4 py-2 text-left border-b">ASSIGNED STUDENTS</th>
                 <th className="px-4 py-2 text-left border-b">STATUS</th>
-                <th className="px-4 py-2 text-left border-b"></th>
+                {notAdmin && (
+                  <th className="px-4 py-2 text-left border-b"></th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -246,30 +251,32 @@ export default function OJTCoordinators() {
                   <td className={`px-4 border-t rounded-full inline-block py-1 mt-1 mb-2 text-center ${getStatusColor(coordinator.status)}`}>
                     {coordinator.status}
                   </td>
-                  <td className="px-6 py-2 border-t relative">
-                    <button onClick={() => toggleDropdown(coordinator.id)} className="text-gray-600">
-                      <MoreVertical size={20} />
-                    </button>
-                              
-                    {openDropdown === coordinator.id && (
-                      <div className="absolute right-10  w-40 bg-white border rounded shadow-lg z-10 bottom-0">
-                        <button
-                          onClick={() => handleEdit(coordinator)}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                        >
-                          <FilePenLine size={16} className="inline-block mr-2" />
-                          Edit File
-                        </button>
-                        <button
-                          onClick={() => handleDelete(coordinator.id)}
-                          className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                        >
-                          <Trash2 size={16} className="inline-block mr-2" />
-                          Delete File
-                        </button>
-                      </div>
-                    )}
-                  </td>
+                  {notAdmin && (
+                    <td className="px-6 py-2 border-t relative">
+                      <button onClick={() => toggleDropdown(coordinator.id)} className="text-gray-600">
+                        <MoreVertical size={20} />
+                      </button>
+                                
+                      {openDropdown === coordinator.id && (
+                        <div className="absolute right-10  w-40 bg-white border rounded shadow-lg z-10 bottom-0">
+                          <button
+                            onClick={() => handleEdit(coordinator)}
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            <FilePenLine size={16} className="inline-block mr-2" />
+                            Edit File
+                          </button>
+                          <button
+                            onClick={() => handleDelete(coordinator.id)}
+                            className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                          >
+                            <Trash2 size={16} className="inline-block mr-2" />
+                            Delete File
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -315,32 +322,34 @@ export default function OJTCoordinators() {
                                     {coordinator.status}
                                   </div>
                                 </div>
-                                <div className="relative ml-4">
-                                  <button 
-                                    onClick={() => toggleDropdown(coordinator.id)} 
-                                    className="p-1 hover:bg-gray-100 rounded-full"
-                                  >
-                                    <MoreVertical size={20} />
-                                  </button>
-                                  {openDropdown === coordinator.id && (
-                                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                                      <button
-                                        onClick={() => handleEdit(coordinator)}
-                                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                                      >
-                                        <FilePenLine size={16} className="inline-block mr-2" />
-                                        Edit File
-                                      </button>
-                                      <button
-                                        onClick={() => handleDelete(coordinator.id)}
-                                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                                      >
-                                        <Trash2 size={16} className="inline-block mr-2" />
-                                        Delete File
-                                      </button>
-                                    </div>
-                                  )}
-                                </div>
+                                {notAdmin && (
+                                  <div className="relative ml-4">
+                                    <button 
+                                      onClick={() => toggleDropdown(coordinator.id)} 
+                                      className="p-1 hover:bg-gray-100 rounded-full"
+                                    >
+                                      <MoreVertical size={20} />
+                                    </button>
+                                    {openDropdown === coordinator.id && (
+                                      <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                                        <button
+                                          onClick={() => handleEdit(coordinator)}
+                                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                                        >
+                                          <FilePenLine size={16} className="inline-block mr-2" />
+                                          Edit File
+                                        </button>
+                                        <button
+                                          onClick={() => handleDelete(coordinator.id)}
+                                          className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                                        >
+                                          <Trash2 size={16} className="inline-block mr-2" />
+                                          Delete File
+                                        </button>
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
                               </div>
                               <div className="mt-2">
                                 <strong>ID:</strong> {coordinator.id}

@@ -8,6 +8,8 @@ import EditIndustryPartner from "../industry_partners/EditIndustryPartner";
 import { useLocation } from "react-router-dom";
 
 export default function IndustryPartners() {
+  const role = localStorage.getItem("role");
+  const notAdmin = role !== "User";
   const [industryPartners, setIndustryPartners] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -222,17 +224,18 @@ export default function IndustryPartners() {
             <i className="fas fa-undo mr-2 text-red-700"></i>
             Reset Filters
           </button>
-
-          <button
-            onClick={() => {
-              setEditingIndustryPartner(null);
-              setIsAddModalOpen(true);
-            }}
-            className="w-full sm:w-auto px-2 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
-          >
-            <PlusCircle size={20} className="mr-2" />
-            Add Industry Partner
-          </button>
+          {notAdmin && (
+            <button
+              onClick={() => {
+                setEditingIndustryPartner(null);
+                setIsAddModalOpen(true);
+              }}
+              className="w-full sm:w-auto px-2 py-2 text-blue-600 rounded-md shadow-sm hover:bg-gray-200 flex items-center justify-center"
+            >
+              <PlusCircle size={20} className="mr-2" />
+              Add Industry Partner
+            </button>
+          )}
         </div>
       </div>
 
@@ -269,7 +272,9 @@ export default function IndustryPartners() {
                 <th className="px-4 py-2 text-center border-b whitespace-nowrap">EMAIL ADDRESS</th>
                 <th className="px-4 py-2 text-center border-b whitespace-nowrap">OFFICE ADDRESS</th>
                 <th className="px-2 py-2 text-center border-b whitespace-nowrap">REMARKS</th>
-                <th className="px-1 py-2 text-center border-b whitespace-nowrap"></th>
+                {notAdmin && (
+                  <th className="px-1 py-2 text-center border-b whitespace-nowrap"></th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -297,29 +302,31 @@ export default function IndustryPartners() {
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.email_address}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.office_address}</td>
                   <td className="px-2 py-2 border-t whitespace-nowrap">{partner.remarks}</td>
-                  <td className="px-1 py-2 border-t whitespace-nowrap relative">
-                    <button onClick={() => toggleDropdown(partner.id)} className="text-gray-600">
-                      <MoreVertical size={20} />
-                    </button>
-                    {openDropdown === partner.id && (
-                      <div className="absolute right-5 w-40 bg-white border rounded shadow-lg z-10 bottom-0">
-                        <button
-                          onClick={() => handleEdit(partner)}
-                          className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                        >
-                          <FilePenLine size={16} className="inline-block mr-2" />
-                          Edit File
-                        </button>
-                        <button
-                          onClick={() => handleDelete(partner.id)}
-                          className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                        >
-                          <Trash2 size={16} className="inline-block mr-2" />
-                          Delete File
-                        </button>
-                      </div>
-                    )}
-                  </td>
+                  {notAdmin && (
+                    <td className="px-1 py-2 border-t whitespace-nowrap relative">
+                      <button onClick={() => toggleDropdown(partner.id)} className="text-gray-600">
+                        <MoreVertical size={20} />
+                      </button>
+                      {openDropdown === partner.id && (
+                        <div className="absolute right-5 w-40 bg-white border rounded shadow-lg z-10 bottom-0">
+                          <button
+                            onClick={() => handleEdit(partner)}
+                            className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                          >
+                            <FilePenLine size={16} className="inline-block mr-2" />
+                            Edit File
+                          </button>
+                          <button
+                            onClick={() => handleDelete(partner.id)}
+                            className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                          >
+                            <Trash2 size={16} className="inline-block mr-2" />
+                            Delete File
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -338,29 +345,31 @@ export default function IndustryPartners() {
                   {partner.moa_status}
                 </div>
               </div>
-              <div className="relative ml-4">
-                <button onClick={() => toggleDropdown(partner.id)} className="p-1 hover:bg-gray-100 rounded-full">
-                  <MoreVertical size={20} />
-                </button>
-                {openDropdown === partner.id && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
-                    <button
-                      onClick={() => handleEdit(partner)}
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    >
-                      <FilePenLine size={16} className="inline-block mr-2" />
-                      Edit File
-                    </button>
-                    <button
-                      onClick={() => handleDelete(partner.id)}
-                      className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                    >
-                      <Trash2 size={16} className="inline-block mr-2" />
-                      Delete File
-                    </button>
-                  </div>
-                )}
-              </div>
+              {notAdmin && (
+                <div className="relative ml-4">
+                  <button onClick={() => toggleDropdown(partner.id)} className="p-1 hover:bg-gray-100 rounded-full">
+                    <MoreVertical size={20} />
+                  </button>
+                  {openDropdown === partner.id && (
+                    <div className="absolute right-0 mt-2 w-40 bg-white border rounded shadow-lg z-10">
+                      <button
+                        onClick={() => handleEdit(partner)}
+                        className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+                      >
+                        <FilePenLine size={16} className="inline-block mr-2" />
+                        Edit File
+                      </button>
+                      <button
+                        onClick={() => handleDelete(partner.id)}
+                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                      >
+                        <Trash2 size={16} className="inline-block mr-2" />
+                        Delete File
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
             <div className="mt-2">
               <strong>ID:</strong> {partner.id}

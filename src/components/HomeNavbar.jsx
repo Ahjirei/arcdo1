@@ -5,6 +5,7 @@ import AdminProfile from "./account/AdminProfile";
 
 export default function HomeNavbar() {
   const location = useLocation();
+  const [userName, setUserName] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -43,9 +44,29 @@ export default function HomeNavbar() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const userId = localStorage.getItem("user_id"); // Get the user ID from local storage
+      
+      if (userId) {
+        try {
+          const response = await fetch(`http://localhost:3001/api/auth/userDetails/${userId}`);
+          
+          if (!response.ok) {
+            throw new Error('Failed to fetch user data');
+          }
   
-
-
+          const userData = await response.json();
+          setUserName(userData.name); // Store the user's name in state
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    };
+  
+    fetchUserName();
+  }, []);
+  
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
@@ -138,7 +159,7 @@ export default function HomeNavbar() {
           <div className="w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center">
             <img src="/default-profile.jpg" alt="Profile" className="w-[35px] h-[35px] rounded-full object-cover" />
           </div>
-            <span className="text-sm font-medium hidden sm:block">Admin</span>
+            <span className="text-sm font-medium hidden sm:block">{userName}</span>
           
         </button>
 
