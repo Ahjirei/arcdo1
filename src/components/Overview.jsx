@@ -11,7 +11,15 @@ const Overview = () => {
   const [activeTab, setActiveTab] = useState("HTEs");
   const [clickedBarIndex, setClickedBarIndex] = useState(null);
   const [selectedYear, setSelectedYear] = useState("2020");
-
+  const [data, setData] = useState({
+    summaryCards: [],
+    industryPartnerCard: [],
+    natureOfBusinesses: [],
+    moaSTATUS: [],
+    tableData: {
+      HTEs: [],
+      "INDUSTRY PARTNERS": [],
+      "OJT COORDINATORS": [],
     },
   });
   const [error, setError] = useState(null);
@@ -382,7 +390,6 @@ const Overview = () => {
                 </div>
               )}
             </div>
-
           );
         })}
       </div>
@@ -440,7 +447,47 @@ const Overview = () => {
           </select>
         </div>
 
-
+        <div className="flex-1 overflow-auto max-h-60 -mt-5 ">
+          <table className="w-full table-auto text-center ">
+            <thead className="sticky top-0 bg-white shadow">
+              <tr className="border-b border-gray-200">
+                <th className="py-2 px-4">DOC #</th>
+                <th className="py-2 px-4">COMPANY</th>
+                <th className="py-2 px-4">ADDRESS</th>
+                <th className="py-2 px-4">DATE</th>
+                <th className="py-2 px-4">NATURE OF BUSINESS</th>
+                <th className="py-2 px-4">STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Array.isArray(data.tableData[activeTab]) && data.tableData[activeTab].map((row, index) => (
+                <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 text-center">
+                  <td className="py-2 px-4">{row.DOC}</td>
+                  <td className="py-2 px-4">{row.COMPANY}</td>
+                  <td className="py-2 px-4">{row.ADDRESS}</td>
+                  <td className="py-2 px-4">{row.DATE}</td>
+                  <td className="py-2 px-4">{row.BUSINESS}</td>
+                  <td
+                    className={`py-2 px-4 text-center rounded-full font-normal ${
+                      row.STATUS === "Completed"
+                        ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                        : row.STATUS === "Processing"
+                        ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
+                        : row.STATUS === "Rejected"
+                        ? "text-red-600 bg-red-100 inline-block py-1 mt-1 mb-2"
+                        : row.STATUS === "For Renewal"
+                        ? "text-orange-600 bg-orange-100 inline-block py-1 mt-1 mb-2"
+                        : row.STATUS === "Active"
+                        ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
+                        : "text-gray-500 bg-gray-100 inline-block py-1 mt-1 mb-2"
+                    }`}
+                  >
+                    {row.STATUS}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

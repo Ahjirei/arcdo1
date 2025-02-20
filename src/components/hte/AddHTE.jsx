@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 
-const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
+const AddHTE = ({ isOpen, onClose }) => {
   const [newHTE, setNewHTE] = useState({
     company_name: "",
     year_submitted: "",
@@ -19,6 +18,7 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
     office_address: "",
     with_moa_date_notarized: "",
     expiry_date: "",
+    assigned_student: "",
     status: "Active"
   });
 
@@ -26,16 +26,9 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
 
   const validateForm = () => {
     const requiredFields = [
-      'company_name', 
-      'year_submitted', 
-      'business_type', 
-      'moa_status', 
-      'contact_person', 
-      'contact_number', 
-      'year_included', 
-      'position_department', 
-      'email_address', 
-      'office_address'
+      'company_name', 'year_submitted', 'business_type', 'moa_status', 'contact_person', 'contact_number', 
+      'remarks', 'year_included', 'position_department', 'course', 'campus', 'college', 'email_address', 
+      'office_address', 'assigned_student'
     ];
     const missingFields = requiredFields.filter(field => !newHTE[field]);
     
@@ -47,44 +40,6 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
     return true;
   };
 
-  const handleSave = async () => {
-    if (!validateForm()) return;
-
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/api/hte/addHte",
-        newHTE
-      );
-
-      if (response.status === 201) {
-        onHTEAdded(response.data);
-        setNewHTE({
-          company_name: "",
-          year_submitted: "",
-          business_type: "",
-          moa_status: "Processing",
-          contact_person: "",
-          contact_number: "",
-          remarks: "",
-          year_included: "",
-          position_department: "",
-          course: "",
-          campus: "",
-          college: "",
-          email_address: "",
-          office_address: "",
-          with_moa_date_notarized: "",
-          expiry_date: "",
-          status: "Active"
-        });
-        onClose();
-      }
-    } catch (error) {
-      console.error("Error adding hte:", error);
-      setError(error.response?.data?.error || "Failed to add hte");
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
@@ -93,9 +48,7 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
         <h2 className="text-xl font-semibold mb-4 text-center">Add New HTE</h2>
   
         {error && (
-          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
+          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
         )}
   
         <div className="space-y-4">
@@ -164,7 +117,7 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">Contact Number</label>
               <input
-                type="number"
+                type="text"
                 value={newHTE.contact_number}
                 onChange={(e) => setNewHTE({ ...newHTE, contact_number: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
@@ -234,10 +187,10 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
               <label className="text-sm font-medium text-gray-700">College</label>
               <input
                 type="text"
-                value={newHTE.college}
-                onChange={(e) => setNewHTE({ ...newHTE, college: e.target.value })}
+                value={newHTE.course}
+                onChange={(e) => setNewHTE({ ...newHTE, course: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
-                placeholder="College"
+                placeholder="Course"
               />
             </div>
   
@@ -250,17 +203,10 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
               >
                 <option value="">Select Campus</option>
                 <option value="Main">PUP Main</option>
-                <option value="Bataan">PUP Bataan</option>
-                <option value="Calauan">PUP Calauan</option>
-                <option value="Lopez">PUP Lopez</option>
-                <option value="Paranaque">PUP Paranaque</option>
-                <option value="Quezon City">PUP Quezon City</option>
-                <option value="Ragay">PUP Ragay</option>
-                <option value="San Juan">PUP San Juan</option>
-                <option value="Sto. Tomas">PUP Sto. Tomas</option>
-                <option value="San Pedro">PUP San Pedro</option>
-                <option value="Santa Rosa">PUP Santa Rosa</option>
                 <option value="Taguig">PUP Taguig</option>
+                <option value="Quezon City">PUP Quezon City</option>
+                <option value="San Juan">PUP San Juan</option>
+                <option value="Paranaque">PUP Paranaque</option>
               </select>
             </div>
           </div>
@@ -300,16 +246,8 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
         </div>
   
         <div className="flex justify-end mt-6 space-x-2">
-          <button 
-            onClick={onClose} 
-            className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50">
-              Cancel
-          </button>
-          <button 
-            onClick={handleSave} 
-            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">
-              Save
-            </button>
+          <button onClick={onClose} className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50">Cancel</button>
+          <button className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700">Save</button>
         </div>
       </div>
     </div>
