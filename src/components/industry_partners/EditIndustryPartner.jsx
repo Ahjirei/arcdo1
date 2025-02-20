@@ -1,57 +1,97 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData }) => {
-  const [industrypartner, setindustrypartner] = useState(industrypartnerData || {
+const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData, onPartnerEdited }) => {
+  const [industryPartner, setIndustryPartner] = useState({
     company_name: "",
-    telephone_number: "",
+    telephone: "",
     fax_number: "",
-    year_submitted: "",
     business_type: "",
-    moa_status: "Processing",
+    moa_status: "",
     contact_person: "",
     contact_number: "",
     remarks: "",
     year_included: "",
     position_department: "",
-    course: "",
-    campus: "",
-    college: "",
+    preferred_courses: "",
+    preferred_college: "",
     email_address: "",
     office_address: "",
     with_moa_date_notarized: "",
     expiry_date: "",
-    status: "Active"
   });
 
   const [error, setError] = useState("");
 
-  const validateForm = () => {
-    const requiredFields = [
-      'company_name',  'telephone_number','fax_number','year_submitted', 'business_type', 'moa_status', 'contact_person', 
-      'contact_number', 'remarks', 'year_included', 'position_department', 'course', 'campus', 'college', 'email_address', 
-      'office_address', 'assigned_student'
-    ];
-    const missingFields = requiredFields.filter(field => !industrypartner[field]);
-    
-    if (missingFields.length > 0) {
-      setError(`Please fill in all required fields: ${missingFields.join(', ')}`);
-      return false;
+  useEffect(() => {
+    if (industrypartnerData) {
+      setIndustryPartner(industrypartnerData);
     }
-    setError("");
-    return true;
+  }, [industrypartnerData]);
+
+  const handleSave = async () => {
+    try {
+      // Convert empty fields to NULL
+      const fieldsToConvert = [
+        "telephone",
+        "fax_number",
+        "business_type",
+        "moa_status",
+        "contact_person",
+        "contact_number",
+        "remarks",
+        "year_included",
+        "position_department",
+        "preferred_courses",
+        "preferred_college",
+        "email_address",
+        "office_address",
+        "with_moa_date_notarized",
+        "expiry_date",
+      ];
+      
+      const updatedPartner = { ...industryPartner };
+      fieldsToConvert.forEach((field) => {
+        if (updatedPartner[field] === "") {
+          updatedPartner[field] = null;
+        }
+      });
+
+      const response = await fetch(
+        `http://localhost:3001/api/ip/updatePartner/${industryPartner.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedPartner),
+        }
+      );
+
+      if (response.ok) {
+        // Remove the window.location.reload() and use the callback instead
+        if (onPartnerEdited) {
+          onPartnerEdited();
+        }
+        onClose();
+      } else {
+        const errorData = await response.json();
+        setError(errorData.error || "Failed to update Industry Partner");
+      }
+    } catch (err) {
+      console.error("Error updating Industry Partner:", err);
+      setError("An error occurred while updating the Industry Partner");
+    }
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-5 sm:mt-0 mt-20">
-      <div className="bg-white p-6 rounded-lg w-full  sm:w-10/12 md:w-8/12 lg:w-6/12 max-h-[85vh] overflow-auto">
-      <h2 className="text-xl font-semibold mb-4 items-center">Edit Industy Partner</h2>
-        
+      <div className="bg-white p-6 rounded-lg w-full sm:w-10/12 md:w-8/12 lg:w-6/12 max-h-[85vh] overflow-auto">
+        <h2 className="text-xl font-semibold mb-4 text-center">Edit Industry Partner</h2>
+
         {error && (
-          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">
-            {error}
-          </div>
+          <div className="mb-4 p-2 bg-red-100 text-red-700 rounded">{error}</div>
         )}
 
         <div className="space-y-4">
@@ -59,8 +99,8 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData }) => {
             <label className="text-sm font-medium text-gray-700">Company Name</label>
             <input
               type="text"
-              value={industrypartner.company_name}
-              onChange={(e) => setindustrypartner({ ...industrypartner, company_name: e.target.value })}
+              value={industryPartner.company_name || ""}
+              onChange={(e) => setIndustryPartner({ ...industryPartner, company_name: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Company Name"
             />
@@ -71,52 +111,42 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData }) => {
               <label className="text-sm font-medium text-gray-700">Telephone Number</label>
               <input
                 type="text"
-                value={industrypartner.telephone_number}
-                onChange={(e) => setindustrypartner({ ...industrypartner, telephone_number: e.target.value })}
+                value={industryPartner.telephone || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, telephone: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Telephone Number"
               />
             </div>
 
             <div>
-              <label className="text-sm font-medium text-gray-700">Fax Numbere</label>
+              <label className="text-sm font-medium text-gray-700">Fax Number</label>
               <input
                 type="text"
-                value={industrypartner.fax_number}
-                onChange={(e) => setindustrypartner({ ...industrypartner, fax_number: e.target.value })}
+                value={industryPartner.fax_number || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, fax_number: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Fax Number"
               />
             </div>
-            </div>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="text-sm font-medium text-gray-700">Year Submitted</label>
-              <input
-                type="text"
-                value={industrypartner.year_submitted}
-                onChange={(e) => setindustrypartner({ ...industrypartner, year_submitted: e.target.value })}
-                className="w-full p-2 border rounded border-gray-500"
-                placeholder="Year Submitted"
-              />
-            </div>
-
             <div>
               <label className="text-sm font-medium text-gray-700">Business Type</label>
               <input
                 type="text"
-                value={industrypartner.business_type}
-                onChange={(e) => setindustrypartner({ ...industrypartner, business_type: e.target.value })}
+                value={industryPartner.business_type || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, business_type: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Business Type"
               />
             </div>
+
             <div>
               <label className="text-sm font-medium text-gray-700">MOA Status</label>
               <select
-                value={industrypartner.moa_status}
-                onChange={(e) => setindustrypartner({ ...industrypartner, moa_status: e.target.value })}
+                value={industryPartner.moa_status || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, moa_status: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
               >
                 <option value="Processing">Processing</option>
@@ -129,12 +159,12 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData }) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="w-full">
+            <div>
               <label className="text-sm font-medium text-gray-700">Contact Person</label>
               <input
                 type="text"
-                value={industrypartner.contact_person}
-                onChange={(e) => setindustrypartner({ ...industrypartner, contact_person: e.target.value })}
+                value={industryPartner.contact_person || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, contact_person: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Contact Person"
               />
@@ -144,10 +174,34 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData }) => {
               <label className="text-sm font-medium text-gray-700">Contact Number</label>
               <input
                 type="text"
-                value={industrypartner.contact_number}
-                onChange={(e) => setindustrypartner({ ...industrypartner, contact_number: e.target.value })}
+                value={industryPartner.contact_number || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, contact_number: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
                 placeholder="Contact Number"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Position/Department</label>
+              <input
+                type="text"
+                value={industryPartner.position_department || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, position_department: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Position or Department"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Email Address</label>
+              <input
+                type="email"
+                value={industryPartner.email_address || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, email_address: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="email@domain.com"
               />
             </div>
           </div>
@@ -156,8 +210,8 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData }) => {
             <label className="text-sm font-medium text-gray-700">Office Address</label>
             <input
               type="text"
-              value={industrypartner.office_address}
-              onChange={(e) => setindustrypartner({ ...industrypartner, office_address: e.target.value })}
+              value={industryPartner.office_address || ""}
+              onChange={(e) => setIndustryPartner({ ...industryPartner, office_address: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Office Address"
             />
@@ -166,118 +220,83 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData }) => {
           <div>
             <label className="text-sm font-medium text-gray-700">Remarks</label>
             <textarea
-              value={industrypartner.remarks}
-              onChange={(e) => setindustrypartner({ ...industrypartner, remarks: e.target.value })}
+              value={industryPartner.remarks || ""}
+              onChange={(e) => setIndustryPartner({ ...industryPartner, remarks: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Remarks"
             />
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-            <label className="text-sm font-medium text-gray-700">
-              Course
-            </label>
-            <input
-              type="text"
-              value={industrypartner.course}
-              onChange={(e) => setindustrypartner({ ...industrypartner, course: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-              placeholder="Course"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">Course</label>
+              <input
+                type="text"
+                value={industryPartner.preferred_courses || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, preferred_courses: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Course"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-gray-700">College</label>
+              <input
+                type="text"
+                value={industryPartner.preferred_college || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, preferred_college: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="College"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Year Included</label>
+              <input
+                type="date"
+                value={industryPartner.year_included || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, year_included: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+                placeholder="Year Included"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Campus
-            </label>
-            <select
-              value={industrypartner.campus}
-              onChange={(e) => setindustrypartner({ ...industrypartner, campus: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
+              <input
+                type="date"
+                value={industryPartner.with_moa_date_notarized || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, with_moa_date_notarized: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Expiry Date</label>
+              <input
+                type="date"
+                value={industryPartner.expiry_date || ""}
+                onChange={(e) => setIndustryPartner({ ...industryPartner, expiry_date: e.target.value })}
+                className="w-full p-2 border rounded border-gray-500"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end mt-6 space-x-2">
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50"
             >
-              <option value="">Select Campus</option>
-              <option value="Main">PUP Main</option>
-              <option value="Taguig">PUP Taguig</option>
-              <option value="Quezon City">PUP Quezon City</option>
-              <option value="San Juan">PUP San Juan</option>
-              <option value="Paranaque">PUP Paranaque</option>
-            </select>
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
+            >
+              Save Changes
+            </button>
           </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              College
-            </label>
-            <input
-              type="text"
-              value={industrypartner.college}
-              onChange={(e) => setindustrypartner({ ...industrypartner, college: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-              placeholder="College"
-            />
-          </div>
-        </div>
-
-
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div>
-            <label className="text-sm font-medium text-gray-700">
-              Year Included
-            </label>
-            <input
-              type="text"
-              value={industrypartner.year_included}
-              onChange={(e) => setindustrypartner({ ...industrypartner, year_included: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-              placeholder="Year Included"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              MOA Date Notarized
-            </label>
-            <input
-              type="date"
-              value={industrypartner.with_moa_date_notarized}
-              onChange={(e) => setindustrypartner({ ...industrypartner, with_moa_date_notarized: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-            />
-          </div>
-
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              Expiry Date
-            </label>
-            <input
-              type="date"
-              value={industrypartner.expiry_date}
-              onChange={(e) => setindustrypartner({ ...industrypartner, expiry_date: e.target.value })}
-              className="w-full p-2 border rounded border-gray-500"
-            />
-          </div>
-        </div>
-
-        <div className="flex justify-end mt-6 space-x-2">
-          <button 
-            onClick={onClose} 
-            className="px-4 py-2 text-gray-700 border rounded-md hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button 
-            onClick={() => {
-              if (validateForm()) {
-                onSave(industrypartner);
-              }
-            }}
-            className="px-4 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-          >
-            Save Changes
-          </button>
         </div>
       </div>
     </div>
