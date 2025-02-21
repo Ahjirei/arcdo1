@@ -192,7 +192,15 @@ const Overview = () => {
           },
           callback: function (value) {
             let label = this.getLabelForValue(value);
-            return label.match(/.{1,15}(\s|$)/g); // Split every 15 characters (adjust as needed)
+            let screenWidth = window.innerWidth; // Get screen width
+        
+            if (screenWidth < 768) {
+              // Adjust label format for mobile (e.g., break every 10 characters)
+              return label.match(/.{1,10}(\s|$)/g); 
+            } else {
+              // Keep desktop format (break every 15 characters)
+              return label.match(/.{1,15}(\s|$)/g); 
+            }
           },
         },
       },

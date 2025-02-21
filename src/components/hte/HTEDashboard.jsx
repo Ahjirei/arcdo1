@@ -387,7 +387,7 @@ export default function HTEDashboard() {
                 <div key={hte.id} className={`border border-black p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center space-x-3 flex-1">
-                    <div className="font-bold italic">{hte.company_name}</div>
+                    <div className="font-bold italic break-all">{hte.company_name}</div>
                     <div className={`px-3 rounded-full py-1 text-sm ${getValidityColor(hte.moa_status)}`}>
                       {hte.moa_status}
                     </div>
@@ -464,7 +464,7 @@ export default function HTEDashboard() {
                   <div className="mt-2">
                     <strong>Contact Number:</strong> {hte.contact_number}
                   </div>
-                  <div className="mt-2">
+                  <div className="mt-2 break-all">
                     <strong>Email Address:</strong> {hte.email_address}
                   </div>
                   <div className="mt-2">

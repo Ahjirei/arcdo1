@@ -379,7 +379,7 @@ export default function Moa() {
           <div key={moa.id} className={`border border-black p-4 mb-4 relative ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
-                <div className="font-bold italic">{moa.company_name}</div>
+                <div className="font-bold italic break-all">{moa.company_name}</div>
                 <div className={`px-4 rounded-full py-1 ${getValidityColor(moa.moa_status)}`}>
                   {moa.moa_status}
                 </div>
@@ -450,7 +450,7 @@ export default function Moa() {
             <div className="mt-2">
               <strong>Contact Number:</strong> {moa.contact_no}
             </div>
-            <div className="mt-2">
+            <div className="mt-2 break-all">
               <strong>Email Address:</strong> {moa.email}
             </div>
             <div className="mt-2">

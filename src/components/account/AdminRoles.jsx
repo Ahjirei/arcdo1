@@ -163,7 +163,7 @@ const AdminRoles = () => {
                     </button>
                 </div>
             </div>
-            <div className="hidden md:block">
+            <div className="overflow-x-auto">
                 <table className="min-w-full border-collapse mt-3">
                     <thead>
                         <tr className="bg-gray-100">

@@ -350,7 +350,7 @@ export default function IndustryPartners() {
           <div key={partner.id} className={`border border-black p-4 mb-4 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}>
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-3 flex-1">
-                <div className="font-bold italic">{partner.company_name}</div>
+                <div className="font-bold italic break-all">{partner.company_name}</div>
                 <div className={`px-4 rounded-full py-1 ${getValidityColor(partner.moa_status)}`}>
                   {partner.moa_status}
                 </div>
@@ -430,7 +430,7 @@ export default function IndustryPartners() {
             <div className="mt-2">
               <strong>Contact Number:</strong> {partner.contact_number}
             </div>
-            <div className="mt-2">
+            <div className="mt-2 break-all">
               <strong>Email Address:</strong> {partner.email_address}
             </div>
             <div className="mt-2">
