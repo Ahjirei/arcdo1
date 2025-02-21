@@ -27,6 +27,9 @@ export default function NavbarTopConfigurationPage() {
   const defaultPage = "ARCDO";
   const currentPage =
     pathSegments.length > 0 ? pathSegments[pathSegments.length - 1].toUpperCase() : "";
+  
+  // Check if current page is overview
+  const isOverviewPage = location.pathname.includes('/overview');
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -60,13 +63,13 @@ export default function NavbarTopConfigurationPage() {
   };
 
   useEffect(() => {
-    fetchAllData(); // Fetch all data globally on mount
+    fetchAllData(); 
     fetchDataForCurrentPage();
-    setSearchQuery(""); // Clear search query
-    setFilteredData([]); // Clear filtered data
-  }, [location.pathname]); // Fetch data when the page changes
+    setSearchQuery(""); 
+    setFilteredData([]); 
+  }, [location.pathname]); 
   
-  const [allData, setAllData] = useState([]); // Store all entities for global search
+  const [allData, setAllData] = useState([]); 
   const [originalData, setOriginalData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   
@@ -434,7 +437,7 @@ export default function NavbarTopConfigurationPage() {
             </button>
           </li>
 
-          {canExport && (
+          {canExport && !isOverviewPage && (
             <li>
               {/* Export Dropdown for Desktop */}
               <div className="relative">
@@ -511,11 +514,10 @@ export default function NavbarTopConfigurationPage() {
                   </button>
                 </li>
 
-                {/* Search icon inside settings */}
                 <li className="relative">
                   <button
                     className="flex items-center text-black hover:text-red-800 transition duration-300"
-                    onClick={() => setIsSearchOpen(!isSearchOpen)} // Toggle search visibility on click
+                    onClick={() => setIsSearchOpen(!isSearchOpen)} 
                   >
                     <Search className="h-5 w-5 mr-2" />
                     <span>Search</span>
@@ -553,7 +555,7 @@ export default function NavbarTopConfigurationPage() {
                   )}
                 </li>
 
-                {canExport && (
+                {canExport && !isOverviewPage && (
                   <li>
                     <div className="relative">
                       <button
