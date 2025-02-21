@@ -204,7 +204,7 @@ const UserAccount = () => {
 };
 
   return (
-    <div className="bg-gray-50 p-7 min-h-400 overflow-hidden">
+    <div className="bg-gray-50 p-7 min-h-400">
       {loading ? (
         <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-50">
           <div className="flex flex-col items-center">
@@ -215,70 +215,76 @@ const UserAccount = () => {
       ) : error ? (
         <div className="text-red-500">{error}</div>
       ) : (
-        <main className="w-full overflow-hidden">
-          <h2 className="text-2xl font-semibold mb-6">My Profile</h2>
-          <section className="bg-white p-6 rounded-lg shadow-lg mb-8 flex flex-col sm:flex-row items-center sm:items-start space-x-4 sm:space-x-6">
-            <div className="flex items-center space-x-4">
-              {/* Hidden file input */}
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept="image/*"
-              />
-              
-              {/* Profile picture with click handler when editing */}
-              <div 
-                className={`w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden ${isEditing ? 'cursor-pointer hover:opacity-80' : ''}`}
-                onClick={handleProfilePictureClick}
-                title={isEditing ? "Click to change profile picture" : ""}
-              >
-                {getProfilePictureDisplay()}
+        <main className="w-full min-h-400">
+          <h2 className="text-2xl font-semibold mb-2 sm:mb-6 text-center sm:text-left">My Profile</h2>
+          <section className="bg-white p-6 rounded-lg shadow-lg mb-2 sm:mb-8 flex flex-col sm:flex-row items-center sm:items-startspace-y-4 sm:space-y-0 sm:space-x-6">
+              <div className="flex flex-col items-center sm:flex-row sm:items-start sm:space-x-4 w-full">
+                {/* Hidden file input */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                />
+                
+                {/* Profile picture with click handler when editing */}
+                <div 
+                className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 border ${
+                  isEditing ? "cursor-pointer hover:opacity-80" : ""
+                }`}
+                 onClick={handleProfilePictureClick}
+                  title={isEditing ? "Click to change profile picture" : ""}
+                >
+                  {getProfilePictureDisplay()}
+                </div>
+  
+                <div className="flex flex-col w-full text-center sm:text-left">
+                <h3 className="text-lg sm:text-xl font-semibold"></h3>
+                {isEditing && (
+                  <div className="text-xs text-gray-500 -mt-4">Click picture to change</div>
+                )}
+                <div>
+                  <h3 className="text-xl font-semibold">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        className="border rounded px-2 py-1 w-full"
+                      />
+                    ) : (
+                      userDetails.name
+                    )}
+                  </h3>
+                  <p className="text-gray-500">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        name="position"
+                        value={formData.position}
+                        onChange={handleChange}
+                        className="border rounded px-2 py-1 w-full"
+                      />
+                    ) : (
+                      userDetails.position
+                    )}
+                  </p>
+                </div>
+                <button
+                  onClick={handleEditToggle}
+                  className="sm:ml-auto mt-3 sm:mt-0 text-blue-500 hover:underline"
+                >
+                  {isEditing ? "Cancel" : "Edit"}
+                </button>
               </div>
-              {isEditing && (
-                <div className="text-xs text-gray-500 -mt-4">Click picture to change</div>
-              )}
-              <div>
-                <h3 className="text-xl font-semibold">
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className="border rounded px-2 py-1"
-                    />
-                  ) : (
-                    userDetails.name
-                  )}
-                </h3>
-                <p className="text-gray-500">
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      name="position"
-                      value={formData.position}
-                      onChange={handleChange}
-                      className="border rounded px-2 py-1"
-                    />
-                  ) : (
-                    userDetails.position
-                  )}
-                </p>
-              </div>
-              <button
-                onClick={handleEditToggle}
-                className="ml-auto text-blue-500 hover:underline"
-              >
-                {isEditing ? "Cancel" : "Edit"}
-              </button>
             </div>
           </section>
 
           <section className="bg-white p-6 rounded-lg shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <h3 className="text-lg font-semibold mb-4 text-center sm:text-left">Personal Information</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <p className="text-gray-600">College</p>
                 {isEditing ? (
@@ -287,7 +293,7 @@ const UserAccount = () => {
                     name="college"
                     value={formData.college}
                     onChange={handleChange}
-                    className="border rounded px-2 py-1"
+                    className="border rounded px-2 py-1 w-full"
                   />
                 ) : (
                   <p className="text-lg">{userDetails.college}</p>
@@ -301,13 +307,13 @@ const UserAccount = () => {
                     name="campus"
                     value={formData.campus}
                     onChange={handleChange}
-                    className="border rounded px-2 py-1"
+                    className="border rounded px-2 py-1 w-full"
                   />
                 ) : (
                   <p className="text-lg">{userDetails.campus}</p>
                 )}
               </div>
-              <div className="col-span-2">
+              <div className="col-span-1 sm:col-span-2">
                 <p className="text-gray-600">Contact Number</p>
                 {isEditing ? (
                   <input
@@ -315,18 +321,18 @@ const UserAccount = () => {
                     name="contact_number"
                     value={formData.contact_number}
                     onChange={handleChange}
-                    className="border rounded px-2 py-1"
+                    className="border rounded px-2 py-1 w-full"
                   />
                 ) : (
                   <p className="text-lg">{userDetails.contact_number}</p>
                 )}
               </div>
             </div>
+
             {isEditing && (
               <button
                 onClick={handleSave}
-                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-              >
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded w-full sm:w-auto hover:bg-blue-600">
                 Save Changes
               </button>
             )}
