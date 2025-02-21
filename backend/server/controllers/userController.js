@@ -2,6 +2,7 @@ import initializeConnection from '../config/db.js';
 import connectDB from '../config/db.js';
 
 export const getUsers = async (req, res) => {
+    let connection;
     try {
         const connection = await connectDB();
         const sql = "SELECT * FROM users";
@@ -12,28 +13,8 @@ export const getUsers = async (req, res) => {
     }
 };
 
-// export const createUser = async (req, res) => {
-//     try {
-//         const { email, password } = req.body; 
-        
-//         if (!email) {
-//             return res.status(400).json({ error: 'Email is required.' });
-//         }
-//         if (!password) {
-//             return res.status(400).json({ error: 'Password is required.' });
-//         }
-
-//         const connection = await connectDB();
-//         const sql = "INSERT INTO users (email, password) VALUES (?, ?)";
-//         const [result] = await connection.query(sql, [email, password]);
-        
-//         res.status(201).json({ id: result.insertId, email });
-//     } catch (error) {
-//         res.status(500).json({ error: 'Internal Server Error' });
-//     }
-// };
-
 export const createUser = async (req, res) => {
+    let connection;
     try {
         const { email, password, name, contact_number, position, campus, college} = req.body;
         
@@ -79,5 +60,7 @@ export const createUser = async (req, res) => {
         res.status(201).json({ message: 'Registration successful. Please verify your account.', user_id: userId });
     } catch (error) {
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };

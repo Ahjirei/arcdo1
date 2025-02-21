@@ -1,6 +1,7 @@
 import initializeConnection from '../config/db.js';
 
 export const getHte = async (req, res) => {
+    let connection;
     try {
         const connection = await initializeConnection();
         const [hte] = await connection.query("SELECT * FROM hte");
@@ -8,10 +9,13 @@ export const getHte = async (req, res) => {
     } catch (error) {
         console.error("Error fetching hte:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
-};
+}; 
 
 export const getHteById = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const connection = await initializeConnection();
@@ -25,11 +29,14 @@ export const getHteById = async (req, res) => {
     } catch (error) {
         console.error("Error fetching hte by ID:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 // Add a new HTE record
 export const addHte = async (req, res) => {
+    let connection;
     try {
         const {
             company_name,
@@ -97,11 +104,14 @@ export const addHte = async (req, res) => {
     } catch (error) {
         console.error("Error adding HTE:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 // Update an existing HTE record
 export const updateHte = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const {
@@ -177,11 +187,14 @@ export const updateHte = async (req, res) => {
     } catch (error) {
         console.error("Error updating HTE:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 // Delete an HTE record
 export const deleteHte = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const connection = await initializeConnection();
@@ -203,5 +216,7 @@ export const deleteHte = async (req, res) => {
     } catch (error) {
         console.error("Error deleting HTE:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };

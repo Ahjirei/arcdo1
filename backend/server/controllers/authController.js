@@ -21,6 +21,7 @@ function validateEmail(email) {
 }
 
 export const register = async (req, res) => {
+    let connection;
     try {
         const { email, password, name, contact_number, position, campus, college, role = 'User'} = req.body;
         
@@ -84,7 +85,9 @@ export const register = async (req, res) => {
     } catch (error) {
         console.error('Registration error:', error);
         res.status(500).json({ error: `An error occurred during registration: ${error.message}` });
-    } 
+    }  finally {
+        if (connection) connection.end();
+    }
 };
 
 
@@ -121,6 +124,8 @@ export const userDetails = async (req, res) => {
     } catch (error) {
         console.error("Error fetching user details:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    }  finally {
+        if (connection) connection.end();
     }
 };
 
@@ -163,10 +168,13 @@ export const updateUserDetails = async (req, res) => {
     } catch (error) {
         console.error("Error updating user details:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 export const login = async (req, res) => {
+    let connection;
     try {
         const { email, password } = req.body;
         const connection = await initializeConnection();
@@ -214,6 +222,8 @@ export const login = async (req, res) => {
         res.json({ token, refresh_token, id: user.id, role: user.role });
     } catch (error) {
         res.status(500).json({ error: error.message || 'Error logging in' });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
@@ -224,7 +234,7 @@ export const refresh_token = async (req, res) => {
     if (!refresh_token) {
         return res.status(401).send('Refresh token is required');
     }
-
+    let connection;
     try {
         const decoded = jwt.verify(refresh_token, refreshSecretKey);
         const connection = await initializeConnection();
@@ -241,6 +251,8 @@ export const refresh_token = async (req, res) => {
         res.json({ token: newToken });
     } catch (error) {
         res.status(403).send('Invalid refresh token');
+    } finally {
+        if (connection) connection.end();
     }
 };
 
@@ -252,12 +264,14 @@ export const verify_token = async (req, res) => {
     }
 
     const token = authHeader.split(" ")[1];
-
+    let connection;
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         return res.status(200).json({ message: "Token is valid", user: decoded });
     } catch (error) {
         return res.status(401).json({ message: "Invalid or expired token" });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
@@ -276,7 +290,7 @@ const transporter = nodemailer.createTransport({
 
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
-
+    let connection;
     try {
         const connection = await initializeConnection();
 
@@ -315,12 +329,14 @@ export const forgotPassword = async (req, res) => {
         res.status(200).json({ message: 'Password reset link sent to your email.' });
     } catch (error) {
         res.status(500).json({ message: 'Error sending reset link. Please try again later.' });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
-
+    let connection;
     try {
         const decoded = jwt.verify(token, secretKey);
         const { email } = decoded;
@@ -334,5 +350,7 @@ export const resetPassword = async (req, res) => {
         res.status(200).json({ message: 'Password has been reset successfully.' });
     } catch (error) {
         res.status(400).json({ message: 'Invalid or expired token.' });
+    } finally {
+        if (connection) connection.end();
     }
 };

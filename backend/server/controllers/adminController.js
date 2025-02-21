@@ -1,8 +1,9 @@
 import connectDB from '../config/db.js';
 
 export const getAdminUsers = async (req, res) => {
+    let connection;
     try {
-        const connection = await connectDB();
+        connection = await connectDB();
         const sql = `
             SELECT users.id, users.email, users.role, users.last_login, user_account.name
             FROM users
@@ -14,10 +15,49 @@ export const getAdminUsers = async (req, res) => {
     } catch (error) {
         console.error("Error fetching admin users:", error);
         res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
+
+export const checkUserExists = async (req, res) => {
+    let connection;
+    const { email, name } = req.body;
+    try {
+        const connection = await connectDB();
+        let query = "";
+        let queryParams = [];
+
+        if (email) {
+            query = "SELECT id FROM users WHERE email = ?";
+            queryParams.push(email);
+        } else if (name) {
+            query = "SELECT id FROM users WHERE id = (SELECT user_id FROM user_account WHERE name = ?)";
+            queryParams.push(name);
+        } else {
+            return res.status(400).json({ error: "Please provide a name or email" });
+        }
+
+        const [user] = await connection.query(query, queryParams);
+
+        if (user.length > 0) {
+            return res.json({ exists: true });
+        } else {
+            return res.json({ exists: false });
+        }
+    } catch (error) {
+        console.error("Error checking user existence:", error);
+        res.status(500).json({ error: "Internal server error" });
+    } finally {
+        if (connection) connection.end();
+    }
+};
+
+
+
 export const setAdminRole = async (req, res) => {
+    let connection;
     const { name, email } = req.body; // Accept name or email
     const requesterId = req.user?.id; // ID of the requesting user (from authentication middleware)
 
@@ -58,6 +98,7 @@ export const setAdminRole = async (req, res) => {
 };
 
 export const removeAdminRole = async (req, res) => {
+    let connection;
     const { name, email } = req.body; // Accept name or email
     const requesterId = req.user?.id; // ID of the requesting user (from authentication middleware)
 
@@ -93,5 +134,7 @@ export const removeAdminRole = async (req, res) => {
     } catch (error) {
         console.error("Error updating user role:", error);
         res.status(500).json({ error: "Internal Server Error" });
+    } finally {
+        if (connection) connection.end();
     }
 };
