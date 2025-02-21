@@ -30,6 +30,16 @@ export default function IndustryPartners() {
   const [displayedPartners, setDisplayedPartners] = useState([]); 
 
   useEffect(() => {
+    if (loading) {
+        const timer = setTimeout(() => {
+            setLoading('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  useEffect(() => {
     fetchIndustryPartners();
   }, []);
 

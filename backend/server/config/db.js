@@ -10,6 +10,7 @@ const initializeConnection = async () => {
             user: process.env.DB_USER,
             password: process.env.DB_PASS,
             database: process.env.DB_NAME,
+            connectionLimit: 10, 
         };
 
         const connection = await mysql.createConnection(connectionConfig);

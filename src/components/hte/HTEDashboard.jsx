@@ -53,6 +53,16 @@ export default function HTEDashboard() {
     });
 
   useEffect(() => {
+    if (loading) {
+        const timer = setTimeout(() => {
+            setLoading('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  useEffect(() => {
     fetchHte();
   }, []);
 

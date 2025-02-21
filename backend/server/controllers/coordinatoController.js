@@ -1,6 +1,7 @@
 import initializeConnection from '../config/db.js';
 
 export const getCoordinators = async (req, res) => {
+    let connection;
     try {
         const connection = await initializeConnection();
         const [coordinators] = await connection.query("SELECT * FROM ojt_coordinator");
@@ -8,10 +9,13 @@ export const getCoordinators = async (req, res) => {
     } catch (error) {
         console.error("Error fetching coordinators:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 export const getCoordinatorById = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const connection = await initializeConnection();
@@ -25,10 +29,13 @@ export const getCoordinatorById = async (req, res) => {
     } catch (error) {
         console.error("Error fetching coordinator by ID:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 export const addCoordinator = async (req, res) => {
+    let connection;
     try {
         const { name, campus, college, assigned_student, status, email, office } = req.body;
 
@@ -57,11 +64,14 @@ export const addCoordinator = async (req, res) => {
     } catch (error) {
         console.error("Error adding coordinator:", error);
         res.status(500).json({ error: "Internal server error" });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 
 export const updateCoordinator = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const { name, campus, college, assigned_student, status, email, office } = req.body;
@@ -84,10 +94,13 @@ export const updateCoordinator = async (req, res) => {
     } catch (error) {
         console.error("Error updating coordinator:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 export const deleteCoordinator = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const connection = await initializeConnection();
@@ -109,5 +122,7 @@ export const deleteCoordinator = async (req, res) => {
     } catch (error) {
         console.error("Error deleting coordinator:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };

@@ -7,10 +7,21 @@ const AdminRoles = () => {
     const [showModal, setShowModal] = useState(false);
     const [inputValue, setInputValue] = useState("");
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         fetchUsers();
     }, []);
+
+    useEffect(() => {
+        if (error) {
+            const timer = setTimeout(() => {
+                setError('');
+            }, 3000);
+    
+            return () => clearTimeout(timer);
+        }
+    }, [error]);    
 
     const fetchUsers = async () => {
         try {
@@ -32,13 +43,32 @@ const AdminRoles = () => {
 
     const handleAddAdmin = async () => {
         try {
-            setError(""); // Clear any previous errors
+            setIsLoading(true); 
+            setError("");
             const token = localStorage.getItem("token");
-            
+    
             // Determine if input is email or name
             const isEmail = inputValue.includes('@');
             const payload = isEmail ? { email: inputValue } : { name: inputValue };
-
+    
+            // Check if the user exists first
+            const checkResponse = await fetch("http://localhost:3001/api/admin/checkUserExists", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(payload),
+            });
+    
+            const checkData = await checkResponse.json();
+    
+            if (!checkResponse.ok || !checkData.exists) {
+                setError("User not found. Please enter a valid name or email.");
+                return;
+            }
+    
+            // If user exists, proceed to set admin role
             const response = await fetch("http://localhost:3001/api/admin/setAdmin", {
                 method: "POST",
                 headers: { 
@@ -47,22 +77,24 @@ const AdminRoles = () => {
                 },
                 body: JSON.stringify(payload),
             });
-
+    
             const data = await response.json();
-
+    
             if (!response.ok) {
                 throw new Error(data.error || "Failed to update user role");
             }
-
+    
             setInputValue("");
             setShowModal(false);
             fetchUsers();
         } catch (error) {
             console.error("Error setting admin role:", error);
             setError(error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
-
+    
     const handleDelete = async (user) => {
         try {
             const token = localStorage.getItem("token");
@@ -91,8 +123,15 @@ const AdminRoles = () => {
     };
     
 
-    const handleRefresh = () => {
-        fetchUsers();
+    const handleRefresh = async () => {
+        try {
+            setIsLoading(true);
+            await fetchUsers(); 
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const filteredUsers = users.filter(
@@ -115,8 +154,10 @@ const AdminRoles = () => {
                 />
                 <div className="flex items-center space-x-2 ml-auto">
                     <button onClick={handleRefresh} className="px-2 py-2 text-gray-700 rounded hover:bg-gray-300 flex items-center">
-                        <RefreshCw size={18} className="mr-2" /> Refresh
+                        <RefreshCw size={18} className={`mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+                        {isLoading ? 'Refreshing...' : 'Refresh'}
                     </button>
+
                     <button onClick={() => setShowModal(true)} className="px-2 py-2 bg-[#800101] hover:bg-red-400 text-white rounded ml-2 flex items-center">
                         <PlusCircle className="mr-2" size={18} /> Add Admin
                     </button>
@@ -139,7 +180,10 @@ const AdminRoles = () => {
                                 <td className="px-4 py-2 border-t">{user.name || "N/A"}</td>
                                 <td className="px-4 py-2 border-t">{user.email || "N/A"}</td>
                                 <td className="px-4 py-2 border-t">{user.role || "N/A"}</td>
-                                <td className="px-4 py-2 border-t">{user.lastLogin || "Never"}</td>
+                                <td className="px-4 py-2 border-t">
+                                    {user.last_login ? new Date(user.last_login).toLocaleString() : "Never"}
+                                </td>
+
                                 <td className="px-4 py-2 border-t">
                                 <button onClick={() => handleDelete(user)} className="text-red-600 hover:text-red-800">
                                     <Trash2 size={18} />
@@ -169,12 +213,14 @@ const AdminRoles = () => {
                         />
                         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                         <button
+                            disabled={isLoading} 
                             onClick={handleAddAdmin}
-                            className="w-full mt-4 px-4 py-2 bg-[#800101] hover:bg-red-400 text-white rounded"
+                            className={`w-full mt-4 px-4 py-2 bg-[#800101] hover:bg-red-400 text-white rounded ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
-                            Set as Admin
+                            {isLoading ? 'Adding User' : 'Set as Admin'}
                         </button>
                     </div>
+
                 </div>
             )}
         </div>

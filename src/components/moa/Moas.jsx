@@ -46,6 +46,17 @@ export default function Moa() {
       validity: "Processing"
     });
 
+    useEffect(() => {
+      if (loading) {
+          const timer = setTimeout(() => {
+              setLoading('');
+          }, 3000);
+  
+          return () => clearTimeout(timer);
+      }
+    }, [loading]);
+  
+
   useEffect(() => {
       fetchMoa();
     }, []);

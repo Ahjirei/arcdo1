@@ -39,6 +39,7 @@ app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Database Initialization and Server Start
 const startServer = async () => {
+  let dbConnection;
   try {
     const dbConnection = await initializeConnection();
 
@@ -72,7 +73,9 @@ const startServer = async () => {
   } catch (error) {
     console.error('Failed to connect to the database:', error);
     process.exit(1);
-  }
+  } finally {
+    if (dbConnection) dbConnection.end();
+}
 };
 
 startServer();

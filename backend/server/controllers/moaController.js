@@ -2,6 +2,7 @@ import initializeConnection from '../config/db.js';
 
 // Get all MOA records
 export const getMoa = async (req, res) => {
+    let connection;
     try {
         const connection = await initializeConnection();
         const [moa] = await connection.query("SELECT * FROM moa");
@@ -9,11 +10,14 @@ export const getMoa = async (req, res) => {
     } catch (error) {
         console.error("Error fetching moa:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 // Get MOA by ID
 export const getMoaById = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const connection = await initializeConnection();
@@ -27,11 +31,14 @@ export const getMoaById = async (req, res) => {
     } catch (error) {
         console.error("Error fetching moa by ID:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    }  finally {
+        if (connection) connection.end();
     }
 };
 
 // Add a new MOA record
 export const addMoa = async (req, res) => {
+    let connection;
     try {
         const {
             company_name,
@@ -96,11 +103,14 @@ export const addMoa = async (req, res) => {
     } catch (error) {
         console.error("Error adding MOA:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
 // Update an existing MOA record
 export const updateMoa = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         if (!id) {
@@ -160,11 +170,14 @@ export const updateMoa = async (req, res) => {
     } catch (error) {
         console.error("Error updating MOA:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    }  finally {
+        if (connection) connection.end();
     }
 };
 
 // Delete an MOA record
 export const deleteMoa = async (req, res) => {
+    let connection;
     try {
         const { id } = req.params;
         const connection = await initializeConnection();
@@ -186,5 +199,7 @@ export const deleteMoa = async (req, res) => {
     } catch (error) {
         console.error("Error deleting MOA:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
+    } finally {
+        if (connection) connection.end();
     }
 };
