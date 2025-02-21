@@ -504,7 +504,8 @@ export default function NavbarTopConfigurationPage() {
             >
               <ul className="space-y-3">
                 <li>
-                  <button className="flex items-center text-black hover:text-red-800 transition duration-300">
+                  <button className="flex items-center text-black hover:text-red-800 transition duration-300"
+                    onClick={handleRefreshClick}>
                     <RotateCcw className="h-5 w-5 mr-2" />
                     <span>Refresh</span>
                   </button>

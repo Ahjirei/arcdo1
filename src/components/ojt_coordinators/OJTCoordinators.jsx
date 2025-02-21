@@ -19,6 +19,16 @@ export default function OJTCoordinators() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+  }, [error]);   
+
   const location = useLocation();
   const searchQuery = location.state?.searchQuery || "";
   const searchId = location.state?.searchId || ""; // Get ID from search query

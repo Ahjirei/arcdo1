@@ -21,7 +21,16 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData, onPartnerEd
   });
 
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
 
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
+  
   useEffect(() => {
     if (industrypartnerData) {
       setIndustryPartner(industrypartnerData);

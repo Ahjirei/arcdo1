@@ -49,7 +49,7 @@ export default function IndustryPartners() {
       setDisplayedPartners(
         industryPartners.filter(item =>
           item.id.toString() === searchId.toString() || 
-          item.company_namename.toLowerCase().includes(searchQuery.toLowerCase())
+          item.company_name.toLowerCase().includes(searchQuery.toLowerCase())
         )
       );
     } else {

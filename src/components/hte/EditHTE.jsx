@@ -1,7 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHteEdited }) => {
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
+
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen || !editingHTE) return null;

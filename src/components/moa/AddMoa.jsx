@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
@@ -20,6 +20,15 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
   });
 
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
 
   const validateForm = () => {
     const requiredFields = [

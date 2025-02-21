@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AddIndustryPartner = ({ isOpen, onClose, onPartnerAdded }) => {
   const [newIndustryPartner, setNewIndustryPartner] = useState({
@@ -22,7 +22,16 @@ const AddIndustryPartner = ({ isOpen, onClose, onPartnerAdded }) => {
   });
 
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
 
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
+  
   const handleSave = async () => {
     try {
       // Convert empty fields to NULL
