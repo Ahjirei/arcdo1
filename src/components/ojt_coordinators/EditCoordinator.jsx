@@ -32,7 +32,8 @@ const EditCoordinator = ({ isEditModalOpen, onClose, editingCoordinator, setEdit
           college: editingCoordinator.college,
           office: editingCoordinator.office,
           assigned_student: editingCoordinator.assigned_student,
-          status: editingCoordinator.status
+          status: editingCoordinator.status,
+          updated_at: new Date().toISOString() 
         }),
       });
 

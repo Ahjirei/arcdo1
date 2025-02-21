@@ -81,8 +81,8 @@ export const addHte = async (req, res) => {
             `INSERT INTO hte (
                 company_name, office_address, year_submitted, business_type, moa_status,
                 contact_person, contact_number, email_address, remarks, campus, 
-                college, course, expiry_date, position_department, with_moa_date_notarized, year_included
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+                college, course, expiry_date, position_department, with_moa_date_notarized, year_included, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW());`,
             [
                 company_name,
                 office_address,
@@ -159,7 +159,7 @@ export const updateHte = async (req, res) => {
             `UPDATE hte SET 
                 company_name = ?, office_address = ?, year_submitted = ?, business_type = ?, moa_status = ?,
                 contact_person = ?, contact_number = ?, email_address = ?, remarks = ?, campus = ?, 
-                college = ?, course = ?, expiry_date = ?, position_department = ?, with_moa_date_notarized = ?, year_included = ?
+                college = ?, course = ?, expiry_date = ?, position_department = ?, with_moa_date_notarized = ?, year_included = ?, updated_at = NOW()
              WHERE id = ?`,
             [
                 company_name,

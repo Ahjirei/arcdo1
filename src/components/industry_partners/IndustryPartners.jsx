@@ -74,7 +74,12 @@ export default function IndustryPartners() {
         with_moa_date_notarized: partner.with_moa_date_notarized ? partner.with_moa_date_notarized.split('T')[0] : null,
         expiry_date: partner.expiry_date ? partner.expiry_date.split('T')[0] : null,
       }));
-      setIndustryPartners(formattedData);
+      const sortedData = response.data.sort((a, b) => {
+        const dateA = new Date(a.updated_at);
+        const dateB = new Date(b.updated_at);
+        return dateB - dateA;
+      });
+      setIndustryPartners(sortedData);
     } catch (err) {
       console.error("Error fetching industry partners:", err);
       setError("Error fetching industry partners");

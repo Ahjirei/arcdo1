@@ -108,7 +108,11 @@ export default function HTEDashboard() {
   const fetchHte = async () => {
     try {
       const response = await axios.get("http://localhost:3001/api/hte/getHte");
-      const sortedData = response.data.sort((a, b) => new Date(b.year_submitted) - new Date(a.year_submitted));
+      const sortedData = response.data.sort((a, b) => {
+        const dateA = new Date(a.updated_at || a.created_at);
+        const dateB = new Date(b.updated_at || b.created_at);
+        return dateB - dateA;
+      });
       sethte(sortedData);
       setDisplayedHte(sortedData);
     } catch (error) {

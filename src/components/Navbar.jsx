@@ -44,10 +44,6 @@ export default function NavbarTopConfigurationPage() {
     };
   }, []);
 
-  const handleAddClick = () => {
-    navigate("/add ");
-  };
-
   const getPageFromPath = (pathname) => {
     const path = pathname.toLowerCase();
     if (path.includes('industry-partners')) {

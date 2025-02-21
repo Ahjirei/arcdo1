@@ -53,15 +53,19 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
 
   const handleSave = async () => {
     if (!validateForm()) return;
-
+  
     // Trim inputs before sending
     const trimmedMoa = {};
     for (let key in newMoa) {
-        trimmedMoa[key] = newMoa[key].trim ? newMoa[key].trim() : newMoa[key];
+      trimmedMoa[key] = newMoa[key].trim ? newMoa[key].trim() : newMoa[key];
     }
     trimmedMoa.contact_no = String(trimmedMoa.contact_no);
     trimmedMoa.moa_draft_sent = String(trimmedMoa.moa_draft_sent);
-
+    trimmedMoa.created_at = new Date().toISOString();
+  
+    // Just pass the date string directly
+    trimmedMoa.date_notarized = newMoa.date_notarized || null;
+  
     try {
       const response = await axios.post(
         "http://localhost:3001/api/moa/addMoa",
@@ -92,6 +96,7 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
       setError(error.response?.data?.error || "Failed to add moa");
     }
   };
+  
     
 
   if (!isOpen) return null;

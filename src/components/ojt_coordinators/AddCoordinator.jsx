@@ -38,6 +38,13 @@ const AddCoordinator = ({ isOpen, onClose, onCoordinatorAdded }) => {
   const handleSave = async () => {
     if (!validateForm()) return;
 
+    const trimmedCoor = {};
+    for (let key in newCoordinator) {
+      trimmedCoor[key] = newCoordinator[key].trim ? newCoordinator[key].trim() : newCoordinator[key];
+    }
+
+    trimmedCoor.updated_at = new Date().toISOString();
+
     try {
       const response = await axios.post(
         "http://localhost:3001/api/coordinator/addCoordinator",
@@ -66,8 +73,8 @@ const AddCoordinator = ({ isOpen, onClose, onCoordinatorAdded }) => {
   if (!isOpen) return null;
 
   return (
-<div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4 sm:top-0 top-16">
-<div className="bg-white p-6 rounded-lg w-96">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-5 sm:mt-0 mt-20">
+      <div className="bg-white p-6 rounded-lg w-full sm:w-10/12 md:w-8/12 lg:w-6/12 max-h-[85vh] overflow-auto">
         <h2 className="text-xl font-semibold mb-4">Add New Coordinator</h2>
         
         {error && (

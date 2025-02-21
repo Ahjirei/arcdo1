@@ -45,7 +45,7 @@ export const addCoordinator = async (req, res) => {
 
         const connection = await initializeConnection();
         const [result] = await connection.query(
-            "INSERT INTO ojt_coordinator (name, campus, college, assigned_student, status, email, office) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO ojt_coordinator (name, campus, college, assigned_student, status, email, office, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())",
             [name, campus, college, assigned_student, status, email, office]
         );
 
@@ -82,7 +82,7 @@ export const updateCoordinator = async (req, res) => {
 
         const connection = await initializeConnection();
         const [result] = await connection.query(
-            "UPDATE ojt_coordinator SET name = ?, campus = ?, college = ?, assigned_student = ?, status = ?, email = ?, office = ? WHERE id = ?",
+            "UPDATE ojt_coordinator SET name = ?, campus = ?, college = ?, assigned_student = ?, status = ?, email = ?, office = ?, updated_at = NOW() WHERE id = ?",
             [name, campus, college, assigned_student, status, email, office, id]
         );
 

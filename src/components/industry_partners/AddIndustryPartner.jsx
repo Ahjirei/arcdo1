@@ -33,6 +33,12 @@ const AddIndustryPartner = ({ isOpen, onClose, onPartnerAdded }) => {
   }, [error]); 
   
   const handleSave = async () => {
+    const trimmedIP = {};
+    for (let key in newIndustryPartner) {
+      trimmedIP[key] = newIndustryPartner[key].trim ? newIndustryPartner[key].trim() : newIndustryPartner[key];
+    }
+    trimmedIP.updated_at = new Date().toISOString();
+  
     try {
       // Convert empty fields to NULL
       const fieldsToConvert = [

@@ -80,7 +80,12 @@ export default function OJTCoordinators() {
       const response = await axios.get(
         "http://localhost:3001/api/coordinator/getCoordinators"
       );
-      setCoordinators(response.data);
+      const sortedData = response.data.sort((a, b) => {
+        const dateA = new Date(a.updated_at);
+        const dateB = new Date(b.updated_at);
+        return dateB - dateA;
+      });
+      setCoordinators(sortedData);
     } catch (error) {
       console.error("Error fetching coordinators:", error);
     }

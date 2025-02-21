@@ -19,7 +19,6 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
     office_address: "",
     with_moa_date_notarized: "",
     expiry_date: "",
-    status: "Active"
   });
 
   const [error, setError] = useState("");
@@ -58,6 +57,13 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
   const handleSave = async () => {
     if (!validateForm()) return;
 
+    const trimmedHTE = {};
+    for (let key in newHTE) {
+      trimmedHTE[key] = newHTE[key].trim ? newHTE[key].trim() : newHTE[key];
+    }
+
+    trimmedHTE.created_at = new Date().toISOString();
+
     try {
       const response = await axios.post(
         "http://localhost:3001/api/hte/addHte",
@@ -83,7 +89,6 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
           office_address: "",
           with_moa_date_notarized: "",
           expiry_date: "",
-          status: "Active"
         });
         onClose();
       }
@@ -142,7 +147,7 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
             </div>
   
             <div>
-              <label className="text-sm font-medium text-gray-700">MOA Status</label>
+              <label className="text-sm font-medium text-gray-700">HTE Status</label>
               <select
                 value={newHTE.moa_status}
                 onChange={(e) => setNewHTE({ ...newHTE, moa_status: e.target.value })}
@@ -286,7 +291,7 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
             </div>
   
             <div>
-              <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
+              <label className="text-sm font-medium text-gray-700">HTE Date Notarized</label>
               <input
                 type="date"
                 value={newHTE.with_moa_date_notarized}

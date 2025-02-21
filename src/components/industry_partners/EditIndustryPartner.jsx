@@ -37,6 +37,25 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData, onPartnerEd
     }
   }, [industrypartnerData]);
 
+  const formatMySQLDate = (date) => {
+    if (!date) return null;
+    const d = new Date(date);
+    const pad = (n) => (n < 10 ? '0' + n : n);
+    return (
+      d.getFullYear() +
+      '-' +
+      pad(d.getMonth() + 1) +
+      '-' +
+      pad(d.getDate()) +
+      ' ' +
+      pad(d.getHours()) +
+      ':' +
+      pad(d.getMinutes()) +
+      ':' +
+      pad(d.getSeconds())
+    );
+  };
+  
   const handleSave = async () => {
     try {
       // Convert empty fields to NULL
@@ -57,14 +76,17 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData, onPartnerEd
         "with_moa_date_notarized",
         "expiry_date",
       ];
-      
+  
       const updatedPartner = { ...industryPartner };
       fieldsToConvert.forEach((field) => {
         if (updatedPartner[field] === "") {
           updatedPartner[field] = null;
         }
       });
-
+  
+      // Format updated_at for MySQL
+      updatedPartner.updated_at = formatMySQLDate(new Date());
+  
       const response = await fetch(
         `http://localhost:3001/api/ip/updatePartner/${industryPartner.id}`,
         {
@@ -75,7 +97,7 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData, onPartnerEd
           body: JSON.stringify(updatedPartner),
         }
       );
-
+  
       if (response.ok) {
         // Remove the window.location.reload() and use the callback instead
         if (onPartnerEdited) {
@@ -91,6 +113,7 @@ const EditIndustryPartner = ({ isOpen, onClose, industrypartnerData, onPartnerEd
       setError("An error occurred while updating the Industry Partner");
     }
   };
+  
 
   if (!isOpen) return null;
 

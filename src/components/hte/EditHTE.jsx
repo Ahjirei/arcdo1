@@ -47,7 +47,8 @@ const EditHTE = ({ isOpen, onClose, editingHTE, setEditingHTE, onHteEdited }) =>
           expiry_date: formatDate(editingHTE.expiry_date),
           position_department: editingHTE.position_department,
           with_moa_date_notarized: formatDate(editingHTE.with_moa_date_notarized),
-          year_included: editingHTE.year_included
+          year_included: editingHTE.year_included,
+          updated_at: new Date().toISOString() 
         }),
       });
 

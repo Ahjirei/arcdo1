@@ -56,7 +56,6 @@ export const addMoa = async (req, res) => {
             date_notarized
         } = req.body;
         
-        // Validate all required fields
         if (
             !company_name ||
             !address ||
@@ -70,7 +69,6 @@ export const addMoa = async (req, res) => {
             return res.status(400).json({ error: "All required fields must be provided." });
         }
 
-        // Convert empty date strings to null
         const yearMoaStarted = year_moa_started ? year_moa_started : null;
         const expirationDate = expiration_date ? expiration_date : null;
         const dateNotarized = date_notarized ? date_notarized : null;
@@ -80,8 +78,8 @@ export const addMoa = async (req, res) => {
             `INSERT INTO moa (
                 company_name, address, year_moa_started, business_type, moa_status,
                 contact_person, contact_no, email, remarks, expiration_date,
-                type_of_moa, validity, date_notarized
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                type_of_moa, validity, date_notarized, created_at, updated_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
             [
                 company_name,
                 address,
@@ -108,7 +106,6 @@ export const addMoa = async (req, res) => {
     }
 };
 
-
 // Update an existing MOA record
 export const updateMoa = async (req, res) => {
     let connection;
@@ -134,7 +131,6 @@ export const updateMoa = async (req, res) => {
             date_notarized
         } = req.body;
 
-        // Convert empty strings to null for date fields
         const formattedMoaDate = year_moa_started ? new Date(year_moa_started).toISOString().split("T")[0] : null;
         const formattedExpiryDate = expiration_date ? new Date(expiration_date).toISOString().split("T")[0] : null;
         const formattedNotarizedDate = date_notarized ? new Date(date_notarized).toISOString().split("T")[0] : null;
@@ -154,7 +150,8 @@ export const updateMoa = async (req, res) => {
                 expiration_date = ?, 
                 type_of_moa = ?, 
                 validity = ?, 
-                date_notarized = ?
+                date_notarized = ?,
+                updated_at = NOW()
              WHERE id = ?`,
             [
                 company_name,
