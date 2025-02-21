@@ -3,6 +3,9 @@ import jwt from 'jsonwebtoken';
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 import initializeConnection from '../config/db.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 
 dotenv.config();
@@ -90,21 +93,52 @@ export const register = async (req, res) => {
     }
 };
 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+      const uploadDir = path.join(process.cwd(), 'uploads', 'profile-pictures');
+      // Ensure directory exists
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+      cb(null, uploadDir);
+    },
+    filename: function(req, file, cb) {
+      // Create unique filename with original extension
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const ext = path.extname(file.originalname);
+      cb(null, 'profile-' + uniqueSuffix + ext);
+    }
+  });
+  
+  // File filter to only allow image files
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Only image files are allowed!'), false);
+    }
+};
 
+export const upload = multer({ 
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max file size
+    fileFilter: fileFilter
+});
+  
 export const userDetails = async (req, res) => {
     const user_id = req.params.id;
-
+  
     if (!user_id) {
         return res.status(400).json({ error: "User ID is required." });
     }
-
+  
     let connection;
     try {
         connection = await initializeConnection();
-        
-        // Fetch user details
+          
         const [userInfo] = await connection.query(
-            "SELECT name, contact_number, position, campus, college FROM user_account WHERE user_id = ?",
+            "SELECT name, contact_number, position, campus, profilePicture, college FROM user_account WHERE user_id = ?",
             [user_id]
         );
 
@@ -112,66 +146,139 @@ export const userDetails = async (req, res) => {
             return res.status(404).json({ error: "User details not found." });
         }
 
-        const { name, contact_number, position, campus, college } = userInfo[0];
-
-        res.json({
-            name,
-            contact_number,
-            position,
-            campus,
-            college
-        });
-    } catch (error) {
-        console.error("Error fetching user details:", error);
-        res.status(500).json({ error: `An error occurred: ${error.message}` });
-    }  finally {
-        if (connection) connection.end();
-    }
-};
-
-export const updateUserDetails = async (req, res) => {
-    const user_id = req.params.id;  // Retrieve user ID from the URL
-    const { name, contact_number, position, campus, college } = req.body;  // New data to update
-
-    if (!user_id) {
-        return res.status(400).json({ error: "User ID is required." });
-    }
-
-    if (!name || !contact_number || !position || !campus || !college) {
-        return res.status(400).json({ error: "All fields are required to update." });
-    }
-
-    let connection;
-    try {
-        connection = await initializeConnection();
-
-        // Update user details in the database
-        const [updateResult] = await connection.query(
-            "UPDATE user_account SET name = ?, contact_number = ?, position = ?, campus = ?, college = ? WHERE user_id = ?",
-            [name, contact_number, position, campus, college, user_id]
-        );
-
-        if (updateResult.affectedRows === 0) {
-            return res.status(404).json({ error: "User details not found for this user ID." });
+        const userDetails = userInfo[0];
+        
+        // Just return the filename in the response
+        if (userDetails.profilePicture) {
+            userDetails.profilePicture = `/uploads/profile-pictures/${path.basename(userDetails.profilePicture)}`;
         }
 
-        // Retrieve the updated user details
-        const [updatedUserInfo] = await connection.query(
-            "SELECT name, contact_number, position, campus, college FROM user_account WHERE user_id = ?",
-            [user_id]
-        );
-
-        res.json({
-            message: "User details updated successfully.",
-            updatedUserInfo: updatedUserInfo[0]
-        });
+        res.json(userDetails);
     } catch (error) {
-        console.error("Error updating user details:", error);
+        console.error("Error fetching user details:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
     } finally {
         if (connection) connection.end();
     }
 };
+  
+
+export const updateUserDetailsWithProfilePicture = [
+    upload.single('profilePicture'),
+    async (req, res) => {
+        const user_id = req.params.id;
+        const { name, contact_number, position, campus, college, profilePicture } = req.body;
+
+        if (!user_id) {
+            return res.status(400).json({ error: "User ID is required." });
+        }
+
+        // Check if required fields are present
+        if (!name || !contact_number || !position || !campus || !college) {
+            return res.status(400).json({ error: "All fields are required to update." });
+        }
+
+        let connection;
+        try {
+            connection = await initializeConnection();
+            
+            // In updateUserDetailsWithProfilePicture controller
+            let profilePicturePath;
+
+            if (req.file) {
+            // If a new file was uploaded, use its filename
+            profilePicturePath = req.file.filename;
+            } else {
+            // If no new file, get current profile picture from DB
+            const [currentUser] = await connection.query(
+                "SELECT profilePicture FROM user_account WHERE user_id = ?",
+                [user_id]
+            );
+            profilePicturePath = currentUser[0]?.profilePicture || null;
+            }
+
+            // Update SQL query to include profile picture
+            const [updateResult] = await connection.query(
+            "UPDATE user_account SET name = ?, contact_number = ?, position = ?, campus = ?, college = ?, profilePicture = ? WHERE user_id = ?", 
+            [name, contact_number, position, campus, college, profilePicturePath, user_id]
+            );
+
+            if (updateResult.affectedRows === 0) {
+                return res.status(404).json({ error: "User details not found for this user ID." });
+            }
+
+            // Retrieve the updated user details
+            const [updatedUserInfo] = await connection.query(
+                "SELECT name, contact_number, position, campus, college, profilePicture FROM user_account WHERE user_id = ?",
+                [user_id]
+            );
+            
+            // Format the profile picture URL in the response
+            const userInfo = updatedUserInfo[0];
+            const formattedProfilePicture = userInfo.profilePicture 
+                ? `http://localhost:3001/uploads/profile-pictures/${userInfo.profilePicture}`
+                : null;
+
+            res.json({
+                message: "User details updated successfully.",
+                updatedUserInfo: {
+                    ...userInfo,
+                    profilePicture: formattedProfilePicture
+                }
+            });
+        } catch (error) {
+            console.error("Error updating user details:", error);
+            res.status(500).json({ error: `An error occurred: ${error.message}` });
+        } finally {
+            if (connection) connection.end();
+        }
+    }
+];
+
+
+// export const updateUserDetails = async (req, res) => {
+//     const user_id = req.params.id;  // Retrieve user ID from the URL
+//     const { name, contact_number, position, campus, college } = req.body;  // New data to update
+
+//     if (!user_id) {
+//         return res.status(400).json({ error: "User ID is required." });
+//     }
+
+//     if (!name || !contact_number || !position || !campus || !college) {
+//         return res.status(400).json({ error: "All fields are required to update." });
+//     }
+
+//     let connection;
+//     try {
+//         connection = await initializeConnection();
+
+//         // Update user details in the database
+//         const [updateResult] = await connection.query(
+//             "UPDATE user_account SET name = ?, contact_number = ?, position = ?, campus = ?, college = ?, profilePicture = ? WHERE user_id = ?", 
+//             [name, contact_number, position, campus, college, user_id, profilePicture]
+//         );
+
+//         if (updateResult.affectedRows === 0) {
+//             return res.status(404).json({ error: "User details not found for this user ID." });
+//         }
+
+//         // Retrieve the updated user details
+//         const [updatedUserInfo] = await connection.query(
+//             "SELECT name, contact_number, position, campus, college, profilePicture FROM user_account WHERE user_id = ?",
+//             [user_id]
+//         );
+
+//         res.json({
+//             message: "User details updated successfully.",
+//             updatedUserInfo: updatedUserInfo[0]
+//         });
+//     } catch (error) {
+//         console.error("Error updating user details:", error);
+//         res.status(500).json({ error: `An error occurred: ${error.message}` });
+//     } finally {
+//         if (connection) connection.end();
+//     }
+// };
 
 export const login = async (req, res) => {
     let connection;

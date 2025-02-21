@@ -10,6 +10,8 @@ export const getUsers = async (req, res) => {
         res.json(results);
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
+    } finally {
+        if (connection) connection.end();
     }
 };
 
