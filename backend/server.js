@@ -38,10 +38,12 @@ app.use(
 app.use(express.static(path.join(__dirname, '../src/dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-app.use(express.static(path.join(__dirname, 'src/build')));
+
+app.use(express.static(path.join(__dirname, 'src/dist')));
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src/build', 'index.html'));
+  res.sendFile(path.join(__dirname, 'src/dist', 'index.html'));
 });
+
 
 
 // Database Initialization and Server Start
@@ -65,11 +67,6 @@ const startServer = async () => {
     app.use('/api/ip', ipRoutes);
     app.use('/api/admin', adminRoutes);
     app.use('/api/overview', overviewRoutes);
-
-    // Test Route
-    app.get('/', (req, res) => {
-      res.send('Hello, world!');
-    });
 
 
     // Start Server
