@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Trash2, FilePenLine, MoreVertical, PlusCircle } from "lucide-react";
+import { Trash2, FilePenLine, MoreVertical, PlusCircle,  AlertTriangle, XCircle } from "lucide-react";
 import AddMoa from "../moa/AddMoa";
 import EditMoa from "../moa/EditMoa";
 import { useLocation } from "react-router-dom";
@@ -12,6 +12,8 @@ export default function Moa() {
   const notAdmin = role !== "User";
   const [moas, setMoas] = useState([]);
   const [editingMoa, setEditingMoa] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [moaToDelete, setMoaToDelete] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -64,6 +66,11 @@ export default function Moa() {
       }
     }, [loading]);
   
+  const confirmDelete = (moa) => {
+    setMoaToDelete(moa);
+    setIsDeleteModalOpen(true);
+    setOpenDropdown(null);
+  };
 
   useEffect(() => {
       fetchMoa();
@@ -117,12 +124,17 @@ export default function Moa() {
   };
 
   const handleDelete = async (id) => {
+
+    if (!moaToDelete) return;
+    
     try {
-      await axios.delete(`http://localhost:3001/api/moa/deleteMoa/${id}`);
+      await axios.delete(`http://localhost:3001/api/moa/deleteMoa/${moaToDelete.id}`);
       fetchMoa();
       setOpenDropdown(null);
-    } catch (err) {
-      console.error("Error deleting Moa:", err);
+      setIsDeleteModalOpen(false);
+      setMoaToDelete(null);
+    } catch (error) {
+      console.error("Error deleting MOA:", error);
     }
   };
 
@@ -331,7 +343,7 @@ export default function Moa() {
                             Edit File
                           </button>
                           <button
-                            onClick={() => handleDelete(moa.id)}
+                            onClick={() => confirmDelete(moa)}
                             className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
                           >
                             <Trash2 size={16} className="inline-block mr-2" />
@@ -398,13 +410,13 @@ export default function Moa() {
                         <FilePenLine size={16} className="inline-block mr-2" />
                         Edit File
                       </button>
-                      <button
-                        onClick={() => handleDelete(moa.id)}
-                        className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                      >
-                        <Trash2 size={16} className="inline-block mr-2" />
-                        Delete File
-                      </button>
+                          <button
+                            onClick={() => confirmDelete(moa)}
+                            className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
+                          >
+                            <Trash2 size={16} className="inline-block mr-2" />
+                            Delete File
+                          </button>
                     </div>
                   )}
                 </div>
@@ -459,6 +471,47 @@ export default function Moa() {
           </div>
         ))}
       </div>
+
+      {isDeleteModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 w-full max-w-sm mx-auto">
+            <div className="flex items-start justify-between">
+              <div className="flex items-center">
+                <AlertTriangle className="h-6 w-6 text-red-600 mr-2" />
+                <h3 className="text-lg font-medium">Confirm Deletion</h3>
+              </div>
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <XCircle className="h-5 w-5" />
+              </button>
+            </div>
+            
+            <div className="mt-3">
+              <p className="text-sm text-gray-500">
+                Are you sure you want to delete <b>{moaToDelete?.company_name}</b>? 
+                This action cannot be undone.
+              </p>
+            </div>
+
+            <div className="mt-4 flex justify-end space-x-3">
+              <button
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pagination Section */}
       <div className="flex flex-col md:flex-row justify-between items-center mt-3">
