@@ -2,6 +2,15 @@ import React, { useState } from "react";
 
 const EditMoa = ({ isOpen, onClose, editingMoa, setEditingMoa, onMoaEdited }) => {
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
   const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen || !editingMoa) return null;

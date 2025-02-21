@@ -13,6 +13,15 @@ const AddCoordinator = ({ isOpen, onClose, onCoordinatorAdded }) => {
   });
 
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
 
   const validateForm = () => {
     const requiredFields = ['name', 'campus', 'email', 'college', 'office', 'assigned_student'];

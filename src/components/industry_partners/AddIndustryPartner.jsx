@@ -22,7 +22,16 @@ const AddIndustryPartner = ({ isOpen, onClose, onPartnerAdded }) => {
   });
 
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
 
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
+  
   const handleSave = async () => {
     try {
       // Convert empty fields to NULL

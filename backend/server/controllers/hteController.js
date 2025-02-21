@@ -146,7 +146,7 @@ export const updateHte = async (req, res) => {
             !year_included
         ) {
             return res.status(400).json({ error: "All required fields must be provided." });
-        }
+        }        
 
         const formattedExpiryDate = new Date(expiry_date).toISOString().split("T")[0];
         const formattedMoaDate = new Date(with_moa_date_notarized).toISOString().split("T")[0];

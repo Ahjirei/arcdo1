@@ -23,7 +23,16 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
   });
 
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (error) {
+        const timer = setTimeout(() => {
+            setError('');
+        }, 3000);
 
+        return () => clearTimeout(timer);
+    }
+  }, [error]); 
+  
   const validateForm = () => {
     const requiredFields = [
       'company_name', 
