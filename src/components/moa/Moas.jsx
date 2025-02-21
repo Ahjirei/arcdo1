@@ -127,6 +127,11 @@ export default function Moa() {
     setOpenDropdown(null);
   };
 
+  const formatDate = (date) => {
+    if (!date) return null; 
+    return new Date(date).toISOString().split("T")[0]; 
+  };
+
   const handleDelete = async (id) => {
 
     if (!moaToDelete) return;
@@ -318,7 +323,9 @@ export default function Moa() {
                   <td className="px-4 py-2 border-t whitespace-nowrap">{moa.company_name}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{moa.address}</td>
                   <td className="px-2 py-2 border-t whitespace-nowrap">{new Date(moa.year_moa_started).toLocaleDateString("en-CA")}</td>
-                  <td className="px-2 py-2 border-t whitespace-nowrap">{moa.date_notarized}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">
+                    {moa.date_notarized ? formatDate(moa.date_notarized) : ""}
+                  </td>
                   <td className="px-2 py-2 border-t whitespace-nowrap">{moa.moa_draft_sent}</td>
                   <td className="px-2 py-2 border-t whitespace-nowrap">{new Date(moa.expiration_date).toLocaleDateString("en-CA")}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{moa.type_of_moa}</td>
@@ -447,7 +454,7 @@ export default function Moa() {
               <strong>Moa Draft Sent:</strong> {moa.moa_draft_sent}
             </div>
             <div className="mt-2">
-              <strong>Moa Notorized:</strong> {moa.date_notarized}
+              <strong>Moa Notorized:</strong> {moa.date_notarized ? formatDate(moa.date_notarized) : ""}
             </div>
             <div className="mt-2">
               <strong>Expiry Date:</strong> {new Date(moa.expiration_date).toLocaleDateString("en-CA")}

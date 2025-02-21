@@ -53,6 +53,10 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
 
   const handleSave = async () => {
     if (!validateForm()) return;
+    const formatDate = (date) => {
+      if (!date) return null; 
+      return new Date(date).toISOString().split("T")[0]; 
+    };
   
     // Trim inputs before sending
     const trimmedMoa = {};
@@ -63,8 +67,11 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
     trimmedMoa.moa_draft_sent = String(trimmedMoa.moa_draft_sent);
     trimmedMoa.created_at = new Date().toISOString();
   
-    // Just pass the date string directly
-    trimmedMoa.date_notarized = newMoa.date_notarized || null;
+    if (newMoa.date_notarized) {
+      trimmedMoa.date_notarized = formatDate(newMoa.date_notarized);
+    } else {
+      trimmedMoa.date_notarized = null;
+    }
   
     try {
       const response = await axios.post(
