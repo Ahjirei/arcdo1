@@ -4,6 +4,7 @@ import { ChartPie, FolderClosed, User, NotebookTabs, Contact, Handshake, LogOut,
 import AdminProfile from "./account/AdminProfile";
 
 export default function HomeNavbar() {
+  const [profilePicture, setProfilePicture] = useState('/default-profile.jpg');
   const location = useLocation();
   const [userName, setUserName] = useState('');
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -44,6 +45,9 @@ export default function HomeNavbar() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
+
+
+
   useEffect(() => {
     const fetchUserName = async () => {
       const userId = localStorage.getItem("user_id"); // Get the user ID from local storage
@@ -57,7 +61,10 @@ export default function HomeNavbar() {
           }
   
           const userData = await response.json();
-          setUserName(userData.name); // Store the user's name in state
+          setUserName(userData.name); 
+          if (userData.profilePicture) {
+            setProfilePicture(`http://localhost:3001${userData.profilePicture}`);
+          }
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -157,7 +164,18 @@ export default function HomeNavbar() {
           } transition duration-300`}
         >
           <div className="w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center">
-            <img src="/default-profile.jpg" alt="Profile" className="w-[35px] h-[35px] rounded-full object-cover" />
+            <div className="w-[40px] h-[40px] rounded-full bg-white flex items-center justify-center">
+              <img 
+                src={profilePicture} 
+                alt="Profile" 
+                className="w-[35px] h-[35px] rounded-full object-cover"
+                onError={(e) => {
+                  // Fallback to default if image fails to load
+                  e.target.onerror = null;
+                  e.target.src = '/default-profile.jpg';
+                }}
+              />
+            </div>
           </div>
             <span className="text-sm font-medium hidden sm:block">{userName}</span>
           
