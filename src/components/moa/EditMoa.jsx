@@ -114,7 +114,7 @@ const EditMoa = ({ isOpen, onClose, editingMoa, setEditingMoa, onMoaEdited }) =>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Validity</label>
+              <label className="text-sm font-medium text-gray-700">MOA Status</label>
               <select
                 value={editingMoa.moa_status}
                 onChange={(e) => setEditingMoa({ ...editingMoa, moa_status: e.target.value })}
@@ -192,6 +192,17 @@ const EditMoa = ({ isOpen, onClose, editingMoa, setEditingMoa, onMoaEdited }) =>
               onChange={(e) => setEditingMoa({ ...editingMoa, remarks: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Remarks"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">Validity</label>
+            <input
+              type="text"
+              value={editingMoa.validity}
+              onChange={(e) => setEditingMoa({ ...editingMoa, validity: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Years of Validity"
             />
           </div>
 

@@ -4,19 +4,19 @@ import axios from "axios";
 const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
   const [newMoa, setNewMoa] = useState({
     company_name: "",
-    year_moa_started: "",
+    address: "",
     business_type: "",
-    moa_status: "Active",
+    moa_status: "Processing",
+    expiration_date: "",
+    year_moa_started: "",
     contact_person: "",
     contact_no: "",
-    remarks: "",
     email: "",
-    address: "",
-    date_notarized: "",
-    expiration_date: "",
-    type_of_moa: "",
     moa_draft_sent: "",
-    validity: "Processing"
+    remarks: "",
+    type_of_moa: "",
+    validity: "",
+    date_notarized: ""
   });
 
   const [error, setError] = useState("");
@@ -32,7 +32,14 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
 
   const validateForm = () => {
     const requiredFields = [
-      'company_name', 'contact_person', 'email', 'address'
+      'company_name', 
+      'address', 
+      'business_type', 
+      'moa_status', 
+      'contact_person', 
+      'contact_no', 
+      'email', 
+      'type_of_moa', 
     ];
     const missingFields = requiredFields.filter(field => !newMoa[field]);
     
@@ -47,28 +54,36 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
   const handleSave = async () => {
     if (!validateForm()) return;
 
+    // Trim inputs before sending
+    const trimmedMoa = {};
+    for (let key in newMoa) {
+        trimmedMoa[key] = newMoa[key].trim ? newMoa[key].trim() : newMoa[key];
+    }
+    trimmedMoa.contact_no = String(trimmedMoa.contact_no);
+    trimmedMoa.moa_draft_sent = String(trimmedMoa.moa_draft_sent);
+
     try {
       const response = await axios.post(
         "http://localhost:3001/api/moa/addMoa",
-        newMoa
+        trimmedMoa
       );
       if (response.status === 201) {
         onMoaAdded(response.data);
         setNewMoa({
-            company_name: "",
-            year_moa_started: "",
-            business_type: "",
-            moa_status: "Processing",
-            contact_person: "",
-            contact_no: "",
-            remarks: "",
-            expiration_date: "",
-            email: "",
-            address: "",
-            type_of_moa: "",
-            validity: "",
-            date_notarized: "",
-            status: "Active"
+          company_name: "",
+          address: "",
+          business_type: "",
+          moa_status: "Processing",
+          expiration_date: "",
+          year_moa_started: "",
+          contact_person: "",
+          contact_no: "",
+          email: "",
+          moa_draft_sent: "",
+          remarks: "",
+          type_of_moa: "",
+          validity: "",
+          date_notarized: ""
         });
         onClose();
       }
@@ -121,18 +136,18 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
             <div>
               <label className="text-sm font-medium text-gray-700">Draft of MOA Sent</label>
               <input
-                type="text"
+                type="number"
                 value={newMoa.moa_draft_sent}
                 onChange={(e) => setNewMoa({ ...newMoa, moa_draft_sent: e.target.value })}
                 className="w-full p-2 border rounded border-gray-500"
-                placeholder="Draft of MOA Sent"
+                placeholder="Year of Draft MOA Sent"
               />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Validity</label>
+              <label className="text-sm font-medium text-gray-700">MOA Satus</label>
               <select
                 value={newMoa.moa_status}
                 onChange={(e) => setNewMoa({ ...newMoa, moa_status: e.target.value })}
@@ -211,6 +226,17 @@ const AddMoa = ({ isOpen, onClose, onMoaAdded }) => {
               onChange={(e) => setNewMoa({ ...newMoa, remarks: e.target.value })}
               className="w-full p-2 border rounded border-gray-500"
               placeholder="Remarks"
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700">Validity</label>
+            <input
+              type="text"
+              value={newMoa.validity}
+              onChange={(e) => setNewMoa({ ...newMoa, validity: e.target.value })}
+              className="w-full p-2 border rounded border-gray-500"
+              placeholder="Years of Validity"
             />
           </div>
 

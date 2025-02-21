@@ -41,7 +41,6 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
       'moa_status', 
       'contact_person', 
       'contact_number', 
-      'year_included', 
       'position_department', 
       'email_address', 
       'office_address'

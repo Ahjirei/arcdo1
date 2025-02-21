@@ -56,46 +56,46 @@ export const addMoa = async (req, res) => {
             date_notarized
         } = req.body;
         
-
+        // Validate all required fields
         if (
             !company_name ||
             !address ||
-            !year_moa_started ||
             !business_type ||
             !moa_status ||
             !contact_person ||
             !contact_no ||
             !email ||
-            !expiration_date ||
-            !type_of_moa ||
-            !validity ||
-            !date_notarized
+            !type_of_moa
         ) {
             return res.status(400).json({ error: "All required fields must be provided." });
         }
 
-        const connection = await initializeConnection();
+        // Convert empty date strings to null
+        const yearMoaStarted = year_moa_started ? year_moa_started : null;
+        const expirationDate = expiration_date ? expiration_date : null;
+        const dateNotarized = date_notarized ? date_notarized : null;
+
+        connection = await initializeConnection();
         const [result] = await connection.query(
             `INSERT INTO moa (
                 company_name, address, year_moa_started, business_type, moa_status,
                 contact_person, contact_no, email, remarks, expiration_date,
                 type_of_moa, validity, date_notarized
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-
             [
                 company_name,
                 address,
-                year_moa_started,
+                yearMoaStarted,
                 business_type,
                 moa_status,
                 contact_person,
                 contact_no,
                 email,
                 remarks,
-                expiration_date,
+                expirationDate,
                 type_of_moa,
                 validity,
-                date_notarized
+                dateNotarized
             ]
         );
 
@@ -107,6 +107,7 @@ export const addMoa = async (req, res) => {
         if (connection) connection.end();
     }
 };
+
 
 // Update an existing MOA record
 export const updateMoa = async (req, res) => {
@@ -133,15 +134,27 @@ export const updateMoa = async (req, res) => {
             date_notarized
         } = req.body;
 
-        const formattedExpiryDate = expiration_date ? new Date(expiration_date).toISOString().split("T")[0] : null;
+        // Convert empty strings to null for date fields
         const formattedMoaDate = year_moa_started ? new Date(year_moa_started).toISOString().split("T")[0] : null;
+        const formattedExpiryDate = expiration_date ? new Date(expiration_date).toISOString().split("T")[0] : null;
+        const formattedNotarizedDate = date_notarized ? new Date(date_notarized).toISOString().split("T")[0] : null;
 
-        const connection = await initializeConnection();
+        connection = await initializeConnection();
         const [result] = await connection.query(
             `UPDATE moa SET 
-                company_name = ?, address = ?, year_moa_started = ?, business_type = ?, moa_status = ?,
-                contact_person = ?, contact_no = ?, email = ?, remarks = ?, expiration_date = ?, 
-                type_of_moa = ?, validity = ?, date_notarized = ?
+                company_name = ?, 
+                address = ?, 
+                year_moa_started = ?, 
+                business_type = ?, 
+                moa_status = ?,
+                contact_person = ?, 
+                contact_no = ?, 
+                email = ?, 
+                remarks = ?, 
+                expiration_date = ?, 
+                type_of_moa = ?, 
+                validity = ?, 
+                date_notarized = ?
              WHERE id = ?`,
             [
                 company_name,
@@ -156,11 +169,10 @@ export const updateMoa = async (req, res) => {
                 formattedExpiryDate,
                 type_of_moa,
                 validity,
-                date_notarized,
-                id,
+                formattedNotarizedDate,
+                id
             ]
         );
-
 
         if (result.affectedRows === 0) {
             return res.status(404).json({ error: "MOA not found." });
@@ -170,10 +182,11 @@ export const updateMoa = async (req, res) => {
     } catch (error) {
         console.error("Error updating MOA:", error);
         res.status(500).json({ error: `An error occurred: ${error.message}` });
-    }  finally {
+    } finally {
         if (connection) connection.end();
     }
 };
+
 
 // Delete an MOA record
 export const deleteMoa = async (req, res) => {

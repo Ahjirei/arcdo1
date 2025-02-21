@@ -67,13 +67,16 @@ export const addHte = async (req, res) => {
             !contact_person ||
             !contact_number ||
             !email_address ||
-            !position_department ||
-            !year_included
+            !position_department
         ) {
             return res.status(400).json({ error: "All required fields must be provided." });
         }
 
-        const connection = await initializeConnection();
+        // Convert empty strings to null for date fields
+        const formattedExpiryDate = expiry_date ? new Date(expiry_date).toISOString().split("T")[0] : null;
+        const formattedMoaDate = with_moa_date_notarized ? new Date(with_moa_date_notarized).toISOString().split("T")[0] : null;
+
+        connection = await initializeConnection();
         const [result] = await connection.query(
             `INSERT INTO hte (
                 company_name, office_address, year_submitted, business_type, moa_status,
@@ -93,9 +96,9 @@ export const addHte = async (req, res) => {
                 campus,
                 college,
                 course,
-                expiry_date,
+                formattedExpiryDate,
                 position_department,
-                with_moa_date_notarized,
+                formattedMoaDate,
                 year_included
             ]
         );
@@ -142,16 +145,16 @@ export const updateHte = async (req, res) => {
             !contact_person ||
             !contact_number ||
             !email_address ||
-            !position_department ||
-            !year_included
+            !position_department
         ) {
             return res.status(400).json({ error: "All required fields must be provided." });
         }        
 
-        const formattedExpiryDate = new Date(expiry_date).toISOString().split("T")[0];
-        const formattedMoaDate = new Date(with_moa_date_notarized).toISOString().split("T")[0];
+        // Convert empty strings to null for date fields
+        const formattedExpiryDate = expiry_date ? new Date(expiry_date).toISOString().split("T")[0] : null;
+        const formattedMoaDate = with_moa_date_notarized ? new Date(with_moa_date_notarized).toISOString().split("T")[0] : null;
 
-        const connection = await initializeConnection();
+        connection = await initializeConnection();
         const [result] = await connection.query(
             `UPDATE hte SET 
                 company_name = ?, office_address = ?, year_submitted = ?, business_type = ?, moa_status = ?,

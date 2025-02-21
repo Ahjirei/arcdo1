@@ -39,19 +39,19 @@ export default function Moa() {
 
   const [newMoa, setNewMoa] = useState({
       company_name: "",
-      year_moa_started: "",
+      address: "",
       business_type: "",
-      moa_status: "Active",
+      moa_status: "Processing",
+      expiration_date: "",
+      year_moa_started: "",
       contact_person: "",
       contact_no: "",
-      remarks: "",
       email: "",
-      address: "",
-      date_notarized: "",
-      expiration_date: "",
-      type_of_moa: "",
       moa_draft_sent: "",
-      validity: "Processing"
+      remarks: "",
+      type_of_moa: "",
+      validity: "",
+      date_notarized: ""
     });
 
     useEffect(() => {
