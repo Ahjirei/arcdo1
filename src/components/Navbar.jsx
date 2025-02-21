@@ -182,13 +182,7 @@ export default function NavbarTopConfigurationPage() {
     setFilteredData([]);
   };
   
-  
-  
-  
-  
-  
 
-  
   const verifyToken = async (token) => {
     try {
       const response = await axios.post('http://localhost:3001/api/auth/verify-token', { token });
@@ -411,15 +405,36 @@ export default function NavbarTopConfigurationPage() {
             className="h-5 w-5 mr-2 ml-2 hover:text-gray-400 transition duration-300"
             onClick={() => setIsSearchOpen(!isSearchOpen)} // Toggle search visibility
           />
-          {isSearchOpen && (
-            <input
-              type="text"
-              placeholder="Search..."
-              className="px-4 py-2 rounded-2xl text-md text-black focus:outline-none focus:ring-2 focus:ring-red-800-400"
-              value={searchQuery}
-              onChange={(e) => handleSearch(e.target.value)}
-            />
-          )}
+                  {isSearchOpen && (
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search..."
+                        className="px-4 py-2 rounded-2xl text-md text-black focus:outline-none focus:ring-2 focus:ring-red-800-400"
+                        value={searchQuery}
+                        onChange={(e) => handleSearch(e.target.value)}
+                      />
+
+                      {searchQuery && (
+                        <div 
+                          className="absolute top-9 left-[10%] transform -translate-x-[76%] bg-white shadow-lg p-3 rounded-lg w-96 max-h-60 overflow-auto">
+                          {filteredData.length > 0 ? (
+                            filteredData.map((item, index) => (
+                              <div
+                                key={index}
+                                className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
+                                onClick={() => handleSearchClick(item)}
+                              >
+                                <p className="text-black">{item.company_name || item.name || item.title}</p>
+                              </div>
+                            ))
+                          ) : (
+                            <p className="text-black">No results found.</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
         </div>
 
         {/* Icons for Desktop */}
@@ -463,25 +478,6 @@ export default function NavbarTopConfigurationPage() {
                   </div>
                 )}
 
-                {searchQuery && (
-                  <div 
-                  className="absolute top-9 left-[10%] transform -translate-x-[76%] bg-white shadow-lg p-3 rounded-lg w-96 max-h-60 overflow-auto">
-                    {filteredData.length > 0 ? (
-                      filteredData.map((item, index) => (
-                    <div
-                      key={index}
-                      className="p-3 border-b cursor-pointer hover:bg-gray-200 transition duration-300"
-                      onClick={() => handleSearchClick(item)}
-                    >
-                      <p className="text-black">{item.company_name || item.name || item.title}</p>
-                    </div>
-                      ))
-                    ) : (
-                      <p className="text-black">No results found.</p>
-                    )}
-
-                  </div>
-                )}
               </div>
             </li>
           )}
