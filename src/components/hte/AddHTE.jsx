@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
@@ -32,7 +32,7 @@ const AddHTE = ({ isOpen, onClose, onHTEAdded }) => {
         return () => clearTimeout(timer);
     }
   }, [error]); 
-  
+
   const validateForm = () => {
     const requiredFields = [
       'company_name', 
