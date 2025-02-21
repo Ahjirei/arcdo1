@@ -541,7 +541,7 @@ export default function IndustryPartners() {
             industrypartnerData={editingIndustryPartner}
             onPartnerEdited={handlePartnerEdited}
           />
-        </div>
+
 
         {/* Showing Results Info */}
         <span className="text-gray-500 text-sm mt-2 md:mt-0">
@@ -557,6 +557,7 @@ export default function IndustryPartners() {
         </span>
       </div>
     </div>
+  </div>
   );
 }
 
