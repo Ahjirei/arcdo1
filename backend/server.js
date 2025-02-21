@@ -36,6 +36,7 @@ app.use(
 
 // Serve static files
 app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Database Initialization and Server Start
 const startServer = async () => {
