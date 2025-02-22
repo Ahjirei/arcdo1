@@ -36,18 +36,23 @@ const AddIndustryPartner = ({ isOpen, onClose, onPartnerAdded }) => {
 
     const formatDate = (date) => {
       if (!date) return null; 
-      const localDate = new Date(date);
-      return localDate.toISOString().split("T")[0]; // Ensures YYYY-MM-DD format
+      return new Date(date).toISOString().split("T")[0]; 
     };
-    
+  
+    // Trim inputs before sending
     const trimmedIP = {};
     for (let key in newIndustryPartner) {
       trimmedIP[key] = newIndustryPartner[key].trim ? newIndustryPartner[key].trim() : newIndustryPartner[key];
     }
-    trimmedIP.updated_at = new Date().toISOString();
-    trimmedIP.year_included = formatDate(newIndustryPartner.year_included);
-    trimmedIP.with_moa_date_notarized = formatDate(newIndustryPartner.with_moa_date_notarized);
-    trimmedIP.expiry_date = formatDate(newIndustryPartner.expiry_date);
+    trimmedIP.year_included = String(trimmedIP.year_included);
+    trimmedIP.with_moa_date_notarized = String(trimmedIP.with_moa_date_notarized);
+    trimmedIP.created_at = new Date().toISOString();
+  
+    if (newIndustryPartner.expiry_date) {
+      trimmedIP.expiry_date = formatDate(newIndustryPartner.expiry_date);
+    } else {
+      trimmedIP.expiry_date = null;
+    }
   
     try {
       // Convert empty fields to NULL
