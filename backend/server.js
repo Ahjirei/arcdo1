@@ -35,20 +35,9 @@ app.use(
 );
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '../src/dist')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-
-=======
->>>>>>> parent of d3c12f4 (Add: Start Path)
-=======
->>>>>>> parent of d3c12f4 (Add: Start Path)
-app.use(express.static(path.join(__dirname, 'src/dist')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'src/dist', 'index.html'));
-});
 
 
 

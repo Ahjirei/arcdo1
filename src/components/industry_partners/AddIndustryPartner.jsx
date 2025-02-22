@@ -31,13 +31,23 @@ const AddIndustryPartner = ({ isOpen, onClose, onPartnerAdded }) => {
         return () => clearTimeout(timer);
     }
   }, [error]); 
-  
+
   const handleSave = async () => {
+
+    const formatDate = (date) => {
+      if (!date) return null; 
+      const localDate = new Date(date);
+      return localDate.toISOString().split("T")[0]; // Ensures YYYY-MM-DD format
+    };
+    
     const trimmedIP = {};
     for (let key in newIndustryPartner) {
       trimmedIP[key] = newIndustryPartner[key].trim ? newIndustryPartner[key].trim() : newIndustryPartner[key];
     }
     trimmedIP.updated_at = new Date().toISOString();
+    trimmedIP.year_included = formatDate(newIndustryPartner.year_included);
+    trimmedIP.with_moa_date_notarized = formatDate(newIndustryPartner.with_moa_date_notarized);
+    trimmedIP.expiry_date = formatDate(newIndustryPartner.expiry_date);
   
     try {
       // Convert empty fields to NULL
