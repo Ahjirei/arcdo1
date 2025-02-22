@@ -15,83 +15,52 @@ const EditMoa = ({ isOpen, onClose, editingMoa, setEditingMoa, onMoaEdited }) =>
 
   if (!isOpen || !editingMoa) return null;
 
-  const formatMySQLDate = (date) => {
-    if (!date) return null;
-    const d = new Date(date);
-    const pad = (n) => (n < 10 ? '0' + n : n);
-    return (
-      d.getFullYear() +
-      '-' +
-      pad(d.getMonth() + 1) +
-      '-' +
-      pad(d.getDate()) +
-      ' ' +
-      pad(d.getHours()) +
-      ':' +
-      pad(d.getMinutes()) +
-      ':' +
-      pad(d.getSeconds())
-    );
-  };
-  
   const handleSave = async () => {
     try {
-      // Convert empty fields to NULL
-      const fieldsToConvert = [
-        "telephone",
-        "fax_number",
-        "business_type",
-        "moa_status",
-        "contact_person",
-        "contact_number",
-        "remarks",
-        "year_included",
-        "position_department",
-        "preferred_courses",
-        "preferred_college",
-        "email_address",
-        "office_address",
-        "with_moa_date_notarized",
-        "expiry_date",
-      ];
-  
-      const updatedPartner = { ...industryPartner };
-      fieldsToConvert.forEach((field) => {
-        if (updatedPartner[field] === "") {
-          updatedPartner[field] = null;
-        }
+      setIsLoading(true);
+      setError("");
+
+      const formatDate = (date) => {
+        if (!date || date === "null" || date === "") return null;
+        return new Date(date).toISOString().split("T")[0];
+      };     
+      
+      const response = await fetch(`http://localhost:3001/api/moa/updateMoa/${editingMoa.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          company_name: editingMoa.company_name,
+          address: editingMoa.address,
+          year_moa_started: formatDate(editingMoa.year_moa_started),
+          business_type: editingMoa.business_type,
+          moa_status: editingMoa.moa_status,
+          contact_person: editingMoa.contact_person,
+          contact_no: editingMoa.contact_no,
+          email: editingMoa.email,
+          remarks: editingMoa.remarks,
+          expiration_date: formatDate(editingMoa.expiration_date),
+          type_of_moa: editingMoa.type_of_moa,
+          validity: editingMoa.validity,
+          date_notarized: editingMoa.date_notarized
+        }),
       });
-  
-      // Format updated_at for MySQL
-      updatedPartner.updated_at = formatMySQLDate(new Date());
-  
-      const response = await fetch(
-        `http://localhost:3001/api/ip/updatePartner/${industryPartner.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(updatedPartner),
-        }
-      );
-  
-      if (response.ok) {
-        // Remove the window.location.reload() and use the callback instead
-        if (onPartnerEdited) {
-          onPartnerEdited();
-        }
-        onClose();
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || "Failed to update Industry Partner");
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update MOA');
       }
+
+      onMoaEdited();
     } catch (err) {
-      console.error("Error updating Industry Partner:", err);
-      setError("An error occurred while updating the Industry Partner");
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-5 sm:mt-0 mt-20">
       <div className="bg-white p-6 rounded-lg w-full sm:w-10/12 md:w-8/12 lg:w-6/12 max-h-[85vh] overflow-auto">
@@ -255,7 +224,9 @@ const EditMoa = ({ isOpen, onClose, editingMoa, setEditingMoa, onMoaEdited }) =>
               <label className="text-sm font-medium text-gray-700">MOA Date Notarized</label>
               <input
                 type="date"
-                value={editingMoa.date_notarized}
+                value={editingMoa.date_notarized 
+                  ? new Date(editingMoa.date_notarized).toISOString().split("T")[0] 
+                  : ""}
                 onChange={(e) =>
                   setEditingMoa({ ...editingMoa, date_notarized: parseInt(e.target.value, 10)})
                 }
