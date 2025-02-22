@@ -38,8 +38,11 @@ app.use(
 app.use(express.static(path.join(__dirname, '../src/dist')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> parent of d3c12f4 (Add: Start Path)
 =======
 >>>>>>> parent of d3c12f4 (Add: Start Path)
 app.use(express.static(path.join(__dirname, 'src/dist')));
