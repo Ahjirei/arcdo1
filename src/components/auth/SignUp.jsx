@@ -84,10 +84,41 @@ export default function SignUp() {
         navigate("/login");
     };
 
+    const backgroundImages = [
+        "/bg.ppg",
+        "/bg1.jpg",
+        "/bg2.jpeg"
+    ];
+    const randomImage = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
+    
+
 
     return (
-        <div className="fixed inset-0 font-montserrat overflow-hidden h-screen bg-cover flex justify-center items-center px-4"
-        style={{ backgroundImage: "url('/public/bg.png')" }}>
+
+        <div 
+            className="fixed inset-0 font-montserrat overflow-hidden h-screen flex justify-center items-center px-4"
+            style={{ 
+                backgroundImage: `url('${randomImage}')`, 
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}
+        >
+            <div 
+                className="absolute inset-0 sm:blur-md"
+                style={{ 
+                    backgroundImage: `url('${randomImage}')`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    zIndex: -1
+                }}
+            />
+             {/* Overlay for blur effect on mobile */}
+            <div className="absolute inset-0 bg-black bg-opacity-30 sm:bg-opacity-20 md:bg-transparent backdrop-blur-sm sm:backdrop-blur-md md:backdrop-blur-none">
+                
+            </div>
+
             <div className="relative p-8 w-full max-w-md h-[90vh] overflow-y-auto bg-white rounded-lg shadow-md sm:max-w-sm md:max-w-md">
                 <h2 className="text-2xl font-semibold text-center mb-4">Create New Account</h2>
                 <p className="text-center text-gray-600 mb-6">Please provide your details</p>

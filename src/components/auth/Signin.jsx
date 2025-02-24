@@ -9,14 +9,15 @@ export default function Signin() {
     const [email, setEmail] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(false);
 
-    const handleCreateAccountClick = () => {
-        navigate("/signUp"); 
-    };
+    // Array of background images
+    const bgImages = [
+        '/public/bg.png',
+        '/public/bg1.jpg',
+        '/public/bg2.jpeg',
+    ];
 
-    const handleForgotPassClick = () => {
-        navigate("/forgotPassword"); 
-    };
-
+    // Select a random background image on each reload
+    const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
 
     useEffect(() => {
         const savedEmail = localStorage.getItem('savedEmail');
@@ -28,7 +29,6 @@ export default function Signin() {
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
         const password = e.target.password.value;
 
         try {
@@ -46,125 +46,71 @@ export default function Signin() {
             }
 
             const data = await response.json();
-    
             if (data.refresh_token) {
-                // Save the token and user ID in local storage
                 localStorage.setItem('token', data.refresh_token);
-                localStorage.setItem('user_id', data.id); 
-                localStorage.setItem('role', data.role); 
+                localStorage.setItem('user_id', data.id);
+                localStorage.setItem('role', data.role);
 
-                console.log("userId: ", data.id)
-    
-                // Save the email if "Remember me" is checked
                 if (rememberMe) {
                     localStorage.setItem('savedEmail', email);
                 } else {
                     localStorage.removeItem('savedEmail');
                 }
-    
-                // Redirect to the fetching page after login
+
                 navigate('/overview');
             } else {
                 setError("Something went wrong. No token received.");
             }
-
         } catch (error) {
             setError(error.message);
-            setTimeout(() => {
-                setError('');
-            }, 2000);
+            setTimeout(() => setError(''), 2000);
         }
     };
 
-    const togglePasswordVisibility = () => {
-        setPasswordVisible(!passwordVisible);
-    };
-
     return (
-        <div className="h-screen bg-cover flex justify-center items-center px-4"
-        style={{ backgroundImage: "url('/public/bg.png')" }}>
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-xs sm:max-w-sm md:max-w-md">
-                <h2 className="text-2xl font-semibold text-center mb-4">Login to <b>ARCDO Dashboard</b></h2>
-                <p className="text-center text-gray-600 mb-6">Please enter your email and password to continue</p>
-                <div className="p-4">
-                    {error && (
-                        <div className="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
-                            <CircleAlert className="w-5 h-5 mr-2 text-red-700" />
-                            <span>{error}</span>
+        <div className="h-screen w-full flex justify-end items-center bg-cover bg-center relative 
+            before:absolute before:inset-0 before:bg-black/30 before:backdrop-blur-md md:before:hidden" 
+            style={{ backgroundImage: `url(${randomBg})` }}>
+            
+            {/* Background Blur Overlay for Login Side (Desktop) */}
+            <div className="hidden md:block absolute right-0 top-0 bottom-0 w-1/3 bg-black/30 backdrop-blur-md" />
+            
+            {/* Login Form */}
+            <div className="w-full md:w-1/3 lg:w-1/4 bg-white p-6 shadow-lg relative z-10 m-4 rounded-xl">
+                <h2 className="text-2xl font-bold text-center">Login to <span className="text-red-600">ARCDO Dashboard</span></h2>
+                <p className="text-center text-gray-600 mb-4">Please enter your email and password to continue</p>
+                {error && (
+                    <div className="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50">
+                        <CircleAlert className="w-5 h-5 mr-2 text-red-700" />
+                        <span>{error}</span>
+                    </div>
+                )}
+                <form className="space-y-4" onSubmit={handleFormSubmit}>
+                    <div>
+                        <label className="block text-sm font-medium">Your email</label>
+                        <input type="email" name="email" className="w-full mt-1 p-2 border rounded-md" placeholder="name@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium">Your password</label>
+                        <div className="relative">
+                            <input type={passwordVisible ? 'text' : 'password'} name="password" className="w-full mt-1 p-2 border rounded-md" placeholder="••••••••" required />
+                            <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                                {passwordVisible ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </button>
                         </div>
-                    )}
-                    <form className="space-y-4" onSubmit={handleFormSubmit}>
-                        <div className="mb-4">
-                            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
-                                Your email
-                            </label>
-                            <input
-                                type="email"
-                                name="email"
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
-                                placeholder="name@gmail.com"
-                                required
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                        <div>
+                            <input type="checkbox" id="remember" className="mr-2" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
+                            <label htmlFor="remember">Remember me</label>
                         </div>
-                        <div className="mb-4">
-                            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-black">
-                                Your password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type={passwordVisible ? 'text' : 'password'}
-                                    name="password"
-                                    placeholder="••••••••"
-                                    className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
-                                    required
-                                />
-                                <button
-                                    type="button"
-                                    onClick={togglePasswordVisibility}
-                                    className="absolute inset-y-0 right-3 flex items-center text-gray-600"
-                                >
-                                    {passwordVisible ? (
-                                        <EyeOff className="w-5 h-5" />
-                                    ) : (
-                                        <Eye className="w-5 h-5" />
-                                    )}
-                                </button>
-                            </div>
-                        </div>
-                        <div className="flex justify-between">
-                            <div className="flex items-start">
-                                <div className="flex items-center h-5">
-                                    <input
-                                        type="checkbox"
-                                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-600 dark:border-gray-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-[#DDDDD]-800"
-                                        checked={rememberMe}
-                                        onChange={(e) => setRememberMe(e.target.checked)}
-                                    />
-                                </div>
-                                <label className="ms-2 text-sm font-medium text-black-300 dark:text-black-300">
-                                    Remember me
-                                </label>
-                            </div>
-                            <a href="#" className="text-sm font-medium text-gray-700 flex justify-between hover:underline dark:text-gray-700"  onClick={handleForgotPassClick}>
-                                Forgot Password? 
-                            </a>
-                        </div>
-                        <button
-                            type="submit"
-                            className="w-full bg-[#800101] text-white py-2 rounded-md hover:bg-red-600 transition"   
-                        >
-                            Sign In
-                        </button>
-                        <div className="text-sm font-medium text-gray-700 dark:text-gray-700">
-                            Don't have an account?{' '}
-                            <a href="#" className="text-red-500 font-semibold hover:underline dark:text-red-700" onClick={handleCreateAccountClick}>
-                                Sign Up
-                            </a>
-                        </div>
-                    </form>
-                </div>
+                        <button type="button" className="text-red-500 hover:underline" onClick={() => navigate('/forgotPassword')}>Forgot Password?</button>
+                    </div>
+                    <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md">Sign In</button>
+                    <p className="text-center text-sm mt-2">
+                        Don't have an account? <button type="button" className="text-red-500 hover:underline" onClick={() => navigate('/signUp')}>Sign Up</button>
+                    </p>
+                </form>
             </div>
         </div>
     );
