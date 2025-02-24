@@ -244,7 +244,7 @@ export default function OJTCoordinators() {
                 <th className="px-4 py-2 text-left border-b">COLLEGE</th>
                 <th className="px-4 py-2 text-left border-b">EMAIL</th>
                 <th className="px-4 py-2 text-left border-b">OFFICE</th>
-                <th className="px-4 py-2 text-left border-b">ASSIGNED STUDENTS</th>
+                <th className="px-4 py-2 text-left border-b">ENROLLED STUDENTS</th>
                 <th className="px-4 py-2 text-left border-b">STATUS</th>
                 {notAdmin && (
                   <th className="px-4 py-2 text-left border-b"></th>
@@ -382,7 +382,7 @@ export default function OJTCoordinators() {
                                 <strong>Office:</strong> {coordinator.office}
                               </div>
                               <div className="mt-2">
-                                <strong>Assigned Students:</strong> {coordinator.assigned_student}
+                                <strong>Enrolled Students:</strong> {coordinator.assigned_student}
                               </div>
                             </div>
                 ))}
