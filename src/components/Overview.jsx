@@ -482,13 +482,13 @@ const Overview = () => {
                 <tbody>
                   {Array.isArray(data.tableData[activeTab]) && data.tableData[activeTab].map((row, index) => (
                     <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 text-center">
-                      <td className="py-2 px-4">{row.DOC}</td>
-                      <td className="py-2 px-4">{row.COMPANY}</td>
-                      <td className="py-2 px-4">{row.ADDRESS}</td>
-                      <td className="py-2 px-4">{row.DATE}</td>
-                      <td className="py-2 px-4">{row.BUSINESS}</td>
+                      <td className="py-2 px-4 text-left">{row.DOC}</td>
+                      <td className="py-2 px-4 text-left">{row.COMPANY}</td>
+                      <td className="py-2 px-4 text-left">{row.ADDRESS}</td>
+                      <td className="py-2 px-4 text-left">{row.DATE}</td>
+                      <td className="py-2 px-4 text-left">{row.BUSINESS}</td>
                       <td
-                        className={`py-2 px-4 text-center rounded-full font-normal ${
+                        className={`py-2 px-4 text-left rounded-full font-normal ${
                           row.STATUS === "Completed"
                             ? "text-green-600 bg-green-100 inline-block py-1 mt-1 mb-2"
                             : row.STATUS === "Processing"
