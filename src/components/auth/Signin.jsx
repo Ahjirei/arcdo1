@@ -10,14 +10,8 @@ export default function Signin() {
     const [passwordVisible, setPasswordVisible] = useState(false);
 
     // Array of background images
-    const bgImages = [
-        '/public/bg.png',
-        '/public/bg1.jpg',
-        '/public/bg2.jpeg',
-    ];
-
-    // Select a random background image on each reload
-    const randomBg = bgImages[Math.floor(Math.random() * bgImages.length)];
+    const backgroundImages = ["/bg.png", "/bg1.jpg", "/bg2.jpeg"];
+    const randomImage = backgroundImages[Math.floor(Math.random() * backgroundImages.length)];
 
     useEffect(() => {
         const savedEmail = localStorage.getItem('savedEmail');
@@ -68,50 +62,108 @@ export default function Signin() {
     };
 
     return (
-        <div className="h-screen w-full flex justify-end items-center bg-cover bg-center relative 
-            before:absolute before:inset-0 before:bg-black/30 before:backdrop-blur-md md:before:hidden" 
-            style={{ backgroundImage: `url(${randomBg})` }}>
+        <div 
+            className="fixed inset-0 font-montserrat overflow-hidden h-screen flex items-center justify-center px-4 md:px-20"
+            style={{ 
+                backgroundImage: `url('${randomImage}')`, 
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}
+        >
+            {/* Background blur effect for mobile view */}
+            <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md md:backdrop-blur-none"></div>
             
-            {/* Background Blur Overlay for Login Side (Desktop) */}
-            <div className="hidden md:block absolute right-0 top-0 bottom-0 w-1/3 bg-black/30 backdrop-blur-md" />
-            
-            {/* Login Form */}
-            <div className="w-full md:w-1/3 lg:w-1/4 bg-white p-6 shadow-lg relative z-10 m-4 rounded-xl">
-                <h2 className="text-2xl font-bold text-center">Login to <span className="text-red-600">ARCDO Dashboard</span></h2>
-                <p className="text-center text-gray-600 mb-4">Please enter your email and password to continue</p>
+            {/* Form container with blur effect in desktop view */}
+            <div className="relative w-full max-w-md md:w-[35%] h-auto md:h-screen flex flex-col justify-center items-center bg-white bg-opacity-40 backdrop-blur-lg shadow-md md:ml-auto p-8 overflow-y-auto md:-mr-20 rounded-lg">
+                <h2 className="text-2xl font-bold text-center">
+                    Login to <span className="text-red-600">ARCDO Dashboard</span>
+                </h2>
+                <p className="text-center text-gray-600 mb-6">
+                    Please enter your email and password to continue
+                </p>
+
                 {error && (
                     <div className="flex items-center p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50">
                         <CircleAlert className="w-5 h-5 mr-2 text-red-700" />
                         <span>{error}</span>
                     </div>
                 )}
-                <form className="space-y-4" onSubmit={handleFormSubmit}>
+
+                <form className="space-y-6 w-full" onSubmit={handleFormSubmit}>
                     <div>
                         <label className="block text-sm font-medium">Your email</label>
-                        <input type="email" name="email" className="w-full mt-1 p-2 border rounded-md" placeholder="name@gmail.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                        <input 
+                            type="email" 
+                            name="email" 
+                            className="w-full mt-1 p-2 border rounded-md" 
+                            placeholder="name@gmail.com" 
+                            required 
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)} 
+                        />
                     </div>
+
                     <div>
                         <label className="block text-sm font-medium">Your password</label>
                         <div className="relative">
-                            <input type={passwordVisible ? 'text' : 'password'} name="password" className="w-full mt-1 p-2 border rounded-md" placeholder="••••••••" required />
-                            <button type="button" onClick={() => setPasswordVisible(!passwordVisible)} className="absolute inset-y-0 right-3 flex items-center text-gray-600">
+                            <input 
+                                type={passwordVisible ? 'text' : 'password'} 
+                                name="password" 
+                                className="w-full mt-1 p-2 border rounded-md" 
+                                placeholder="••••••••" 
+                                required 
+                            />
+                            <button 
+                                type="button" 
+                                onClick={() => setPasswordVisible(!passwordVisible)} 
+                                className="absolute inset-y-0 right-3 flex items-center text-gray-600"
+                            >
                                 {passwordVisible ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                             </button>
                         </div>
                     </div>
+
                     <div className="flex justify-between items-center text-sm">
                         <div>
-                            <input type="checkbox" id="remember" className="mr-2" checked={rememberMe} onChange={(e) => setRememberMe(e.target.checked)} />
+                            <input 
+                                type="checkbox" 
+                                id="remember" 
+                                className="mr-2" 
+                                checked={rememberMe} 
+                                onChange={(e) => setRememberMe(e.target.checked)} 
+                            />
                             <label htmlFor="remember">Remember me</label>
                         </div>
-                        <button type="button" className="text-red-500 hover:underline" onClick={() => navigate('/forgotPassword')}>Forgot Password?</button>
+                        <button 
+                            type="button" 
+                            className="text-red-500 hover:underline" 
+                            onClick={() => navigate('/forgotPassword')}
+                        >
+                            Forgot Password?
+                        </button>
                     </div>
-                    <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md">Sign In</button>
-                    <p className="text-center text-sm mt-2">
-                        Don't have an account? <button type="button" className="text-red-500 hover:underline" onClick={() => navigate('/signUp')}>Sign Up</button>
+
+                    <button 
+                        type="submit" 
+                        className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md"
+                    >
+                        Sign In
+                    </button>
+
+                    <p className="text-center text-sm mt-4">
+                        Don't have an account?{' '}
+                        <button 
+                            type="button" 
+                            className="text-red-500 hover:underline" 
+                            onClick={() => navigate('/signUp')}
+                        >
+                            Sign Up
+                        </button>
                     </p>
                 </form>
             </div>
+
         </div>
     );
 }
