@@ -317,8 +317,8 @@ export default function IndustryPartners() {
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.preferred_college}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.campus}</td>
                   <td className="px-2 py-2 border-t whitespace-nowrap">{partner.year_submitted}</td>
-                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.with_moa_date_notarized}</td>
-                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.expiry_date}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{new Date(partner.with_moa_date_notarized).toLocaleDateString("en-CA")}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{new Date(partner.expiry_date).toLocaleDateString("en-CA")}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.business_type}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">
                     <span className={`rounded-full px-2 py-1 ${getValidityColor(partner.moa_status)}`}>
@@ -327,7 +327,7 @@ export default function IndustryPartners() {
                   </td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.contact_person}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.contact_number}</td>
-                  <td className="px-2 py-2 border-t whitespace-nowrap">{partner.year_included}</td>
+                  <td className="px-2 py-2 border-t whitespace-nowrap">{new Date(partner.year_included).toLocaleDateString("en-CA")}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.position_department}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.email_address}</td>
                   <td className="px-4 py-2 border-t whitespace-nowrap">{partner.office_address}</td>
