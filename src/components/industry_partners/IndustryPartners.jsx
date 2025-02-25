@@ -69,17 +69,13 @@ export default function IndustryPartners() {
     setLoading(true);
     try {
       const response = await axios.get("http://localhost:3001/api/ip/getPartner");
-      const formattedData = response.data.map(partner => ({
-        ...partner,
-        with_moa_date_notarized: partner.with_moa_date_notarized ? partner.with_moa_date_notarized.split('T')[0] : null,
-        expiry_date: partner.expiry_date ? partner.expiry_date.split('T')[0] : null,
-      }));
       const sortedData = response.data.sort((a, b) => {
-        const dateA = new Date(a.updated_at);
-        const dateB = new Date(b.updated_at);
+        const dateA = new Date(a.updated_at || a.created_at);
+        const dateB = new Date(b.updated_at || b.created_at);
         return dateB - dateA;
       });
       setIndustryPartners(sortedData);
+      setDisplayedPartners(sortedData)
     } catch (err) {
       console.error("Error fetching industry partners:", err);
       setError("Error fetching industry partners");
@@ -90,10 +86,15 @@ export default function IndustryPartners() {
 
   const industryPartnersPerPage = 8;
 
+  const formatDate = (date) => {
+    if (!date) return null; 
+    return new Date(date).toISOString().split("T")[0]; 
+  };
+
   // Apply filters
   const filteredData = industryPartners.filter((partner) => {
     const matchesDate = filters.date
-      ? partner.year_included && partner.year_included.toString().startsWith(filters.date)
+      ? new Date(partner.year_included).getFullYear().toString() === filters.date
       : true;
     const matchesBusiness = filters.business
       ? partner.business_type?.toLowerCase().includes(filters.business.toLowerCase())
@@ -428,16 +429,16 @@ export default function IndustryPartners() {
             </div>
             <hr className="my-2" />
             <div className="mt-2">
-              <strong>Year Included:</strong> {partner.year_included}
+              <strong>Year Included:</strong> {new Date(partner.year_included).toLocaleDateString("en-CA")}
             </div>
             <div className="mt-2">
               <strong>Year Submitted:</strong> {partner.year_submitted}
             </div>
             <div className="mt-2">
-              <strong>Moa Notarized:</strong> {partner.with_moa_date_notarized}
+              <strong>Moa Notarized:</strong> {new Date(partner.with_moa_date_notarized).toLocaleDateString("en-CA")}
             </div>
             <div className="mt-2">
-              <strong>Expiry Date:</strong> {partner.expiry_date}
+              <strong>Expiry Date:</strong> {new Date(partner.expiry_date).toLocaleDateString("en-CA")}
             </div>
             <hr className="my-2" />
             <div className="mt-2 text-center">
