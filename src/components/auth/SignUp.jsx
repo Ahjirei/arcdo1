@@ -79,7 +79,7 @@ export default function SignUp() {
 
     return (
         <div 
-            className="fixed inset-0 font-montserrat overflow-hidden h-screen flex items-center justify-center px-4 md:px-20"
+            className="fixed inset-0 font-montserrat overflow-hidden flex items-center justify-center px-4 md:px-8"
             style={{ 
                 backgroundImage: `url('${randomImage}')`, 
                 backgroundSize: 'cover',
@@ -87,9 +87,13 @@ export default function SignUp() {
                 backgroundRepeat: 'no-repeat'
             }}
         >
+            {/* Background overlay without blur */}
             <div className="absolute inset-0 bg-black bg-opacity-50"></div>
 
-            <div className="relative w-full max-w-md md:w-[35%] h-auto md:h-screen flex flex-col justify-center items-center bg-white bg-opacity-40 shadow-md md:ml-auto p-8 overflow-y-auto md:-mr-20 rounded-lg md:rounded-none">
+            {/* Form container with blur effect */}
+            <div className="relative w-full max-w-md md:w-[35%] h-auto md:h-screen flex flex-col justify-center items-center bg-white bg-opacity-50 backdrop-blur-2xl shadow-lg md:ml-auto p-8 overflow-y-auto md:-mr-10 rounded-lg md:rounded-none">
+
+
                 <h2 className="text-2xl font-bold text-center">
                     Create New <span className="text-red-600">Account</span>
                 </h2>
@@ -97,7 +101,7 @@ export default function SignUp() {
                     Please provide your details
                 </p>
                 
-                <form className="space-y-6 w-full" onSubmit={handleFormSubmit}>
+                <form className="space-y-5 w-full" onSubmit={handleFormSubmit}>
                     <div>
                         <label className="block text-sm font-medium">Your Email</label>
                         <input type="email" name="email" className="w-full mt-1 p-2 border rounded-md" placeholder="name@gmail.com" required value={formData.email} onChange={handleInputChange} />
@@ -131,27 +135,37 @@ export default function SignUp() {
                     <div>
                         <label className="block text-sm font-medium">Campus</label>
                         <select name="campus" className="w-full mt-1 p-2 border rounded-md" required value={formData.campus} onChange={handleInputChange}>
-                            <option value="">Select Campus</option>
-                            <option value="Main">PUP Main</option>
-                            <option value="Bataan">PUP Bataan</option>
+                        <option value="">Select Campus</option>
+                                <option value="Main">PUP Main</option>
+                                <option value="Bataan">PUP Bataan</option>
+                                <option value="Calauan">PUP Calauan</option>
+                                <option value="Lopez">PUP Lopez</option>
+                                <option value="Paranaque">PUP Paranaque</option>
+                                <option value="Quezon City">PUP Quezon City</option>
+                                <option value="Ragay">PUP Ragay</option>
+                                <option value="San Juan">PUP San Juan</option>
+                                <option value="Sto. Tomas">PUP Sto. Tomas</option>
+                                <option value="San Pedro">PUP San Pedro</option>
+                                <option value="Santa Rosa">PUP Santa Rosa</option>
+                                <option value="Taguig">PUP Taguig</option>
                         </select>
                     </div>
                     
                     <div>
-                            <label className="text-sm font-medium text-gray-700 flex justify-between">
-                                College
-                            </label>
-                            <input
-                                type="text"
-                                name="college"
-                                id="college"
-                                value={formData.college}
-                                onChange={handleInputChange}
-                                className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
-                                placeholder="College of Engineering"
-                                required
-                            />
-                        </div>
+                        <label className="text-sm font-medium text-gray-700 flex justify-between">
+                            College
+                        </label>
+                        <input
+                            type="text"
+                            name="college"
+                            id="college"
+                            value={formData.college}
+                            onChange={handleInputChange}
+                            className="mt-1 p-2 w-full border rounded-md focus:ring-2 focus:ring-red-800 focus:outline-none"
+                            placeholder="College of Engineering"
+                            required
+                        />
+                    </div>
                         
                     <button type="submit" className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-md">Sign Up</button>
                     <p className="text-center text-sm mt-4">

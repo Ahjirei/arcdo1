@@ -50,10 +50,10 @@ export default function ForgotPassword() {
                 backgroundRepeat: 'no-repeat'
             }}
         >
-            {/* Background blur effect for mobile view */}
-            <div className="absolute inset-0 bg-black bg-opacity-50 backdrop-blur-md"></div>
+            {/* Background overlay without blur */}
+            <div className="absolute inset-0 bg-black bg-opacity-50"></div>
             
-            {/* Form container */}
+            {/* Form container with blur effect */}
             <div className="relative w-full max-w-md md:w-[35%] h-auto md:h-screen flex flex-col justify-center items-center bg-white bg-opacity-40 backdrop-blur-lg shadow-md md:ml-auto p-8 overflow-y-auto md:-mr-20 rounded-lg md:rounded-none">
                 <h3 className="text-2xl font-semibold text-center mb-4">Forgot Password</h3>
                 <form className="space-y-6 w-full" onSubmit={handleSubmit}>
