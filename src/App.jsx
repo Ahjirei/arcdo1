@@ -11,6 +11,7 @@ import AdminProfile from './components/account/AdminProfile';
 import SignUp from './components/auth/SignUp';
 import ForgotPassword from './components/auth/ForgotPassword';
 import ResetPassword from './components/auth/ResetPasswordCard';
+import AbouttheDeveloperPage from './pages/AbouttheDeveloperPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -68,6 +69,7 @@ function App() {
           <Route path="/industry-partners" element={<IndustryPartnersPage />} />
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/adminprofile" element={<AdminProfile />} />
+          <Route path="/about-the-developer" element={<AbouttheDeveloperPage />} />
         </Route>
       </Routes>
     </Router>

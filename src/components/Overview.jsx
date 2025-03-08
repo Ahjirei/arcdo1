@@ -75,7 +75,7 @@ const Overview = () => {
     datasets: [
       {
         data: data.industryPartnerCard.map((status) => status.percentage),
-        backgroundColor: ["#c30010", "#800000", "#f69697"],
+        backgroundColor: ["#c30010", "#800000", "#f69697", "#FFD8E4", "#B22234"],
         hoverOffset: 5,
       },
     ],
@@ -226,7 +226,7 @@ const Overview = () => {
     datasets: [
       {
         data: data.moaSTATUS.map((status) => status.percentage),
-        backgroundColor: ["#c30010", "#800000", "#f69697"],
+        backgroundColor: ["#c30010", "#800000", "#f69697", "#FFD8E4", "#B22234"],
         hoverOffset: 5,
       },
     ],

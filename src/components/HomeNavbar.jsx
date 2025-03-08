@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, NavLink, useLocation } from "react-router-dom";
-import { ChartPie, FolderClosed, User, NotebookTabs, Contact, Handshake, LogOut, PanelsTopLeft, Menu } from "lucide-react";
+import { ChartPie, FolderClosed, User, NotebookTabs, Contact, Handshake, LogOut, PanelsTopLeft, Menu, Bot } from "lucide-react";
 import AdminProfile from "./account/AdminProfile";
 
 export default function HomeNavbar() {
@@ -38,6 +38,7 @@ export default function HomeNavbar() {
     { name: "HTEs", icon: <NotebookTabs className="h-5 w-5" />, path: "/hte" },
     { name: "OJT Coordinators", icon: <Contact className="h-5 w-5" />, path: "/OJT-coordinators" },
     { name: "Industry Partners", icon: <Handshake className="h-5 w-5" />, path: "/industry-partners" },
+    { name: "The Developer", icon: <Bot className="h-5 w-5" />, path: "/about-the-developer" }
   ];
 
   const toggleDropdown = () => {
