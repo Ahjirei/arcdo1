@@ -36,7 +36,6 @@ export default function HomeNavbar() {
   const menuItems = [
     { name: "Overview", icon: <ChartPie className="h-5 w-5" />, path: "/overview" },
     { name: "HTEs", icon: <NotebookTabs className="h-5 w-5" />, path: "/hte" },
-    { name: "MOAs", icon: <FolderClosed className="h-5 w-5" />, path: "/moas" },
     { name: "OJT Coordinators", icon: <Contact className="h-5 w-5" />, path: "/OJT-coordinators" },
     { name: "Industry Partners", icon: <Handshake className="h-5 w-5" />, path: "/industry-partners" },
   ];

@@ -64,7 +64,6 @@ function App() {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/hte" element={<HTEDashboardPage />} />
-          <Route path="/moas" element={<MoasPage />} />
           <Route path="/OJT-coordinators" element={<OJTCoordinatorsPage />} />
           <Route path="/industry-partners" element={<IndustryPartnersPage />} />
           <Route path="/overview" element={<OverviewPage />} />

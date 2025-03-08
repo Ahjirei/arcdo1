@@ -1,9 +1,9 @@
-import connectDB from '../config/db.js';
+import {mainDB} from '../config/db.js';
 
 export const getAdminUsers = async (req, res) => {
     let connection;
     try {
-        connection = await connectDB();
+        connection = await mainDB();
         const sql = `
             SELECT users.id, users.email, users.role, users.last_login, user_account.name
             FROM users
@@ -25,7 +25,7 @@ export const checkUserExists = async (req, res) => {
     let connection;
     const { email, name } = req.body;
     try {
-        const connection = await connectDB();
+        const connection = await mainDB();
         let query = "";
         let queryParams = [];
 
@@ -62,7 +62,7 @@ export const setAdminRole = async (req, res) => {
     const requesterId = req.user?.id; // ID of the requesting user (from authentication middleware)
 
     try {
-        const connection = await connectDB();
+        const connection = await mainDB();
 
         // Check if a user with the provided name or email exists
         let query = "SELECT id FROM users WHERE ";
@@ -103,7 +103,7 @@ export const removeAdminRole = async (req, res) => {
     const requesterId = req.user?.id; // ID of the requesting user (from authentication middleware)
 
     try {
-        const connection = await connectDB();
+        const connection = await mainDB();
         // Find user by name or email
         let query = "SELECT id FROM users WHERE ";
         let queryParams = [];
